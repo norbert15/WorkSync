@@ -1,0 +1,24 @@
+@if (dialog()) {
+  <div [ngClass]="['dialog', dialog()!.class.join(' '), 'dialog--' + dialog()?.size]" appFade>
+    <div class="dialog-header">
+      <div class="headline-text-normal">{{ dialog()?.title }}</div>
+      @if (dialog()?.headerCloseButton) {
+        <i class="bi bi-x-circle cursor-pointer" (click)="onCloseClick()"></i>
+      }
+    </div>
+    <div class="dialog-content">
+      <ng-container [ngTemplateOutlet]="dialog()?.content || null"></ng-container>
+    </div>
+    <div class="dialog-footer">
+      @if (dialog()?.footer) {
+        <ng-container [ngTemplateOutlet]="dialog()!.footer!"></ng-container>
+      } @else if (dialog()?.footerCloseButton) {
+        <div class="dialog-footer-cancel">
+          <button app-button color="primary" (click)="onCloseClick()">Bezár</button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="dialog__bg" appFade></div>
+}

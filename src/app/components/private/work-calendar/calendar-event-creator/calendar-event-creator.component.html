@@ -1,0 +1,49 @@
+<button app-button color="success" class="text-nowrap" (click)="onOpenNewEventDialogClick()">
+  <i class="bi bi-calendar2-plus me-2"></i>
+  Esemény létrehozása
+</button>
+
+<ng-template #newEventDialogContentTemplate>
+  <form [formGroup]="eventForm">
+    <div class="mb-3">
+      <app-select
+        [options]="[
+          { label: 'Házon kívűl', value: 1 },
+          { label: 'Szabadság kérelem', value: 2 },
+          { label: 'Google esemény', value: 0 },
+        ]"
+        label="Esemény kiválasztása*"
+        formControlName="eventType"
+        bootstrapIcon="bi-calendar2-event"
+        (selectEvent)="onOptionSelect($event)"
+      ></app-select>
+    </div>
+
+    <div class="mb-3 d-flex gap-3">
+      <app-input
+        formControlName="eventStart"
+        class="w-100"
+        label="Esemény kezdete*"
+        type="datetime-local"
+      ></app-input>
+      <app-input
+        formControlName="eventEnd"
+        class="w-100"
+        label="Esemény vége*"
+        type="datetime-local"
+      ></app-input>
+    </div>
+    @if (eventForm.get("eventType")?.value && eventForm.get("eventType")?.value !== 0) {
+      <textarea formControlName="reason" placeholder="Megjegyzés" rows="5"></textarea>
+    }
+  </form>
+</ng-template>
+
+<ng-template #footerDialogTemplate>
+  <button class="w-100 mb-2" app-button color="transparent" (click)="onCloseDialogClick()">
+    Bezár
+  </button>
+  <button class="w-100" app-button (click)="onSaveClick()" [disabled]="eventForm.invalid">
+    Létrehozás
+  </button>
+</ng-template>

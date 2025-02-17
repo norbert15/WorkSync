@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+@use "../node_modules/bootstrap/scss/bootstrap";
+@use "assets/styles/sass/styles";
+
+html,
+body {
+  background-color: #f0f8ff;
+  font-family: "zilla-slab", sans-serif !important;
+  font-weight: 500;
+  font-style: normal;
+  color: #474748;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  margin: 0 !important;
+}

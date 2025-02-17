@@ -1,0 +1,28 @@
+@use "../../../../assets/styles/sass/base/variables/colors" as colors;
+
+.submenu-strip {
+  display: flex;
+  width: 100%;
+  padding: 5px;
+  background-color: white;
+  border-radius: 20px;
+  font-size: 18px;
+  gap: 5px;
+  justify-content: space-between;
+  user-select: none;
+  border: 1px solid colors.$gray-light;
+
+  .submenu {
+    cursor: pointer;
+    border-radius: 20px;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+
+    &--active,
+    &:hover {
+      background-color: colors.$primary;
+      color: white;
+    }
+  }
+}

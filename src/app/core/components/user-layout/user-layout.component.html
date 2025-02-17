@@ -1,0 +1,9 @@
+<div class="app-main">
+  <app-sidebar (openedChange)="sidebarIsOpened.set($event)"></app-sidebar>
+
+  <main [ngClass]="sidebarIsOpened() ? 'max-distance' : 'min-distance'">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-dialogs></app-dialogs>

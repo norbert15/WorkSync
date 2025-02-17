@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.profile-details-wrapper {
+  padding: 15px;
+  background-color: white;
+  border-radius: 12px;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.profile-details-container {
+  max-width: 500px;
+  width: 100%;
+  margin: auto;
+}

@@ -1,0 +1,77 @@
+<div class="login-container">
+  <div class="app-card">
+    @if (!showForgottenPasswordCard()) {
+      <div appFade>
+        <div class="text-center mb-4">
+          <span class="headline-text-medium">Bejelentkezés</span>
+          <hr class="hr-login" />
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="mb-4">
+            <app-input
+              class="mb-3"
+              label="E-mail cím"
+              bootstrapIcon="bi-person-circle"
+              formControlName="email"
+              autocompleteName="new-username"
+            ></app-input>
+            <app-input
+              type="password"
+              label="Jelszó"
+              bootstrapIcon="bi-lock-fill"
+              formControlName="password"
+              autocompleteName="new-password"
+            ></app-input>
+          </div>
+
+          <div class="mb-4 text-center" (click)="toggleForgottenPasswordCard()">
+            Elfelejtettem a jelszavam
+          </div>
+
+          <button type="submit" app-button class="w-100" [disabled]="loginForm.invalid">
+            Bejelentkezés
+          </button>
+        </form>
+      </div>
+    } @else {
+      <div appFade>
+        <div class="text-center mb-4">
+          <span class="headline-text-medium">Elfelejtett jelszó</span>
+          <hr class="hr-forgotten" />
+        </div>
+
+        <div class="text-center label-gray mb-5">
+          Add meg azt az email címet, amivel korábban bejelentkeztél a WorkSync alkamazásba. A
+          Jelszó vissza állításához szükséges lépéseket erre a címre küldjük.
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSendPasswordResetSubmit()">
+          <app-input
+            class="d-block mb-5"
+            formControlName="email"
+            bootstrapIcon="bi-person-circle"
+            label="E-mail cím"
+          ></app-input>
+          <button
+            app-button
+            class="mb-2 w-100"
+            type="submit"
+            [disabled]="loginForm.get('email')?.invalid ?? true"
+          >
+            Küldés
+          </button>
+          <button
+            app-button
+            type="button"
+            class="w-100"
+            color="transparent"
+            (click)="toggleForgottenPasswordCard()"
+          >
+            Vissza
+          </button>
+        </form>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,44 @@
+<div
+  class="input-wrapper"
+  (click)="inputField?.showPicker()"
+  [ngClass]="{ 'input-disabled': disabled() }"
+>
+  <input
+    #inputField
+    [type]="type() === 'password' && passwordVisible() ? 'text' : type()"
+    [attr.id]="id()"
+    [attr.name]="id()"
+    [disabled]="disabled()"
+    [attr.autocomplete]="autocompleteName()"
+    [value]="value()"
+    [(ngModel)]="value"
+    (ngModelChange)="valueChange.emit(value())"
+    (change)="nativeChange.emit(value())"
+    (input)="handleInput()"
+    (focus)="focused.set(true)"
+    (blur)="focused.set(false)"
+  />
+
+  <div
+    class="input-label"
+    (click)="inputField.focus()"
+    [ngClass]="{
+      'input-label-focus': value() || focused() || type() === 'date' || type() == 'datetime-local',
+      'input-disabled': disabled(),
+    }"
+  >
+    @if (bootstrapIcon()) {
+      <i [ngClass]="['bi', bootstrapIcon()]"></i>
+    }
+    {{ label() }}
+  </div>
+
+  @if (type() === "password") {
+    <div class="password-icon" (click)="passwordVisible.set(!passwordVisible())">
+      <i
+        class="bi"
+        [ngClass]="disabled() || !passwordVisible() ? 'bi-eye-slash-fill' : 'bi-eye-fill'"
+      ></i>
+    </div>
+  }
+</div>

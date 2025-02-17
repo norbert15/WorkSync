@@ -1,0 +1,69 @@
+@use "variables/colors" as colors;
+
+/* Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property */
+*:where(:not(iframe, canvas, img, svg, video, .no-reset *):not(div, svg *)) {
+  all: unset;
+  display: revert;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  max-width: 100%;
+}
+
+svg {
+  vertical-align: baseline;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+textarea {
+  color: colors.$secondary-dark;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  padding: 10px;
+  width: 100%;
+
+  /* Revert the 'white-space' property for textarea elements on Safari */
+  white-space: revert;
+}
+
+hr {
+  margin-inline: auto;
+  margin-block: 10px;
+}
+
+/* Webkit-alapú böngészők (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px; /* Görgetősáv szélessége */
+  height: 8px; /* Vízszintes görgetősáv szélessége */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Háttérszín */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: colors.$primary; /* Görgetősáv színe */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: colors.$primary-dark; /* Sötétebb szín hover esetén */
+}
+
+/* Firefox támogatás */
+* {
+  scrollbar-width: thin; /* Vékony sáv */
+  scrollbar-color: colors.$primary #f1f1f1; /* Csúszka és háttérszín */
+}

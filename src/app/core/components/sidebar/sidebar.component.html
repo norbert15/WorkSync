@@ -1,0 +1,47 @@
+<aside class="sidebar" [ngClass]="{ 'sidebar--opened': opened() }">
+  <div class="sidebar-header">
+    <div [routerLink]="PROFILE_PATH" class="sidebar-header-content cursor-pointer">
+      <div class="user-monogram" [ngClass]="{ 'user-monogram--big': opened() }">
+        {{ userMonogram() }}
+      </div>
+      <div
+        class="headline-text-normal"
+        [ngClass]="{ 'sidebar-body-item-label--notvisible': !opened() }"
+      >
+        Fiók adatai
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-body">
+    @for (sidebarItem of sidebarItems(); track $index) {
+      <a
+        [routerLink]="sidebarItem.route"
+        [routerLinkActive]="'sidebar-body-item--active'"
+        class="sidebar-body-item"
+      >
+        <i [class]="sidebarItem.icon"></i>
+        <div class="sidebar-body-item-group">
+          <span
+            class="sidebar-body-item-label"
+            [ngClass]="{ 'sidebar-body-item-label--notvisible': !opened() }"
+          >
+            {{ sidebarItem.label }}
+          </span>
+          @if (sidebarItem?.count) {
+            <div class="counter">{{ sidebarItem.count }}</div>
+          }
+        </div>
+      </a>
+    }
+  </div>
+  <div class="sidebar-footer">
+    @if (opened()) {
+      <div class="sidebar-footer-logout">Kijelentkezés</div>
+      <div class="sidebar-footer-logout" (click)="toggleSidebar()">Összecsukás</div>
+    } @else {
+      <i class="bi bi-box-arrow-left"></i>
+      <i class="bi bi-arrows-expand-vertical" (click)="toggleSidebar()"></i>
+    }
+  </div>
+</aside>

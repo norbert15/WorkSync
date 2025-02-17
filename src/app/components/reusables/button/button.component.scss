@@ -1,0 +1,14 @@
+.app-button {
+  display: inline-block;
+  height: max-content;
+  text-align: center;
+  padding: 12px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 700;
+
+  &-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
