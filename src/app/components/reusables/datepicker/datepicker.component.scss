@@ -1,0 +1,112 @@
+@use "../../../../assets/styles/sass/base/variables/colors" as colors;
+
+$transition: 0.3s all ease-in;
+
+.datepicker-wrapper {
+  user-select: none;
+  position: relative;
+
+  hr {
+    margin-block: 0px;
+  }
+}
+
+.datepicker {
+  cursor: pointer;
+  color: white;
+  border-radius: 4px;
+  background-color: colors.$primary;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  min-width: 232px;
+
+  &-dropdowns {
+    z-index: 10;
+    background-color: white;
+    border: 1px solid colors.$gray-light;
+    position: absolute;
+    top: 100%;
+    max-width: 300px;
+    width: 100%;
+
+    max-height: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: 0.3s all ease-out;
+    overflow: hidden;
+
+    &--opened {
+      max-height: unset;
+      transform: scaleY(1);
+    }
+
+    &-header {
+      padding: 10px;
+      display: flex;
+      justify-content: space-evenly;
+
+      div {
+        width: 50%;
+        text-align: center;
+      }
+
+      &--active {
+        border-bottom: 1px solid colors.$primary;
+      }
+
+      i {
+        font-size: 16px;
+        height: 20px;
+      }
+    }
+
+    &-body {
+      .arrow-item {
+        text-align: center;
+      }
+
+      .under {
+        text-decoration: underline;
+      }
+
+      &-months-container {
+        padding: 10px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+
+        i {
+          cursor: pointer;
+          text-align: center;
+        }
+
+        &-item {
+          cursor: pointer;
+          text-align: center;
+          border: 1px solid colors.$gray-light;
+          padding: 10px;
+          border-radius: 5px;
+
+          &--active,
+          &:hover {
+            border: unset;
+            background-color: colors.$primary;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  .arrow-icon {
+    &::before {
+      transition: $transition;
+      transform: rotate(-90deg);
+    }
+
+    &--opened::before {
+      transform: rotate(90deg);
+    }
+  }
+}

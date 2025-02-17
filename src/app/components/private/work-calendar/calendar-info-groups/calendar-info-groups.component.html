@@ -1,0 +1,57 @@
+@for (infoCard of infoCards(); track $index) {
+  <div class="info-card">
+    <div
+      class="mb-3 d-flex justify-content-between"
+      [ngClass]="{ 'flex-grow-1': !infoCard.events.length }"
+    >
+      <div>
+        <i [ngClass]="['me-1', infoCard.bootstrapIconClass]"></i>
+        {{ infoCard.title }}:
+      </div>
+
+      @if (infoCard.events.length && infoCard.showCounter) {
+        <div class="counter">{{ infoCard.events.length }}</div>
+      }
+    </div>
+
+    <div [ngClass]="{ 'flex-grow-1': infoCard.events.length }">
+      @for (event of infoCard.events.slice(0, 3); track $index) {
+        <div
+          [ngClass]="[
+            event.time ? 'd-flex justify-content-between gap-2' : 'text-end',
+            event.class ?? '',
+          ]"
+        >
+          <div class="ellipsis fw-bold cursor-pointer">{{ event.name }}:</div>
+          @if (event.time) {
+            <div class="small text-end text-nowrap">{{ event.time }}</div>
+          }
+        </div>
+      } @empty {
+        <div class="text-end">{{ infoCard.fallbackLabel }}</div>
+      }
+    </div>
+
+    @if (infoCard.footer?.templateRef) {
+      <ng-container [ngTemplateOutlet]="infoCard.footer?.templateRef!"></ng-container>
+    } @else if (infoCard.events.length && infoCard.footer) {
+      <!-- TODO: footerLink -->
+      <div
+        class="text-end mt-2 text-decoration-underline"
+        [ngClass]="{ 'cursor-pointer': infoCard.footer.link }"
+      >
+        {{ infoCard.footer.label }}
+      </div>
+    }
+  </div>
+}
+
+<ng-template #todayTemplate>
+  <div class="text-end">
+    <!-- <button app-button>Munka kezdés</button>
+        <button app-button>Munka vége</button> -->
+    <span class="text-decoration-underline user-select-none cursor-pointer">
+      Napvégi jelentés
+    </span>
+  </div>
+</ng-template>

@@ -1,0 +1,65 @@
+<app-calendar-info-groups></app-calendar-info-groups>
+
+<div class="mb-4 d-flex gap-3 justify-content-between">
+  <app-datepicker [(year)]="year" [(month)]="month"></app-datepicker>
+  <app-calendar-event-creator></app-calendar-event-creator>
+</div>
+
+<div class="calendar" appDragScroll>
+  <div class="calendar-grid">
+    @for (day of SORTED_HUN_DAYS; track $index) {
+      <div class="calendar-grid-item text-center fw-bold py-2">
+        {{ day.dayName }}
+      </div>
+    }
+    @for (calendarItem of calendarItems(); track $index) {
+      <div class="calendar-grid-item calendar-grid-item-aspect">
+        <div
+          [ngClass]="[
+            'calendar-grid-item-header',
+            'calendar-grid-item-header--' + calendarItem.status,
+          ]"
+        >
+          @if (calendarItem.status !== "current" && calendarItem.status !== "today") {
+            {{ calendarItem.monthName }}.
+          }
+          {{ calendarItem.label }}
+        </div>
+        <div
+          [ngClass]="[
+            'calendar-grid-item-events',
+            'calendar-grid-item-events--' + calendarItem.status,
+          ]"
+        >
+          @for (calendarEvent of calendarItem.events; track $index) {
+            <div
+              [ngClass]="[
+                'calendar-grid-item-event',
+                'calendar-grid-item-event--' + calendarEvent.class,
+              ]"
+            >
+              <div class="calendar-grid-item-event-summary">{{ calendarEvent.summary }}</div>
+              <div class="calendar-grid-item-event-options">
+                <i class="bi bi-eye"></i>
+              </div>
+              <div class="small">
+                {{ calendarEvent.eventStartShort }}
+                @if (calendarEvent.eventEndShort) {
+                  - {{ calendarEvent.eventEndShort }}
+                }
+                &nbsp;
+                @if (calendarEvent.hangoutLink) {
+                  <a [href]="calendarEvent.hangoutLink" target="_blank">{{
+                    calendarEvent.hangoutLink
+                  }}</a>
+                } @else if (calendarEvent.location) {
+                  {{ calendarEvent.location }}
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

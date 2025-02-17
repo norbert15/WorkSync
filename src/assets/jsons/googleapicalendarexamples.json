@@ -1,0 +1,863 @@
+{
+  "kind": "calendar#events",
+  "etag": "\"p328afpkklvlok0o\"",
+  "summary": "balogh.norbert1599@gmail.com",
+  "description": "",
+  "updated": "2025-01-10T14:31:17.466Z",
+  "timeZone": "Europe/Budapest",
+  "accessRole": "owner",
+  "defaultReminders": [
+    {
+      "method": "popup",
+      "minutes": 30
+    }
+  ],
+  "nextSyncToken": "CJCn5pSv64oDEJCn5pSv64oDGAUgsNeh2QIosNeh2QI=",
+  "items": [
+    {
+      "kind": "calendar#event",
+      "etag": "\"3357933752854000\"",
+      "id": "_60q30c1g60o30e1i60o4ac1g60rj8gpl88rj2c1h84s34h9g60s30c1g60o30c1g70o3eh1m6oqk2c1k6ks48e9g64o30c1g60o30c1g60o30c1g60o32c1g60o30c1g8l13ih1g6ssk8ga56gsj0h1k8d142g9o8ksk8e9h8p23cghh64p0",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=XzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc3MG8zZWgxbTZvcWsyYzFrNmtzNDhlOWc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnOGwxM2loMWc2c3NrOGdhNTZnc2owaDFrOGQxNDJnOW84a3NrOGU5aDhwMjNjZ2hoNjRwMCBiYWxvZ2gubm9yYmVydDE1OTlAbQ",
+      "created": "2023-03-16T11:41:07.000Z",
+      "updated": "2023-03-16T11:41:16.427Z",
+      "summary": "Balogh Norbert - IDBC videóinterjú (Frontend fejlesztő) - Szigethy Fanni",
+      "description": "Kedves Norbert,\n\nA megbeszéltek alapján foglak hívni, (Szigethy Fanni +36 30 702 5342)  majd 2023. március 22-én (szerdán), 14:00-kor a Microsoft Teams-en keresztül, hogy egy videóinterjú keretében, kötetlenül megbeszéljük az eddigi tapasztalataidat és azt, hogy ez hogyan egyezik a mi álláslehetőségeinkkel.\n\nA videóinterjú belépéshez asztali eszközről/laptopról nyisd meg kérlek a lenti linket 03.22-én 14:00-kor Chrome vagy Microsoft Edge böngészőn keresztül és válaszd ki a „csatlakozás a Weben” opciót.\n\n(A rendszer regisztrációt nem igényel csak egy nevet fog kérni a bejelentkezéskor. )\n\n\nA link:\nCsatlakozás számítógépen, mobilalkalmazásban vagy tárgyalótermi eszközön\nKattintson ide az értekezlethez való csatlakozáshoz\u003chttps://teams.microsoft.com/l/meetup-join/19%3ameeting_MmM0YzRiNmEtYjhmMS00MGM5LTg5MzQtZmJhMWU2NmE4YmQ1%40thread.v2/0?context=%7b%22Tid%22%3a%22e384a896-ca89-4402-abcc-b22e75f9bff7%22%2c%22Oid%22%3a%22ecd67d4c-cb4d-4d2b-a542-1b870b7a22b1%22%7d\u003e\n\n\nHa bármilyen technikai vagy egyéb kérdésed van, kérlek keress bizalommal az alábbi elérhetőségek bármelyikén.\n\n\nÜdvözlettel,\n\nSzigethy Fanni •Junior Recruiter\nIDBC Creative Solutions Kft.\n1074 Budapest, Rákóczi út 70-72.\nR70 Business Center V. emelet\nMobil: +36 30 702 5342\nszigethy.fanni@idbc.hu\u003cmailto:szigethy.fanni@idbc.hu\u003e\nwww.idbc.hu\u003chttp://www.idbc.hu/\u003e\n[cid:image001.jpg@01D95804.940BE020]\n[cid:image002.png@01D95804.940BE020]\u003chttps://www.facebook.com/idbccreativesolutions/\u003e  [cid:image003.png@01D95804.940BE020] \u003chttps://www.linkedin.com/company/idbc-creative-solutions-kft-/\u003e   [cid:image004.png@01D95804.940BE020] \u003chttps://www.instagram.com/idbc.creativesolutions/\u003e\n[cid:image005.png@01D95804.940BE020]\u003chttps://idbc.hu/felvagyveve/\u003e\n[cid:image006.jpg@01D95804.940BE020]\u003chttps://recruitech.hu/\u003e\n\n\n\n________________________________________________________________________________\nMicrosoft Teams értekezlet\nCsatlakozás számítógépen, mobilalkalmazásban vagy tárgyalótermi eszközön\nKattintson ide az értekezlethez való csatlakozáshoz\u003chttps://teams.microsoft.com/l/meetup-join/19%3ameeting_MmM0YzRiNmEtYjhmMS00MGM5LTg5MzQtZmJhMWU2NmE4YmQ1%40thread.v2/0?context=%7b%22Tid%22%3a%22e384a896-ca89-4402-abcc-b22e75f9bff7%22%2c%22Oid%22%3a%22ecd67d4c-cb4d-4d2b-a542-1b870b7a22b1%22%7d\u003e\nÉrtekezlet azonosítója: 341 019 564 960\nHitelesítő kód: uLaPKC\nTeams letöltése\u003chttps://www.microsoft.com/en-us/microsoft-teams/download-app\u003e | Csatlakozás a weben\u003chttps://www.microsoft.com/microsoft-teams/join-a-meeting\u003e\n[https://idbc.hu/wp-content/uploads/2021/05/IDBC_BB_kicsi.png]\nTovábbi információ\u003chttps://aka.ms/JoinTeamsMeeting\u003e | Értekezlet beállításai\u003chttps://teams.microsoft.com/meetingOptions/?organizerId=ecd67d4c-cb4d-4d2b-a542-1b870b7a22b1&tenantId=e384a896-ca89-4402-abcc-b22e75f9bff7&threadId=19_meeting_MmM0YzRiNmEtYjhmMS00MGM5LTg5MzQtZmJhMWU2NmE4YmQ1@thread.v2&messageId=0&language=hu-HU\u003e\n________________________________________________________________________________\n\n",
+      "location": "Microsoft Teams-értekezlet",
+      "creator": {
+        "email": "balogh.norbert1599@gmail.com",
+        "self": true
+      },
+      "organizer": {
+        "email": "szigethy.fanni@idbc.hu",
+        "displayName": "Szigethy Fanni"
+      },
+      "start": {
+        "dateTime": "2023-03-22T14:00:00+01:00",
+        "timeZone": "Europe/Belgrade"
+      },
+      "end": {
+        "dateTime": "2023-03-22T14:30:00+01:00",
+        "timeZone": "Europe/Belgrade"
+      },
+      "iCalUID": "040000008200E00074C5B7101A82E00800000000807D665A0458D901000000000000000010000000EB9D079DAE490D4CBAA8E9D91FD6B112",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "development.recruitment@idbc.hu",
+          "displayName": "Development recruitment team",
+          "optional": true,
+          "responseStatus": "needsAction"
+        }
+      ],
+      "guestsCanInviteOthers": false,
+      "privateCopy": true,
+      "reminders": {
+        "useDefault": true
+      },
+      "attachments": [
+        {
+          "fileUrl": "https://mail.google.com/?view=att&th=186ea395eff0252c&attid=0.1&disp=attd&zw",
+          "title": "image001.jpg",
+          "iconLink": ""
+        },
+        {
+          "fileUrl": "https://mail.google.com/?view=att&th=186ea395eff0252c&attid=0.2&disp=attd&zw",
+          "title": "image002.png",
+          "iconLink": ""
+        },
+        {
+          "fileUrl": "https://mail.google.com/?view=att&th=186ea395eff0252c&attid=0.3&disp=attd&zw",
+          "title": "image003.png",
+          "iconLink": ""
+        },
+        {
+          "fileUrl": "https://mail.google.com/?view=att&th=186ea395eff0252c&attid=0.4&disp=attd&zw",
+          "title": "image004.png",
+          "iconLink": ""
+        },
+        {
+          "fileUrl": "https://mail.google.com/?view=att&th=186ea395eff0252c&attid=0.5&disp=attd&zw",
+          "title": "image005.png",
+          "iconLink": ""
+        },
+        {
+          "fileUrl": "https://mail.google.com/?view=att&th=186ea395eff0252c&attid=0.6&disp=attd&zw",
+          "title": "image006.jpg",
+          "iconLink": ""
+        }
+      ],
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3411821386488000\"",
+      "id": "5106r75mikj81ot0tj8c93clp9",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NTEwNnI3NW1pa2o4MW90MHRqOGM5M2NscDkgYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-01-22T07:55:19.000Z",
+      "updated": "2024-01-22T08:04:53.244Z",
+      "summary": "IKK egyeztetés",
+      "creator": {
+        "email": "balogh.norbert1599@gmail.com",
+        "self": true
+      },
+      "organizer": {
+        "email": "balogh.norbert1599@gmail.com",
+        "self": true
+      },
+      "start": {
+        "dateTime": "2024-01-22T13:00:00+01:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-01-22T13:15:00+01:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "5106r75mikj81ot0tj8c93clp9@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "organizer": true,
+          "self": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/bci-aqaf-izj",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/bci-aqaf-izj",
+            "label": "meet.google.com/bci-aqaf-izj"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "bci-aqaf-izj"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3411828389528000\"",
+      "id": "0dtvshp21tnjt53tlc38nmf3nv",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MGR0dnNocDIxdG5qdDUzdGxjMzhubWYzbnYgYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-01-22T09:00:20.000Z",
+      "updated": "2024-01-22T09:03:14.764Z",
+      "summary": "AdPay",
+      "creator": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "organizer": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "start": {
+        "dateTime": "2024-01-22T13:15:00+01:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-01-22T13:45:00+01:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "0dtvshp21tnjt53tlc38nmf3nv@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "mark.igneczi@ad4est.com",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/mbc-gckr-mcq",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/mbc-gckr-mcq",
+            "label": "meet.google.com/mbc-gckr-mcq"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/mbc-gckr-mcq?pin=7281829942657",
+            "pin": "7281829942657"
+          },
+          {
+            "regionCode": "HU",
+            "entryPointType": "phone",
+            "uri": "tel:+36-21-262-4507",
+            "label": "+36 21 262 4507",
+            "pin": "239158533"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "mbc-gckr-mcq"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3448661808502000\"",
+      "id": "6f9d40n173ec601gd63d4cqojk",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NmY5ZDQwbjE3M2VjNjAxZ2Q2M2Q0Y3FvamsgYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-08-22T12:48:22.000Z",
+      "updated": "2024-08-22T12:48:24.251Z",
+      "summary": "scanomed wp",
+      "creator": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "organizer": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "start": {
+        "dateTime": "2024-08-22T09:00:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-08-22T09:30:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "6f9d40n173ec601gd63d4cqojk@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/tgb-ahbz-htw",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/tgb-ahbz-htw",
+            "label": "meet.google.com/tgb-ahbz-htw"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/tgb-ahbz-htw?pin=5377807450584",
+            "pin": "5377807450584"
+          },
+          {
+            "regionCode": "HU",
+            "entryPointType": "phone",
+            "uri": "tel:+36-21-262-4724",
+            "label": "+36 21 262 4724",
+            "pin": "964753533"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "tgb-ahbz-htw"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3448816172564000\"",
+      "id": "29f83au8iveg067g88udg09soc",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MjlmODNhdThpdmVnMDY3Zzg4dWRnMDlzb2MgYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-08-23T10:14:44.000Z",
+      "updated": "2024-08-23T10:14:46.282Z",
+      "summary": "scanomed wp",
+      "creator": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "organizer": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "start": {
+        "dateTime": "2024-08-22T13:00:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-08-22T13:45:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "29f83au8iveg067g88udg09soc@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/tgb-ahbz-htw",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/tgb-ahbz-htw",
+            "label": "meet.google.com/tgb-ahbz-htw"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/tgb-ahbz-htw?pin=5377807450584",
+            "pin": "5377807450584"
+          },
+          {
+            "regionCode": "HU",
+            "entryPointType": "phone",
+            "uri": "tel:+36-21-262-4724",
+            "label": "+36 21 262 4724",
+            "pin": "964753533"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "tgb-ahbz-htw"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3449674262238000\"",
+      "id": "1d9e1op3c1rribcrrmufaj2q3n",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=MWQ5ZTFvcDNjMXJyaWJjcnJtdWZhajJxM24gYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-08-28T09:25:29.000Z",
+      "updated": "2024-08-28T09:25:31.119Z",
+      "summary": "scano_megbeszélés",
+      "creator": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "organizer": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "start": {
+        "dateTime": "2024-08-28T13:00:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-08-28T14:00:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "1d9e1op3c1rribcrrmufaj2q3n@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/xqv-hrod-gfj",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/xqv-hrod-gfj",
+            "label": "meet.google.com/xqv-hrod-gfj"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/xqv-hrod-gfj?pin=7754005645547",
+            "pin": "7754005645547"
+          },
+          {
+            "regionCode": "HU",
+            "entryPointType": "phone",
+            "uri": "tel:+36-21-262-4946",
+            "label": "+36 21 262 4946",
+            "pin": "203641004"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "xqv-hrod-gfj"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3449851840186000\"",
+      "id": "6t5m78sftnou20m8s37q5j172j",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NnQ1bTc4c2Z0bm91MjBtOHMzN3E1ajE3MmogYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-08-29T10:01:31.000Z",
+      "updated": "2024-08-29T10:05:20.093Z",
+      "summary": "Scanomed WP",
+      "creator": {
+        "email": "balogh.norbert1599@gmail.com",
+        "self": true
+      },
+      "organizer": {
+        "email": "balogh.norbert1599@gmail.com",
+        "self": true
+      },
+      "start": {
+        "dateTime": "2024-08-29T13:00:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-08-29T13:30:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "6t5m78sftnou20m8s37q5j172j@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "organizer": true,
+          "self": true,
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/ftw-oxij-uom",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/ftw-oxij-uom",
+            "label": "meet.google.com/ftw-oxij-uom"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "ftw-oxij-uom"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3449920366262000\"",
+      "id": "75j32p366kqj0b9o64sj4b9kccrj8bb1cpi3ab9g60pj4cj36go30d3660",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NzVqMzJwMzY2a3FqMGI5bzY0c2o0YjlrY2NyajhiYjFjcGkzYWI5ZzYwcGo0Y2ozNmdvMzBkMzY2MCBiYWxvZ2gubm9yYmVydDE1OTlAbQ",
+      "created": "2024-08-29T19:36:21.000Z",
+      "updated": "2024-08-29T19:36:23.131Z",
+      "summary": "Scanomed WP",
+      "creator": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "organizer": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "start": {
+        "dateTime": "2024-08-30T09:30:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-08-30T10:00:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "75j32p366kqj0b9o64sj4b9kccrj8bb1cpi3ab9g60pj4cj36go30d3660@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/ftw-oxij-uom",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/ftw-oxij-uom",
+            "label": "meet.google.com/ftw-oxij-uom"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "ftw-oxij-uom"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3450705356654000\"",
+      "id": "62nuhm6p799f113e1rftt7r7to",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NjJudWhtNnA3OTlmMTEzZTFyZnR0N3I3dG8gYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-09-03T07:58:30.000Z",
+      "updated": "2024-09-03T08:37:58.327Z",
+      "summary": "Norbert / Zoltan",
+      "creator": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "organizer": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "start": {
+        "dateTime": "2024-09-03T18:30:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-09-03T19:30:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "62nuhm6p799f113e1rftt7r7to@google.com",
+      "sequence": 1,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/jnu-xkoy-dvt",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/jnu-xkoy-dvt",
+            "label": "meet.google.com/jnu-xkoy-dvt"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/jnu-xkoy-dvt?pin=3450256422988",
+            "pin": "3450256422988"
+          },
+          {
+            "regionCode": "HU",
+            "entryPointType": "phone",
+            "uri": "tel:+36-21-262-4596",
+            "label": "+36 21 262 4596",
+            "pin": "936508234"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "jnu-xkoy-dvt"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3452276152998000\"",
+      "id": "71ccd7cdjfeaepv1t3cshphopb",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NzFjY2Q3Y2RqZmVhZXB2MXQzY3NocGhvcGIgYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-09-12T10:47:54.000Z",
+      "updated": "2024-09-12T10:47:56.499Z",
+      "summary": "Norbert / Zoltan",
+      "creator": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "organizer": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "start": {
+        "dateTime": "2024-09-12T13:30:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-09-12T14:00:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "71ccd7cdjfeaepv1t3cshphopb@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/mdh-agds-yxa",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/mdh-agds-yxa",
+            "label": "meet.google.com/mdh-agds-yxa"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/mdh-agds-yxa?pin=5635585202801",
+            "pin": "5635585202801"
+          },
+          {
+            "regionCode": "HU",
+            "entryPointType": "phone",
+            "uri": "tel:+36-21-262-4226",
+            "label": "+36 21 262 4226",
+            "pin": "364188672"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "mdh-agds-yxa"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3453485507656000\"",
+      "id": "461bqv3otenm0c5a3rs4ifpii7",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=NDYxYnF2M290ZW5tMGM1YTNyczRpZnBpaTcgYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-09-19T10:45:51.000Z",
+      "updated": "2024-09-19T10:45:53.828Z",
+      "summary": "scano",
+      "creator": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "organizer": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "start": {
+        "dateTime": "2024-09-19T12:45:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-09-19T13:45:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "461bqv3otenm0c5a3rs4ifpii7@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/ovg-tcwk-uvp",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/ovg-tcwk-uvp",
+            "label": "meet.google.com/ovg-tcwk-uvp"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/ovg-tcwk-uvp?pin=2700644129094",
+            "pin": "2700644129094"
+          },
+          {
+            "regionCode": "HU",
+            "entryPointType": "phone",
+            "uri": "tel:+36-21-262-4400",
+            "label": "+36 21 262 4400",
+            "pin": "778538613"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "ovg-tcwk-uvp"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    },
+    {
+      "kind": "calendar#event",
+      "etag": "\"3454727593594000\"",
+      "id": "2k541iq84ri3emasp5p4meruqa",
+      "status": "confirmed",
+      "htmlLink": "https://www.google.com/calendar/event?eid=Mms1NDFpcTg0cmkzZW1hc3A1cDRtZXJ1cWEgYmFsb2doLm5vcmJlcnQxNTk5QG0",
+      "created": "2024-09-26T15:16:35.000Z",
+      "updated": "2024-09-26T15:16:36.797Z",
+      "summary": "Norbert / Zoltan",
+      "creator": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "organizer": {
+        "email": "zoltan.olah@ad4est.com"
+      },
+      "start": {
+        "dateTime": "2024-09-26T18:00:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "end": {
+        "dateTime": "2024-09-26T18:15:00+02:00",
+        "timeZone": "Europe/Budapest"
+      },
+      "iCalUID": "2k541iq84ri3emasp5p4meruqa@google.com",
+      "sequence": 0,
+      "attendees": [
+        {
+          "email": "balogh.norbert1599@gmail.com",
+          "self": true,
+          "responseStatus": "needsAction"
+        },
+        {
+          "email": "zoltan.olah@ad4est.com",
+          "organizer": true,
+          "responseStatus": "accepted"
+        }
+      ],
+      "hangoutLink": "https://meet.google.com/kdh-aroq-rxk",
+      "conferenceData": {
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/kdh-aroq-rxk",
+            "label": "meet.google.com/kdh-aroq-rxk"
+          },
+          {
+            "entryPointType": "more",
+            "uri": "https://tel.meet/kdh-aroq-rxk?pin=1270583506364",
+            "pin": "1270583506364"
+          },
+          {
+            "regionCode": "HU",
+            "entryPointType": "phone",
+            "uri": "tel:+36-21-262-4303",
+            "label": "+36 21 262 4303",
+            "pin": "528770897"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+        },
+        "conferenceId": "kdh-aroq-rxk"
+      },
+      "reminders": {
+        "useDefault": true
+      },
+      "eventType": "default"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+@use "../../../../assets/styles/sass/base/variables/general" as general;
+@use "../../../../assets/styles/sass/base/variables/colors" as colors;
+
+.sidebar {
+  user-select: none;
+
+  i {
+    font-size: 18px;
+  }
+
+  transition: general.$sidebar-transition;
+  width: general.$sidebar-min-width;
+  background: white;
+  position: fixed;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  padding-block: 16px;
+  padding-inline: 5px;
+  flex-direction: column;
+
+  &--opened {
+    padding-inline: 16px;
+    width: general.$sidebar-max-width;
+  }
+
+  &-header {
+    padding-left: 2px;
+    margin: auto;
+    height: 150px;
+
+    &-content {
+      transition: general.$sidebar-transition;
+      text-wrap: nowrap;
+      gap: 10px;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &-body {
+    flex-grow: 1;
+    &-item {
+      text-decoration: none;
+      color: colors.$secondary-dark;
+      cursor: pointer;
+      border-bottom: 1px solid colors.$gray;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      width: 100%;
+      padding: 12px;
+      gap: 10px;
+      display: flex;
+      align-items: center;
+
+      &-label {
+        transition: general.$sidebar-transition;
+        text-wrap: nowrap;
+
+        &--notvisible {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
+
+      &-group {
+        display: flex;
+        //align-items: center;
+        gap: 5px;
+      }
+
+      &-count {
+        width: max-content;
+        border-radius: 50%;
+        background-color: colors.$danger;
+        color: white;
+        padding-top: 2px;
+        padding-bottom: 4px;
+        padding-left: 7px;
+        padding-right: 8px;
+        font-size: 12px;
+      }
+
+      &:hover,
+      &--active {
+        color: white !important;
+        background-color: colors.$primary;
+      }
+    }
+  }
+
+  &-footer {
+    text-align: center;
+
+    i {
+      display: block !important;
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: unset;
+      }
+    }
+
+    &-logout {
+      cursor: pointer;
+      text-decoration: underline;
+
+      &:hover {
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.user-monogram {
+  transition: general.$sidebar-transition;
+}

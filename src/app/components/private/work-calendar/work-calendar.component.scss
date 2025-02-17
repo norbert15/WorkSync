@@ -1,0 +1,137 @@
+@use "../../../../assets/styles/sass/base/variables/colors" as colors;
+
+$calendar-padding: 15px;
+
+a {
+  color: unset;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.calendar {
+  overflow-x: auto;
+  user-select: none;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+  min-width: 1400px;
+
+  &-item {
+    background-color: white;
+    outline: 1px solid rgb(164 149 173 / 41%);
+
+    &-aspect {
+      min-height: 150px;
+      //aspect-ratio: 1 / 1;
+    }
+
+    &-header {
+      padding: $calendar-padding;
+      color: white;
+      text-align: center;
+
+      &--previous,
+      &--next {
+        opacity: 0.5;
+        background-color: colors.$secondary;
+      }
+
+      &--current {
+        background-color: colors.$primary;
+      }
+
+      &--today {
+        background-color: colors.$success;
+      }
+    }
+
+    &-event {
+      border-radius: 5px;
+      border: 1px solid colors.$gray-light;
+      padding: 10px;
+      position: relative;
+
+      &-summary {
+        padding-right: 20px;
+      }
+
+      &-options {
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
+
+      &--google-event {
+        border: unset;
+        background-color: colors.$primary;
+        color: white;
+      }
+
+      &--out-of-home {
+        border: unset;
+        background-color: colors.$gray;
+        color: white;
+      }
+
+      &--holiday {
+        border: unset;
+        background-color: colors.$success;
+        color: white;
+      }
+    }
+
+    &-events {
+      display: flex;
+      gap: 5px;
+      flex-direction: column;
+      &--previous,
+      &--next {
+        opacity: 0.5;
+      }
+
+      padding: $calendar-padding;
+    }
+  }
+}
+
+.months-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+
+  .month-arrow-container {
+    position: absolute;
+    cursor: pointer;
+    padding: 5px 10px;
+    background-color: white;
+    border-radius: 50px;
+    border: 1px solid colors.$gray-light;
+
+    i {
+      font-size: 16px;
+    }
+  }
+}
+
+.month-box {
+  user-select: none;
+  cursor: pointer;
+  border-radius: 16px;
+  padding: 10px 15px;
+  border: 1px solid colors.$gray-light;
+  background-color: white;
+
+  &--active {
+    background-color: colors.$primary;
+    color: white;
+    border: unset;
+  }
+}

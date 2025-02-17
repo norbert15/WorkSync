@@ -1,0 +1,19 @@
+<div class="switch-container">
+  @if (left()) {
+    <label [for]="'switch--' + label()">{{ label() }}</label>
+  }
+
+  <label class="switch">
+    <input
+      [id]="'switch--' + label()"
+      [(ngModel)]="value"
+      (change)="handleValueChange()"
+      type="checkbox"
+    />
+    <span class="slider round"></span>
+  </label>
+
+  @if (!left()) {
+    <label [for]="'switch--' + label()">{{ label() }}</label>
+  }
+</div>

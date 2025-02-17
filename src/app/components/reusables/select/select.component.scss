@@ -1,0 +1,109 @@
+@use "../../../../assets/styles/sass/base/variables/colors" as colors;
+
+:host {
+  display: block;
+}
+
+$select-padding: 10px;
+
+.select {
+  &-wrapper {
+    user-select: none;
+    display: block;
+    position: relative;
+  }
+
+  &-value {
+    overflow: hidden;
+    margin-right: 20px;
+    text-wrap: nowrap;
+  }
+
+  position: relative;
+
+  cursor: pointer;
+  color: colors.$secondary-dark;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  padding: $select-padding;
+  min-height: 46px;
+
+  &-dropdown {
+    z-index: 10;
+    background-color: white;
+    border: 1px solid colors.$gray-light;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    min-height: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: 0.3s all ease-out;
+    overflow: hidden;
+
+    &-item {
+      cursor: pointer;
+      padding: 5px;
+
+      &--selected,
+      &:hover {
+        background-color: colors.$primary;
+        color: white;
+      }
+    }
+
+    &--opened {
+      min-height: 100px;
+      transform: scaleY(1);
+    }
+  }
+
+  &-label {
+    color: colors.$gray;
+    transition: all 0.25s ease-in;
+    background-color: white;
+    position: absolute;
+    top: calc(50% - $select-padding - 2px);
+    left: $select-padding;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &-focus {
+      top: calc(0% - $select-padding);
+      left: calc($select-padding - 2px);
+      font-size: 12px;
+      color: colors.$secondary-dark;
+    }
+  }
+
+  &--disabled {
+    opacity: 0.6;
+    background-color: colors.$gray-light;
+  }
+}
+
+.multi-select-item {
+  padding: 5px;
+  background-color: colors.$gray;
+  display: flex;
+  column-gap: 10px;
+}
+
+.arrow-down {
+  position: absolute;
+  right: $select-padding;
+  top: calc(50% - $select-padding);
+
+  i::before {
+    transition: 0.3s all ease-out;
+    transform: rotate(-90deg);
+  }
+
+  &--opened {
+    i::before {
+      transform: rotate(90deg);
+    }
+  }
+}

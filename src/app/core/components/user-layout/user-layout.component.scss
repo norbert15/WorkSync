@@ -1,0 +1,23 @@
+@use "../../../../assets/styles/sass/base/variables/general" as general;
+
+.app-main {
+  display: flex;
+  height: 100%;
+
+  main {
+    transition: general.$sidebar-transition;
+    padding: 32px;
+    flex-grow: 1;
+    overflow: auto;
+  }
+}
+
+.min-distance {
+  margin-left: general.$sidebar-min-width;
+  width: calc(100% - general.$sidebar-min-width);
+}
+
+.max-distance {
+  margin-left: general.$sidebar-max-width;
+  width: calc(100% - general.$sidebar-max-width);
+}

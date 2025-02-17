@@ -1,0 +1,74 @@
+<div class="datepicker-wrapper" #datePicker>
+  <div class="datepicker" (click)="toggleOptions()">
+    <span>Időszak: {{ year() }}. {{ HUN_MONTHS[month()! - 1].monthName }}</span>
+    <i
+      class="bi bi-chevron-left arrow-icon ms-2"
+      [ngClass]="{ 'arrow-icon--opened': showOptions() }"
+    ></i>
+  </div>
+  <div class="datepicker-dropdowns" [ngClass]="{ 'datepicker-dropdowns--opened': showOptions() }">
+    <div class="datepicker-dropdowns-header">
+      <div
+        (click)="menu.set('year')"
+        class="cursor-pointer"
+        [ngClass]="{ 'datepicker-dropdowns-header--active': menu() === 'year' }"
+      >
+        Év
+      </div>
+      <div
+        (click)="menu.set('month')"
+        class="cursor-pointer"
+        [ngClass]="{ 'datepicker-dropdowns-header--active': menu() === 'month' }"
+      >
+        Hónap
+      </div>
+    </div>
+    <hr />
+    <div class="datepicker-dropdowns-body">
+      <div class="datepicker-dropdowns-body-months-container">
+        @if (menu() === "year") {
+          <div class="arrow-item">
+            @if (page() !== 1) {
+              <i (click)="handlePageChange(-1)" class="bi bi-chevron-left"></i>
+            }
+          </div>
+          <div class="arrow-item under cursor-pointer" (click)="onTodayClick()">Most</div>
+          <div class="arrow-item">
+            @if (page() + 1 <= maxPage()) {
+              <i (click)="handlePageChange(1)" class="bi bi-chevron-right"></i>
+            }
+          </div>
+          @for (
+            yearData of years().slice(
+              (page() - 1) * (COLUMNS * ROWS),
+              (page() - 1) * (COLUMNS * ROWS) + COLUMNS * ROWS
+            );
+            track $index
+          ) {
+            <div
+              (click)="onYearSelect(yearData)"
+              class="datepicker-dropdowns-body-months-container-item"
+              [ngClass]="{
+                'datepicker-dropdowns-body-months-container-item--active': yearData === year(),
+              }"
+            >
+              {{ yearData }}.
+            </div>
+          }
+        } @else {
+          @for (monthData of HUN_MONTHS; track $index) {
+            <div
+              (click)="onMonthSelect($index + 1)"
+              class="datepicker-dropdowns-body-months-container-item"
+              [ngClass]="{
+                'datepicker-dropdowns-body-months-container-item--active': $index + 1 === month(),
+              }"
+            >
+              {{ monthData.shortName }}.
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

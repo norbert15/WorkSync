@@ -1,0 +1,44 @@
+<div class="select-wrapper">
+  <div (click)="toggleOpened()" [ngClass]="{ 'select-disabled': disabled() }" class="select">
+    <div class="select-value">
+      @if (multi()) {
+        @for (item of selectedOptions(); track $index) {
+          {{ item.label + ($last ? "" : ", ") }}
+        }
+      } @else {
+        {{ selectedOption()?.label }}
+      }
+    </div>
+    <div
+      class="select-label"
+      [ngClass]="{
+        'select-label-focus': selectedOption() || selectedOptions().length,
+        'select-disabled': disabled(),
+      }"
+    >
+      @if (bootstrapIcon()) {
+        <i [ngClass]="['bi me-1', bootstrapIcon()]"></i>
+      }
+      {{ label() }}
+    </div>
+
+    <div class="arrow-down" [ngClass]="{ 'arrow-down--opened': opened() }">
+      <i class="bi bi-chevron-left"></i>
+    </div>
+  </div>
+
+  <div class="select-dropdown" [ngClass]="{ 'select-dropdown--opened': opened() && !disabled() }">
+    @for (option of options(); track $index) {
+      <div
+        (click)="onOptionSelect(option)"
+        class="select-dropdown-item"
+        [ngClass]="{
+          'select-dropdown-item--selected':
+            option.label === selectedOption()?.label || option?.selected,
+        }"
+      >
+        {{ option.label }}
+      </div>
+    }
+  </div>
+</div>

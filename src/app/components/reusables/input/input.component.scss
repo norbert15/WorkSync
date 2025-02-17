@@ -1,0 +1,52 @@
+@use "../../../../assets/styles/sass/base/variables/colors" as colors;
+
+$input-padding: 10px;
+
+:host {
+  width: 100%;
+  display: block;
+  position: relative;
+}
+
+input {
+  width: 100%;
+}
+
+.input-wrapper {
+  color: colors.$secondary-dark;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  padding: $input-padding;
+}
+
+.input-label {
+  color: colors.$gray;
+  transition: all 0.25s ease-in;
+  background-color: white;
+  position: absolute;
+  top: calc(50% - $input-padding - 2px);
+  left: $input-padding;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &-focus {
+    top: calc(0% - $input-padding);
+    left: calc($input-padding - 2px);
+    font-size: 12px;
+    color: colors.$secondary-dark;
+  }
+}
+
+.input-disabled {
+  background-color: colors.$gray-light;
+  opacity: 0.6;
+}
+
+.password-icon {
+  position: absolute;
+  top: calc(50% - $input-padding - 2px);
+  right: $input-padding;
+  color: colors.$secondary-dark;
+}

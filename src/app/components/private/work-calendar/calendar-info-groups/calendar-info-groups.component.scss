@@ -1,0 +1,27 @@
+@use "../../../../../assets/styles/sass/base/variables/media" as media;
+
+$info-gap: 20px;
+
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $info-gap;
+  margin-bottom: 24px;
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: white;
+  padding: 15px;
+  border-radius: 12px;
+
+  @include media.tablet {
+    width: calc(50% - $info-gap);
+  }
+
+  @include media.desktop {
+    width: calc(25% - $info-gap);
+  }
+}

@@ -1,0 +1,16 @@
+/// medium
+$md: 991px;
+
+$lgs: 1400px;
+
+@mixin tablet {
+  @media screen and (min-width: $md) and (max-width: ($lgs - 1px)) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media screen and (min-width: $lgs) {
+    @content;
+  }
+}
