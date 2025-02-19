@@ -37,10 +37,10 @@
   </div>
   <div class="sidebar-footer">
     @if (opened()) {
-      <div class="sidebar-footer-logout">Kijelentkezés</div>
+      <div class="sidebar-footer-logout" (click)="logout()">Kijelentkezés</div>
       <div class="sidebar-footer-logout" (click)="toggleSidebar()">Összecsukás</div>
     } @else {
-      <i class="bi bi-box-arrow-left"></i>
+      <i class="bi bi-box-arrow-left" (click)="logout()"></i>
       <i class="bi bi-arrows-expand-vertical" (click)="toggleSidebar()"></i>
     }
   </div>

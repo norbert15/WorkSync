@@ -8,10 +8,10 @@
 <div class="profile-details-wrapper">
   @switch (activeMenu()) {
     @case ("profile") {
-      <app-profile-data-form></app-profile-data-form>
+      <app-profile-data-form appFade></app-profile-data-form>
     }
     @case ("password") {
-      <app-passwod-modify-form></app-passwod-modify-form>
+      <app-passwod-modify-form appFade></app-passwod-modify-form>
     }
   }
 </div>

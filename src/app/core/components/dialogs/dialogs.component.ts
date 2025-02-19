@@ -37,6 +37,14 @@ export class DialogsComponent implements OnInit, OnDestroy {
     this.dialogsService.removeLastOpenedDialog();
   }
 
+  public onStartDeleteClick(): void {
+    this.dialog()!.startDelete();
+    this.dialog.update((dialog) => {
+      dialog!.isDeleteLoading = true;
+      return dialog;
+    });
+  }
+
   private fetchLastOpenedDialog(): void {
     this.dialogsService.dialogs$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (dialogs: Array<DialogModel>) => {
@@ -50,6 +58,7 @@ export class DialogsComponent implements OnInit, OnDestroy {
 
         if (!this.dialog() && this.unlisten) {
           this.unlisten();
+          this.unlisten = null;
         }
       },
     });

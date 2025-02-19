@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, model, output, signal } from '@angular/core';
+import { Component, inject, model, output, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { APP_PATHS } from '../../constans/paths';
+import { AuthFirebaseService } from '../../../services/firebase/auth-firebase.service';
 
 type SidebarItem = {
   label: string;
@@ -39,8 +40,14 @@ export class SidebarComponent {
     { icon: 'bi bi-bell', label: 'Értesítések', count: 7, route: APP_PATHS.notifications.root },
   ]);
 
+  private readonly authFirebaseService = inject(AuthFirebaseService);
+
   public toggleSidebar(): void {
     this.opened.set(!this.opened());
     this.openedChange.emit(this.opened());
+  }
+
+  public logout(): void {
+    this.authFirebaseService.logout();
   }
 }

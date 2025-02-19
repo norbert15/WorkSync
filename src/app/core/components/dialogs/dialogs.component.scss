@@ -16,12 +16,12 @@
 
   &--normal {
     max-width: 650px;
-    max-height: 600px;
+    max-height: 610px;
   }
 
   &--medium {
     max-width: 800px;
-    max-height: 600px;
+    max-height: 610px;
   }
 
   &--large {
@@ -39,7 +39,7 @@
   &-header,
   &-content,
   &-footer {
-    padding: 20px;
+    padding: 10px 20px;
   }
 
   &-header {
@@ -53,6 +53,7 @@
     }
 
     i {
+      padding-top: 5px;
       color: colors.$gray;
     }
   }
@@ -60,6 +61,16 @@
   &-content {
     flex-grow: 1;
     overflow-y: auto;
+
+    &--delete-message {
+      font-weight: 700;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding-inline: 10px;
+    }
   }
 
   &-footer {
@@ -70,6 +81,16 @@
         width: 125px;
       }
       text-align: end;
+    }
+
+    &-delete {
+      gap: 10px;
+      display: flex;
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
     }
   }
 }

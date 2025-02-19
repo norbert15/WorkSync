@@ -35,6 +35,11 @@ textarea {
 
   /* Revert the 'white-space' property for textarea elements on Safari */
   white-space: revert;
+
+  &:disabled {
+    opacity: 0.6;
+    background-color: colors.$gray-light;
+  }
 }
 
 hr {

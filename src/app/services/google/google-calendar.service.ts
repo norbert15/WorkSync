@@ -1,12 +1,13 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, Observable, of } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
+import moment from 'moment';
 
 import { environment } from '../../../environments/environment';
-import { ICalendarEvent } from '../../models/calendar.model';
-
-import * as googleCalendarExamples from '../../../assets/jsons/googleapicalendarexamples.json';
-import { formatDateWithMoment } from '../../core/helpers';
+import { ICalendarEvent, ICalendarTask } from '../../models/calendar.model';
+import { convertToLink, formatDateWithMoment } from '../../core/helpers';
+import { CalendarEventEnum, GoogleCalendarResponseStatus } from '../../core/constans/enums';
+import { GOOGLE_CALENDAR_RESPONES_CLASSES } from '../../core/constans/variables';
 
 @Injectable({
   providedIn: 'root',
@@ -14,115 +15,95 @@ import { formatDateWithMoment } from '../../core/helpers';
 export class GoogleCalendarService {
   private httpClient = inject(HttpClient);
 
-  public getEvents(): Observable<Array<ICalendarEvent>> {
+  public getEvents(year: number, month: number): Observable<Array<ICalendarEvent>> {
+    const lastMonth = moment()
+      .year(year)
+      .month(month - 2)
+      .startOf('month')
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    const nextMonth = moment()
+      .year(year)
+      .month(month)
+      .endOf('month')
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    const params = new HttpParams().appendAll({ timeMin: lastMonth, timeMax: nextMonth });
     return this.httpClient
-      .get<any>(`${environment.googleApiUrl}/calendar/v3/calendars/primary/events`)
+      .get<any>(`${environment.googleConfig.apiUrl}/calendar/v3/calendars/primary/events`, {
+        params,
+      })
       .pipe(
         map((event) => {
-          return (event?.items ?? []).map((item: any) => {
-            const calendarItem: ICalendarEvent = {
-              class: 'google-event',
-              summary: item.summary,
-              description: item.description,
-              eventStart: formatDateWithMoment(item.start.dateTime),
-              eventStartShort: formatDateWithMoment(item.start.dateTime, { useFormat: 'HH:mm' }),
-              eventEnd: formatDateWithMoment(item.end.dateTime),
-              eventEndShort: formatDateWithMoment(item.end.dateTime, { useFormat: 'HH:mm' }),
-              organizer: item.organizer,
-              hangoutLink: item.hangoutLink || null,
-              location: item.location || null,
-              attendees: item.attendees.map((a: any) => ({
-                email: a.email,
-                responseStatus: a.responseStatus,
-                displayName: a.displayName || null,
-                optional: a.optional || null,
-              })),
-            };
+          const items: Array<any> = event?.items ?? [];
+          return items
+            .map((item: any) => {
+              const calendarItem: ICalendarEvent = {
+                type: CalendarEventEnum.GOOGLE_EVENT,
+                summary: item.summary,
+                description: convertToLink(item.description),
+                eventStart: formatDateWithMoment(item.start.dateTime),
+                eventStartShort: formatDateWithMoment(item.start.dateTime, { useFormat: 'HH:mm' }),
+                eventEnd: formatDateWithMoment(item.end.dateTime),
+                eventEndShort: formatDateWithMoment(item.end.dateTime, { useFormat: 'HH:mm' }),
+                organizer: item.organizer,
+                hangoutLink: item.hangoutLink || null,
+                location: item.location || null,
+                attendees: item.attendees.map((a: any) => {
+                  return {
+                    email: a.email,
+                    responseStatus: a.responseStatus,
+                    displayName: a.displayName || null,
+                    optional: a.optional || null,
+                    response:
+                      GOOGLE_CALENDAR_RESPONES_CLASSES[
+                        a.responseStatus as GoogleCalendarResponseStatus
+                      ],
+                  };
+                }),
+              };
 
-            if (calendarItem.eventEndShort === '00:00') {
-              calendarItem.eventEndShort = '';
-            }
+              if (calendarItem.eventEndShort === '00:00') {
+                calendarItem.eventEndShort = '';
+              }
 
-            if (calendarItem.eventStartShort === '00:00') {
-              calendarItem.eventStartShort = '';
-            }
-            return calendarItem;
-          });
+              if (calendarItem.eventStartShort === '00:00') {
+                calendarItem.eventStartShort = '';
+              }
+              return calendarItem;
+            })
+            .sort((a, b) => (a.eventStart ?? '').localeCompare(b.eventStart ?? ''));
         }),
       );
   }
 
-  public getMockEvents(): Observable<Array<ICalendarEvent>> {
-    return of(googleCalendarExamples).pipe(
-      map((event) => {
-        return (event?.items ?? [])
-          .map((item: any) => {
-            const calendarItem: ICalendarEvent = {
-              class: 'google-event',
-              summary: item.summary,
-              description: item.description,
-              eventStart: formatDateWithMoment(item.start.dateTime),
-              eventStartShort: formatDateWithMoment(item.start.dateTime, { useFormat: 'HH:mm' }),
-              eventEnd: formatDateWithMoment(item.end.dateTime),
-              eventEndShort: formatDateWithMoment(item.end.dateTime, { useFormat: 'HH:mm' }),
-              organizer: item.organizer,
-              hangoutLink: item.hangoutLink || null,
-              location: item.location || null,
-              attendees: item.attendees.map((a: any) => ({
-                email: a.email,
-                responseStatus: a.responseStatus,
-                displayName: a.displayName || null,
-                optional: a.optional || null,
-              })),
-            };
-
-            if (calendarItem.eventEndShort === '00:00') {
-              calendarItem.eventEndShort = '';
-            }
-
-            if (calendarItem.eventStartShort === '00:00') {
-              calendarItem.eventStartShort = '';
-            }
-
-            return calendarItem;
-          })
-          .sort((a, b) => a.eventStart.localeCompare(b.eventStart));
-      }),
-    );
-  }
-
-  public getCalendarEvents(): Array<ICalendarEvent> {
-    return [
-      ...Array.from({ length: 5 }).map((_, i) => ({
-        attendees: [],
-        class: 'holiday',
-        description: '',
-        summary: 'Szilágyi Tamás szabadságon',
-        eventEnd: '',
-        eventEndShort: '',
-        eventStart: `2024. 09. 0${i + 1}. 00:00:00`,
-        eventStartShort: '',
-        hangoutLink: '',
-        location: '',
-        organizer: {
-          email: '',
-        },
-      })),
-      {
-        attendees: [],
-        class: 'out-of-home',
-        description: '',
-        summary: 'Nagy Márk nem elérhető',
-        eventEnd: '2024. 09. 20. 15:30:00',
-        eventEndShort: '15:30',
-        eventStart: `2024. 09. 20. 15:00:00`,
-        eventStartShort: '15:00',
-        hangoutLink: '',
-        location: '',
-        organizer: {
-          email: '',
-        },
-      },
-    ];
+  public getTasks(year: number, month: number): Observable<Array<ICalendarTask>> {
+    const lastMonth = moment()
+      .year(year)
+      .month(month - 2)
+      .startOf('month')
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    const nextMonth = moment()
+      .year(year)
+      .month(month)
+      .endOf('month')
+      .format('YYYY-MM-DDTHH:mm:ss[Z]');
+    const params = new HttpParams().appendAll({
+      dueMin: lastMonth,
+      dueMax: nextMonth,
+      showCompleted: true,
+      showHidden: true,
+    });
+    return this.httpClient
+      .get<any>(`${environment.googleConfig.apiUrl}/tasks/v1/lists/@default/tasks`, { params })
+      .pipe(
+        map((task) =>
+          (task.items as Array<ICalendarTask>).map((task) => {
+            task.due = formatDateWithMoment(task.due, {
+              formats: ['YYYY-MM-DDTHH:mm:ss[Z]'],
+              useFormat: task.due.includes('00:00:00') ? 'YYYY. MM. DD.' : 'YYYY. MM. DD. HH:mm:ss',
+            });
+            return task;
+          }),
+        ),
+      );
   }
 }

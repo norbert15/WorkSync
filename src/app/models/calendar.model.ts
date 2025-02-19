@@ -1,23 +1,63 @@
-import { GoogleCalendarResponseStatus } from '../core/constans/enums';
+import {
+  CalendarEventEnum,
+  CalendarEventStatus,
+  GoogleCalendarResponseStatus,
+} from '../core/constans/enums';
 
 export interface ICalendarEvent {
-  class: string;
+  id?: string;
+  type: string;
   summary: string;
-  description: string;
+  description: string | null;
   location: string | null;
   organizer: {
     email: string;
     displayName?: string;
   };
   eventStart: string;
-  eventStartShort: string;
+  eventStartShort: string | null;
   eventEnd: string | null;
   eventEndShort: string | null;
   hangoutLink: string | null;
   attendees: Array<{
-    email: string;
-    responseStatus: GoogleCalendarResponseStatus;
-    displayName: string | null;
-    optional: boolean | null;
-  }>;
+    email: string | null;
+    responseStatus?: GoogleCalendarResponseStatus;
+    displayName?: string | null;
+    optional?: boolean | null;
+    response?: { class: string; icon: string };
+  }> | null;
+}
+
+export interface ICalendar {
+  label: string;
+  date: string;
+  dayName: string;
+  monthName: string;
+  status: CalendarEventStatus;
+  events: Array<CalendarItemType>;
+}
+
+export type CalendarRegisterType = {
+  eventStart: string;
+  eventEnd: string;
+  organizerEmail: string;
+  organizerDisplayName: string;
+  summary: string;
+  description: string;
+  type: CalendarEventEnum;
+};
+
+export type CalendarItemType = {
+  type: 'task' | 'event';
+  date: string;
+  item: ICalendarEvent | ICalendarTask;
+};
+
+export interface ICalendarTask {
+  id: string;
+  title: string;
+  notes: string;
+  status: 'needsAction' | 'completed';
+  due: string;
+  webViewLink: string;
 }
