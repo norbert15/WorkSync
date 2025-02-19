@@ -47,7 +47,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
                 this.fetched = true;
                 this.googleAuthService.setGoogleApiPayload(
                   result.access_token ?? '',
-                  result.refresh_token ?? '',
+                  user.googleRefreshToken,
                 );
               }),
               catchError(() => {

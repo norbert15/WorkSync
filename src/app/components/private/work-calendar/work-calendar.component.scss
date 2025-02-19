@@ -22,6 +22,7 @@ a {
   min-width: 1400px;
 
   &-item {
+    width: 240px;
     background-color: white;
     outline: 1px solid rgb(164 149 173 / 41%);
 
@@ -51,6 +52,7 @@ a {
     }
 
     &-event {
+      min-width: 210px;
       border-radius: 5px;
       border: 1px solid colors.$gray-light;
       padding: 10px;
@@ -71,24 +73,60 @@ a {
         border: unset;
         background-color: colors.$primary-dark;
         color: white;
+
+        &:hover {
+          background-color: colors.$primary;
+        }
+      }
+
+      &--day-start {
+        border: unset;
+        background-color: colors.$orange;
+        color: white;
+
+        &:hover {
+          background-color: colors.$orange-dark;
+        }
+      }
+
+      &--day-end {
+        border: unset;
+        background-color: colors.$orange-dark;
+        color: white;
+
+        &:hover {
+          background-color: rgb(133, 92, 15);
+        }
       }
 
       &--google-event {
         border: unset;
         background-color: colors.$primary;
         color: white;
+
+        &:hover {
+          background-color: colors.$primary-dark;
+        }
       }
 
       &--out-of-home {
         border: unset;
         background-color: colors.$gray;
         color: white;
+
+        &:hover {
+          background-color: colors.$secondary-dark;
+        }
       }
 
       &--holiday {
         border: unset;
         background-color: colors.$success;
         color: white;
+
+        &:hover {
+          background-color: colors.$success-dark;
+        }
       }
     }
 

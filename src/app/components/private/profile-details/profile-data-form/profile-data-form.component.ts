@@ -58,7 +58,6 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
         jobTitle: form['jobTitle'],
         phone: form['phone'],
       };
-      console.log(this.user.id);
 
       this.userFirebaseService
         .updateUserDetails(this.user.id, userBase)
@@ -95,8 +94,6 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
         switchMap(() =>
           this.userFirebaseService.updateUserGoogleRefreshToken(this.user!.id, '').pipe(
             catchError((err) => {
-              console.log('Error up: ', err);
-
               return of('failed');
             }),
           ),
@@ -108,11 +105,8 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
             this.user!.googleRefreshToken = '';
             this.userFirebaseService.user$.next(this.user);
           }
-          console.log('Result: ', result);
         },
-        error: (err) => {
-          console.log('Error: ', err);
-        },
+        error: (err) => {},
       });
   }
 }

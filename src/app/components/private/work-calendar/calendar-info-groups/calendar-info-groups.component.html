@@ -1,45 +1,54 @@
 @for (infoCard of infoCards(); track $index) {
   <div class="info-card">
+    <!-- Info header -->
     <div
       class="mb-3 d-flex justify-content-between"
       [ngClass]="{ 'flex-grow-1': !infoCard.events.length }"
     >
+      <!-- Title -->
       <div>
         <i [ngClass]="['me-1', infoCard.bootstrapIconClass]"></i>
         {{ infoCard.title }}:
       </div>
 
+      <!-- Counter -->
       @if (infoCard.events.length && infoCard.showCounter) {
         <div class="counter">{{ infoCard.events.length }}</div>
       }
     </div>
 
+    <!-- Info body -->
     <div [ngClass]="{ 'flex-grow-1': infoCard.events.length }">
       @for (event of infoCard.events.slice(0, 3); track $index) {
         <div
           [ngClass]="[
-            event.time ? 'd-flex justify-content-between gap-2' : 'text-end',
+            event.subLabel ? 'd-flex justify-content-between gap-2' : 'text-end',
             event.class ?? '',
           ]"
         >
-          <div class="ellipsis fw-bold cursor-pointer">{{ event.name }}:</div>
-          @if (event.time) {
-            <div class="small text-end text-nowrap">{{ event.time }}</div>
+          @if (event.subLabel) {
+            <div
+              (click)="event?.callback(event.item)"
+              class="small text-end text-nowrap fw-bold cursor-pointer"
+            >
+              {{ event.subLabel }}
+            </div>
           }
+          <div (click)="event?.callback(event.item)" class="ellipsis fw-bold cursor-pointer">
+            {{ event.name }}
+          </div>
         </div>
       } @empty {
         <div class="text-end">{{ infoCard.fallbackLabel }}</div>
       }
     </div>
 
+    <!-- Info footer -->
     @if (infoCard.footer?.templateRef) {
       <ng-container [ngTemplateOutlet]="infoCard.footer?.templateRef!"></ng-container>
     } @else if (infoCard.events.length && infoCard.footer) {
       <!-- TODO: footerLink -->
-      <div
-        class="text-end mt-2 text-decoration-underline"
-        [ngClass]="{ 'cursor-pointer': infoCard.footer.link }"
-      >
+      <div class="text-end mt-2 text-decoration-underline cursor-pointer">
         {{ infoCard.footer.label }}
       </div>
     }
@@ -48,10 +57,56 @@
 
 <ng-template #todayTemplate>
   <div class="text-end">
-    <!-- <button app-button>Munka kezdés</button>
-        <button app-button>Munka vége</button> -->
-    <span class="text-decoration-underline user-select-none cursor-pointer">
-      Napvégi jelentés
-    </span>
+    @if (!userWorkStatus()) {
+      <button app-button (click)="onStartTheDayClick()">Munka kezdés</button>
+    } @else if (!userWorkStatus()!.workEnd) {
+      <button app-button (click)="onOpenEndOfDayDialog()">Munka befejezése</button>
+    } @else if (userWorkStatus()?.report) {
+      <span
+        class="text-decoration-underline user-select-none cursor-pointer"
+        (click)="onOpenEndOfDayDialog()"
+      >
+        Jelentés megtekintése
+      </span>
+    }
   </div>
+</ng-template>
+
+<ng-template #endOfDayDialogTemplate>
+  <div class="d-flex gap-4 mb-4">
+    <div class="w-50">
+      <div class="label-strong">Nap kezdete</div>
+      <div>{{ userWorkStatus()?.workStart ?? "-" }}</div>
+    </div>
+    <div class="w-50">
+      <div class="label-strong">Nap vége</div>
+      <div>{{ endOfDayDatetime() }}</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="label-strong">Nap végi jelentés</div>
+    <textarea
+      rows="4"
+      placeholder="Összegzés..."
+      [(ngModel)]="userReport"
+      [disabled]="!!userWorkStatus()?.workEnd"
+    ></textarea>
+  </div>
+</ng-template>
+<ng-template #endOfDayButtonDialogTemplate>
+  <button app-button color="transparent" class="mb-2 w-100" (click)="onCloseDialogClick()">
+    Bezár
+  </button>
+  @if (userWorkStatus() && !userWorkStatus()?.workEnd) {
+    <button
+      app-button
+      class="mb-2 w-100"
+      [isLoading]="endOfDayBtnIsLoading()"
+      [disabled]="!userReport()"
+      (click)="onEndOfDayClick()"
+    >
+      Jelentés leadása
+    </button>
+  }
 </ng-template>

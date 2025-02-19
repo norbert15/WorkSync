@@ -107,7 +107,14 @@ export class CalendarEventCreatorComponent implements OnInit {
     });
 
     const user = this.userFirebaseService.user$.getValue();
-    if (this.calendarEvent() && (!user || user.email !== this.calendarEvent()?.organizer.email)) {
+    if (
+      this.calendarEvent() &&
+      (!user ||
+        user.email !== this.calendarEvent()?.organizer.email ||
+        [CalendarEventEnum.DAY_END, CalendarEventEnum.DAY_START].includes(
+          this.calendarEvent()!.type as CalendarEventEnum,
+        ))
+    ) {
       this.eventForm.disable();
       this.viewOnly.set(true);
     } else {
@@ -125,6 +132,8 @@ export class CalendarEventCreatorComponent implements OnInit {
   }
 
   public onSaveClick(): void {
+    // TODO: a szabadság kérelmek nem eseményként kerülnek be a naptárba
+    // A szabadság kérelmek a szabadság menübe vesznek fel új rekordot
     const user = this.userFirebaseService.user$.getValue();
     if (this.eventForm.valid && user) {
       this.isSaveBtnLoading.set(true);

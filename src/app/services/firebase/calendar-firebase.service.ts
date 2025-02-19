@@ -50,7 +50,7 @@ export class CalendarFirebaseService {
     const eventStartMoment = moment(register.eventStart, ['YYYY-MM-DDTHH:mm']);
     const eventEndMoment = moment(register.eventEnd, ['YYYY-MM-DDTHH:mm']);
 
-    const newEvent: ICalendarEvent = {
+    const newEvent: Partial<ICalendarEvent> = {
       attendees: null,
       hangoutLink: null,
       location: null,
@@ -63,8 +63,8 @@ export class CalendarFirebaseService {
       },
       eventStart: eventStartMoment.format('YYYY. MM. DD. HH:mm:ss'),
       eventStartShort: eventStartMoment.format('HH:mm'),
-      eventEnd: eventEndMoment.format('YYYY. MM. DD. HH:mm:ss'),
-      eventEndShort: eventEndMoment.format('HH:mm'),
+      eventEnd: eventEndMoment.isValid() ? eventEndMoment.format('YYYY. MM. DD. HH:mm:ss') : null,
+      eventEndShort: eventEndMoment.isValid() ? eventEndMoment.format('HH:mm') : null,
     };
 
     if (newEvent.eventStartShort === '00:00') {
@@ -79,8 +79,10 @@ export class CalendarFirebaseService {
     const observables: Array<Observable<string>> = [];
     const calendarCollection = collection(this.firestore, this.CALENDAR_COLLECTION);
 
-    for (days; days >= 0; days--) {
-      newEvent.eventEnd = `${eventStartMoment.format('YYYY. MM. DD.')} ${eventEndMoment.format('HH:mm:ss')}`;
+    for (days; days > 0; days--) {
+      newEvent.eventEnd = eventEndMoment.isValid()
+        ? `${eventStartMoment.format('YYYY. MM. DD.')} ${eventEndMoment.format('HH:mm:ss')}`
+        : null;
       observables.push(
         from(addDoc(calendarCollection, { ...newEvent })).pipe(
           map((doc) => doc.id),

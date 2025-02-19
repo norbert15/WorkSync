@@ -7,6 +7,8 @@ export enum CalendarEventEnum {
   OUT_OF_HOME = 'out-of-home',
   GOOGLE_EVENT = 'google-event',
   HOLIDAY = 'holiday',
+  DAY_START = 'day-start',
+  DAY_END = 'day-end',
 }
 
 export enum CalendarEventStatus {

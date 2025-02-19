@@ -60,16 +60,16 @@ export class DatepickerComponent implements OnInit {
   public onMonthSelect(month: number): void {
     this.month.set(month);
     this.valuesChange.emit([this.year()!, this.month()!]);
+    this.menu.set('year');
   }
 
   public onYearSelect(year: number): void {
     this.year.set(year);
     this.valuesChange.emit([this.year()!, this.month()!]);
+    this.menu.set('month');
   }
 
   public handlePageChange(value: 1 | -1): void {
-    console.log(value);
-
     if (value !== -1 && value !== 1) {
       return;
     }

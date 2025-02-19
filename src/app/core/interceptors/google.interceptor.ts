@@ -7,7 +7,6 @@ import { catchError, switchMap, throwError } from 'rxjs';
 export const googleAuthInterceptor: HttpInterceptorFn = (req, next) => {
   const googleAuthService = inject(GoogleAuthService);
   const paylaod = googleAuthService.googleApiPayload$.getValue();
-  console.log('URL: ', req.url);
 
   if (paylaod && req.url.startsWith(environment.googleConfig.apiUrl)) {
     req = req.clone({

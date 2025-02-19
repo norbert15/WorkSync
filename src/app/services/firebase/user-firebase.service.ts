@@ -7,17 +7,22 @@ import {
   getDocs,
   getDoc,
   updateDoc,
+  query,
+  where,
+  addDoc,
 } from '@angular/fire/firestore';
 import { BehaviorSubject, from, map, Observable, of, switchMap, take } from 'rxjs';
 
-import { IUser, IUserBase } from '../../models/user.model';
+import { IUser, IUserBase, IUserWorkStatus } from '../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserFirebaseService {
   private readonly USERS_COLLECTION = 'users';
+  private readonly USER_WORK_STATUS_COLLECTION = 'user-work-statuses';
 
   private readonly firestore = inject(Firestore);
 
@@ -49,6 +54,41 @@ export class UserFirebaseService {
   ): Observable<void> {
     const userDocRef = doc(this.firestore, this.USERS_COLLECTION, userId);
     return from(updateDoc(userDocRef, { googleRefreshToken }));
+  }
+
+  public getUserWorkStatus(userId: string): Observable<IUserWorkStatus | null> {
+    const today = moment().format('YYYY. MM. DD.');
+    const userWorkStatusesRef = collection(this.firestore, this.USER_WORK_STATUS_COLLECTION);
+    const q = query(
+      userWorkStatusesRef,
+      where('userId', '==', userId),
+      where('created', '==', today),
+    );
+    return from(collectionData(q, { idField: 'id' })).pipe(
+      map((docs) => (docs.length ? (docs[0] as IUserWorkStatus) : null)),
+    );
+  }
+
+  public startUserWorkDay(userId: string, startDate: string): Observable<string> {
+    const userWorkStatusesRef = collection(this.firestore, this.USER_WORK_STATUS_COLLECTION);
+    const data: Partial<IUserWorkStatus> = {
+      created: moment(startDate).format('YYYY. MM. DD.'),
+      userId: userId,
+      workStart: moment(startDate).format('YYYY. MM. DD. HH:mm'),
+      workEnd: null,
+      report: null,
+    };
+
+    return from(addDoc(userWorkStatusesRef, data)).pipe(map((doc) => doc.id));
+  }
+
+  public startUserEndOfDay(docId: string, workEnd: string, report: string): Observable<string> {
+    const userDocRef = doc(this.firestore, this.USER_WORK_STATUS_COLLECTION, docId);
+    const data: Partial<IUserWorkStatus> = {
+      report,
+      workEnd: moment(workEnd).format('YYYY. MM. DD. HH:mm'),
+    };
+    return from(updateDoc(userDocRef, data)).pipe(map(() => docId));
   }
 
   public setUser(user: IUser): void {
