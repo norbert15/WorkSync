@@ -7,11 +7,29 @@
       }
     </div>
     <div class="dialog-content">
-      <ng-container [ngTemplateOutlet]="dialog()?.content || null"></ng-container>
+      <!-- Eltávolítás üzenet vagy template -->
+      @if (dialog()?.deleteMessage) {
+        <div class="dialog-content--delete-message" [innerHTML]="dialog()?.deleteMessage"></div>
+      } @else {
+        <ng-container [ngTemplateOutlet]="dialog()?.content || null"></ng-container>
+      }
     </div>
     <div class="dialog-footer">
+      <!-- Saját footer tempalte vagy beépített delete vagy footer gombok -->
       @if (dialog()?.footer) {
         <ng-container [ngTemplateOutlet]="dialog()!.footer!"></ng-container>
+      } @else if (dialog()?.isDelete) {
+        <div class="dialog-footer-delete">
+          <button app-button color="transparent" (click)="onCloseClick()">Bezár</button>
+          <button
+            app-button
+            color="danger"
+            (click)="onStartDeleteClick()"
+            [isLoading]="dialog()!.isDeleteLoading"
+          >
+            Eltávolítás
+          </button>
+        </div>
       } @else if (dialog()?.footerCloseButton) {
         <div class="dialog-footer-cancel">
           <button app-button color="primary" (click)="onCloseClick()">Bezár</button>

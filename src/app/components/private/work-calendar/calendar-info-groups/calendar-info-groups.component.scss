@@ -18,10 +18,10 @@ $info-gap: 20px;
   border-radius: 12px;
 
   @include media.tablet {
-    width: calc(50% - $info-gap);
+    width: calc(50% - 10px);
   }
 
   @include media.desktop {
-    width: calc(25% - $info-gap);
+    width: calc(25% - 15px);
   }
 }

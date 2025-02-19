@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, OnInit, signal, TemplateRef, viewChild } from '@angular/core';
+import { Component, computed, input, OnInit, signal, TemplateRef, viewChild } from '@angular/core';
 import { ButtonComponent } from '../../../reusables/button/button.component';
+import {
+  CalendarItemType,
+  ICalendar,
+  ICalendarEvent,
+  ICalendarTask,
+} from '../../../../models/calendar.model';
+import moment from 'moment';
 
 type EventType = { name: string; time?: string; class?: string };
 
@@ -30,7 +37,16 @@ type InfoCardType = {
 export class CalendarInfoGroupsComponent implements OnInit {
   public todayTemplate = viewChild<TemplateRef<any>>('todayTemplate');
 
+  public googleCalendarEventsAndTasks = input<Array<ICalendar>>([]);
+
   public infoCards = computed<Array<InfoCardType>>(() => {
+    const today = moment();
+    const todayEventsAndTasks = this.googleCalendarEventsAndTasks()
+      .flatMap((calendar) => calendar.events)
+      .filter((et) => et.date.startsWith(today.format('YYYY. MM. DD')));
+
+    console.log('Todays: ', todayEventsAndTasks);
+
     const todayTemplate = this.todayTemplate();
     const events = this.events();
     return [
@@ -40,7 +56,24 @@ export class CalendarInfoGroupsComponent implements OnInit {
         fallbackLabel: 'Nincs előre ütemezett esemény.',
         showCounter: true,
         footer: { label: 'További részletek' },
-        events: events.calendarEvents,
+        events: todayEventsAndTasks.map((et) => {
+          if (et.type === 'event') {
+            const event: ICalendarEvent = et.item as ICalendarEvent;
+            return {
+              name: event.summary,
+              class: 'label-primary',
+              time: event.eventStart,
+            };
+          }
+
+          const task: ICalendarTask = et.item as ICalendarTask;
+
+          return {
+            name: task.title,
+            class: 'label-primary',
+            time: task.due,
+          };
+        }),
       },
       {
         title: 'Értesítések',

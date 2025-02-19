@@ -1,1 +1,24 @@
-<p>popup works!</p>
+@if (groupedPopups().length) {
+  <div class="popup-groups">
+    @for (popup of groupedPopups(); track popup.key) {
+      <div
+        appPopupAutoRemove
+        [popupKey]="popup.key"
+        [length]="popup.length"
+        [ngClass]="['popup', 'popup--' + popup.severity]"
+      >
+        <div class="popup-container">
+          <i [class]="ICONS[popup.severity]"></i>
+          <i [id]="popup.key" class="close-icon" [class]="ICONS['close']"></i>
+          @if (popup.length > 1) {
+            <div class="counter">{{ popup.length }}</div>
+          }
+          <div>
+            <div class="popup-hedaer">{{ popup.title }}</div>
+            <div class="popup-body">{{ popup.details }}</div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}

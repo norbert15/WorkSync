@@ -1,85 +1,96 @@
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { loadGapiInsideDOM } from 'gapi-script';
-import { environment } from '../../../environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, map, Observable, take, throwError } from 'rxjs';
+import { loadGapiInsideDOM } from 'gapi-script';
+
+import { environment } from '../../../environments/environment';
 
 declare const gapi: any;
+
+type GoogleTokenType = {
+  access_token: string;
+  scope: string;
+  expires_in: number;
+  token_type: string;
+  refresh_token: string;
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class GoogleAuthService {
-  private gapi: any;
-  private route = inject(ActivatedRoute);
+  public readonly googleApiPayload$ = new BehaviorSubject<{
+    accessToken: string;
+    refreshToken: string;
+  } | null>(null);
 
-  constructor() {
-    //this.loadGapi();
-    console.log(this.route.snapshot.queryParamMap.get('code'));
+  private readonly googleConfig = environment.googleConfig;
+  private readonly httpClient = inject(HttpClient);
+
+  private readonly headers = new HttpHeaders({
+    'Content-Type': 'application/x-www-form-urlencoded',
+  });
+
+  public navigateToGoogleAuthPage(): void {
+    let url = window.location.href;
+    const cleanUrl = url.split('?')[0];
+    window.location.href =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${this.googleConfig.clientId}` +
+      `&redirect_uri=${cleanUrl}` +
+      `&response_type=code` +
+      `&scope=${this.googleConfig.scope}` +
+      `&access_type=offline`;
   }
 
-  private loadGapi() {
-    loadGapiInsideDOM().then(() => {
-      const w = window as any;
-      this.gapi = w.gapi;
-      this.gapi.load('client:auth2', this.initClient);
+  public getGoogleTokens(code: string): Observable<Partial<GoogleTokenType>> {
+    let url = window.location.href;
+    const cleanUrl = url.split('?')[0];
+    const body = new HttpParams()
+      .set('code', code)
+      .set('client_id', this.googleConfig.clientId)
+      .set('client_secret', this.googleConfig.clientSecret)
+      .set('redirect_uri', cleanUrl)
+      .set('grant_type', 'authorization_code')
+      .set('access_type', 'offline');
+
+    return this.httpClient.post('https://oauth2.googleapis.com/token', body.toString(), {
+      headers: this.headers,
     });
   }
 
-  private initClient = () => {
-    this.gapi.client
-      .init({
-        client_id: environment.googleClientId,
-        prompt: 'consent',
-        access_type: 'offline',
-        scope:
-          'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events',
+  public renewAccessToken(refreshToken: string): Observable<Partial<GoogleTokenType>> {
+    const body = new HttpParams()
+      .set('client_id', this.googleConfig.clientId)
+      .set('client_secret', this.googleConfig.clientSecret)
+      .set('grant_type', 'refresh_token')
+      .set('refresh_token', refreshToken);
+
+    return this.httpClient
+      .post('https://oauth2.googleapis.com/token', body.toString(), {
+        headers: this.headers,
       })
-      .then(() => {
-        console.log('Google API Client Initialized');
-      });
-
-    const code = this.route.snapshot.queryParamMap.get('code');
-
-    if (code) {
-      fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        body: new URLSearchParams({
-          code: code || '', // Az OAuth hitelesítési kód
-          client_id: environment.googleClientId,
-          client_secret: environment.googleClientSecret,
-          redirect_uri: 'http://localhost:4200',
-          grant_type: 'authorization_code',
-          access_type: 'offline',
+      .pipe(
+        map((result: Partial<GoogleTokenType>) => {
+          result.refresh_token = refreshToken;
+          return result;
         }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data); // Itt lesz az access_token és refresh_token
-        });
-    }
-  };
-
-  public signIn() {
-    window.location.href =
-      `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${environment.googleClientId}` +
-      `&redirect_uri=http://localhost:4200` +
-      `&response_type=code` +
-      `&scope=https://www.googleapis.com/auth/calendar` +
-      `&access_type=offline`;
-    /*  this.gapi.auth2
-      .getAuthInstance()
-      .signIn()
-      .then((googleUser: any) => {
-        const authResponse = googleUser.getAuthResponse();
-        console.log('authResponse: ', authResponse);
-      })
-      .catch((error: any) => {
-        console.error('Sign-in error:', error);
-      }); */
+      );
   }
 
-  public getGoogleApiToken(): string | null {
-    return sessionStorage.getItem('googleApiToken');
+  public revokeGoogleTokens(): Observable<void> {
+    const params = new HttpParams().set(
+      'token',
+      this.googleApiPayload$.getValue()?.accessToken || '',
+    );
+
+    return this.httpClient.post<void>('https://oauth2.googleapis.com/revoke', params.toString(), {
+      headers: this.headers,
+    });
+  }
+
+  public setGoogleApiPayload(accessToken: string, refreshToken: string): void {
+    this.googleApiPayload$.next({ accessToken, refreshToken });
   }
 }

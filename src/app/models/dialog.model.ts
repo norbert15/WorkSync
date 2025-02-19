@@ -10,6 +10,8 @@ type DialogSettingsType = {
   headerCloseButton?: boolean;
   footerCloseButton?: boolean;
   size?: Size;
+  isDelete?: boolean;
+  deleteMessage?: string;
 };
 
 export class DialogModel {
@@ -20,8 +22,13 @@ export class DialogModel {
   public footerCloseButton: boolean;
   public class: Array<string>;
   public size: Size;
+  public isDelete: boolean;
+  public deleteMessage: string;
   private readonly _afterComplete$ = new Subject<void>();
   public readonly afterComplete$ = this._afterComplete$.asObservable();
+  private readonly _delete$ = new Subject<void>();
+  public readonly delete$ = this._delete$.asObservable();
+  public isDeleteLoading = false;
 
   constructor(title: string, settings: DialogSettingsType | null = null) {
     this.title = title;
@@ -31,10 +38,17 @@ export class DialogModel {
     this.headerCloseButton = settings?.headerCloseButton ?? true;
     this.footerCloseButton = settings?.footerCloseButton ?? true;
     this.size = settings?.size ?? 'small';
+    this.isDelete = settings?.isDelete ?? false;
+    this.deleteMessage = settings?.deleteMessage ?? '';
   }
 
   public complete(): void {
     this._afterComplete$.next();
     this._afterComplete$.complete();
+  }
+
+  public startDelete(): void {
+    this._delete$.next();
+    this._delete$.complete();
   }
 }

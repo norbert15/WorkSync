@@ -1,5 +1,5 @@
 <div class="select-wrapper">
-  <div (click)="toggleOpened()" [ngClass]="{ 'select-disabled': disabled() }" class="select">
+  <div (click)="toggleOpened()" [ngClass]="{ 'select--disabled': disabled() }" class="select">
     <div class="select-value">
       @if (multi()) {
         @for (item of selectedOptions(); track $index) {
@@ -13,7 +13,7 @@
       class="select-label"
       [ngClass]="{
         'select-label-focus': selectedOption() || selectedOptions().length,
-        'select-disabled': disabled(),
+        'select--disabled': disabled(),
       }"
     >
       @if (bootstrapIcon()) {

@@ -29,7 +29,13 @@
             Elfelejtettem a jelszavam
           </div>
 
-          <button type="submit" app-button class="w-100" [disabled]="loginForm.invalid">
+          <button
+            type="submit"
+            app-button
+            class="w-100"
+            [isLoading]="isLoginLoading()"
+            [disabled]="loginForm.invalid"
+          >
             Bejelentkezés
           </button>
         </form>

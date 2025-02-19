@@ -7,11 +7,7 @@
   <form [formGroup]="eventForm">
     <div class="mb-3">
       <app-select
-        [options]="[
-          { label: 'Házon kívűl', value: 1 },
-          { label: 'Szabadság kérelem', value: 2 },
-          { label: 'Google esemény', value: 0 },
-        ]"
+        [options]="eventTypeOptions"
         label="Esemény kiválasztása*"
         formControlName="eventType"
         bootstrapIcon="bi-calendar2-event"
@@ -33,17 +29,46 @@
         type="datetime-local"
       ></app-input>
     </div>
-    @if (eventForm.get("eventType")?.value && eventForm.get("eventType")?.value !== 0) {
-      <textarea formControlName="reason" placeholder="Megjegyzés" rows="5"></textarea>
+    @if (eventForm.get("eventType")?.value && eventForm.get("eventType")?.value !== GOOGLE_EVENT) {
+      <textarea formControlName="reason" placeholder="Megjegyzés" rows="3"></textarea>
+
+      @if (calendarEvent()) {
+        <app-input
+          formControlName="organizer"
+          class="w-100 mt-3"
+          label="Szervező"
+          bootstrapIcon="bi-pen"
+        ></app-input>
+      }
     }
   </form>
 </ng-template>
 
 <ng-template #footerDialogTemplate>
-  <button class="w-100 mb-2" app-button color="transparent" (click)="onCloseDialogClick()">
+  <button
+    class="w-100 mb-2"
+    [ngClass]="{ 'mb-2': !viewOnly() }"
+    app-button
+    color="transparent"
+    (click)="onCloseDialogClick()"
+  >
     Bezár
   </button>
-  <button class="w-100" app-button (click)="onSaveClick()" [disabled]="eventForm.invalid">
-    Létrehozás
-  </button>
+
+  @if (!viewOnly()) {
+    @if (calendarEvent()) {
+      <button class="w-100 mb-2" app-button color="danger" (click)="onWarningDeleteClick()">
+        Eltávolítás
+      </button>
+    }
+    <button
+      class="w-100"
+      app-button
+      (click)="onSaveClick()"
+      [disabled]="eventForm.invalid"
+      [isLoading]="isSaveBtnLoading()"
+    >
+      {{ calendarEvent() ? "Módosítás" : "Létrehozás" }}
+    </button>
+  }
 </ng-template>

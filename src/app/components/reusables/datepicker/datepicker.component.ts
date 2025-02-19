@@ -85,6 +85,7 @@ export class DatepickerComponent implements OnInit {
 
   public onTodayClick(): void {
     this.year.set(this.TODAY.getFullYear());
+    this.month.set(this.TODAY.getMonth() + 1);
     this.page.set(1);
 
     this.valuesChange.emit([this.year()!, this.month()!]);
