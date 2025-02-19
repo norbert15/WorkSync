@@ -5,7 +5,7 @@ import {
 } from '../core/constans/enums';
 
 export interface ICalendarEvent {
-  id?: string;
+  id: string;
   type: string;
   summary: string;
   description: string | null;
@@ -19,7 +19,7 @@ export interface ICalendarEvent {
   eventEnd: string | null;
   eventEndShort: string | null;
   hangoutLink: string | null;
-  attendees: Array<{
+  attendees?: Array<{
     email: string | null;
     responseStatus?: GoogleCalendarResponseStatus;
     displayName?: string | null;
@@ -61,3 +61,11 @@ export interface ICalendarTask {
   due: string;
   webViewLink: string;
 }
+
+export type CalendarTodayEventTaskType = {
+  label: string;
+  time: string;
+  event?: ICalendarEvent;
+  task?: ICalendarTask;
+  callback: (item: any) => void;
+};

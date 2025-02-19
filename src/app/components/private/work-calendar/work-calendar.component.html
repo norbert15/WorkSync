@@ -1,5 +1,7 @@
 <app-calendar-info-groups
-  [googleCalendarEventsAndTasks]="calendarItems()"
+  #calendarInfoGroupsComponent
+  [googleCalendarEventsAndTasks]="googleCalendarTodayEventsAndTasks()"
+  (calendarSave)="fetchCalendarEvents()"
 ></app-calendar-info-groups>
 
 <div class="mb-4 d-flex gap-3 justify-content-between">
@@ -15,6 +17,7 @@
   ></app-calendar-event-creator>
 </div>
 
+<!--  -->
 <div class="calendar" appDragScroll>
   <div class="calendar-grid" appFade>
     @for (day of SORTED_HUN_DAYS; track $index) {
@@ -56,6 +59,55 @@
     }
   </div>
 </div>
+
+<ng-template #googleCalendarEventTemplate let-calendarEvent>
+  <div
+    appFade
+    [ngClass]="['calendar-grid-item-event', 'calendar-grid-item-event--' + calendarEvent.type]"
+  >
+    <div class="calendar-grid-item-event-summary mb-1">
+      @if (calendarEvent.type === CALENDAR_EVENTS.GOOGLE_EVENT) {
+        <i class="bi bi-google small me-1"></i>
+      } @else if (calendarEvent.type === CALENDAR_EVENTS.OUT_OF_HOME) {
+        <i class="bi bi-clock-history small me-1"></i>
+      } @else if (
+        calendarEvent.type === CALENDAR_EVENTS.HOLIDAY ||
+        calendarEvent.type == CALENDAR_EVENTS.DAY_END
+      ) {
+        <i class="bi bi-calendar-x small me-1"></i>
+      } @else if (calendarEvent.type === CALENDAR_EVENTS.DAY_START) {
+        <i class="bi bi-calendar-check small me-1"></i>
+      }
+      {{ calendarEvent.summary }}
+    </div>
+    <div class="calendar-grid-item-event-options">
+      <i
+        [class]="
+          calendarEvent.organizer.email === user()?.email &&
+          ![CALENDAR_EVENTS.DAY_END, CALENDAR_EVENTS.DAY_START].includes(calendarEvent.type)
+            ? 'bi bi-pen'
+            : 'bi bi-eye'
+        "
+        (click)="onCalendarEventSelect(calendarEvent)"
+      ></i>
+    </div>
+    <div class="small">
+      <div>
+        @if (calendarEvent.hangoutLink) {
+          <a [href]="calendarEvent.hangoutLink" target="_blank">{{ calendarEvent.hangoutLink }}</a>
+        } @else if (calendarEvent.location) {
+          {{ calendarEvent.location }}
+        }
+      </div>
+      <div class="text-end" [ngClass]="{ 'fw-bold': calendarEvent.eventStartShort }">
+        {{ calendarEvent.eventStartShort || "Egésznap" }}
+        @if (calendarEvent.eventEndShort) {
+          - {{ calendarEvent.eventEndShort }}
+        }
+      </div>
+    </div>
+  </div>
+</ng-template>
 
 <ng-template #googleCalendarEventViewTemplate>
   <div class="d-flex gap-3 my-4">
@@ -118,47 +170,6 @@
           ></i>
           {{ attendee.displayName ?? attendee.email ?? "-" }}
         </div>
-      }
-    </div>
-  </div>
-</ng-template>
-
-<ng-template #googleCalendarEventTemplate let-calendarEvent>
-  <div
-    appFade
-    [ngClass]="['calendar-grid-item-event', 'calendar-grid-item-event--' + calendarEvent.type]"
-  >
-    <div class="calendar-grid-item-event-summary">
-      @if (calendarEvent.type === "google-event") {
-        <i class="bi bi-google small me-1"></i>
-      } @else if (calendarEvent.type === "out-of-home") {
-        <i class="bi bi-clock-history small me-1"></i>
-      } @else {
-        <i class="bi bi-calendar-x small me-1"></i>
-      }
-      {{ calendarEvent.summary }}
-    </div>
-    <div class="calendar-grid-item-event-options">
-      <i
-        [class]="
-          calendarEvent.organizer.email === user()?.email && calendarEvent.type !== GOOGLE_EVENT
-            ? 'bi bi-pen'
-            : 'bi bi-eye'
-        "
-        (click)="onCalendarEventSelect(calendarEvent)"
-      ></i>
-    </div>
-    <div class="small">
-      <div class="text-end">
-        {{ calendarEvent.eventStartShort }}
-        @if (calendarEvent.eventEndShort) {
-          - {{ calendarEvent.eventEndShort }}
-        }
-      </div>
-      @if (calendarEvent.hangoutLink) {
-        <a [href]="calendarEvent.hangoutLink" target="_blank">{{ calendarEvent.hangoutLink }}</a>
-      } @else if (calendarEvent.location) {
-        {{ calendarEvent.location }}
       }
     </div>
   </div>

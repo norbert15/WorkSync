@@ -37,17 +37,26 @@ export class GoogleCalendarService {
           return items
             .map((item: any) => {
               const calendarItem: ICalendarEvent = {
+                id: item.id,
                 type: CalendarEventEnum.GOOGLE_EVENT,
                 summary: item.summary,
                 description: convertToLink(item.description),
-                eventStart: formatDateWithMoment(item.start.dateTime),
-                eventStartShort: formatDateWithMoment(item.start.dateTime, { useFormat: 'HH:mm' }),
-                eventEnd: formatDateWithMoment(item.end.dateTime),
-                eventEndShort: formatDateWithMoment(item.end.dateTime, { useFormat: 'HH:mm' }),
-                organizer: item.organizer,
-                hangoutLink: item.hangoutLink || null,
-                location: item.location || null,
-                attendees: item.attendees.map((a: any) => {
+                eventStart: item.start?.dateTime
+                  ? formatDateWithMoment(item.start?.dateTime)
+                  : formatDateWithMoment(item.start?.date, { useFormat: 'YYYY. MM. DD.' }),
+                eventStartShort: formatDateWithMoment(item.start?.dateTime ?? item.start.date, {
+                  useFormat: 'HH:mm',
+                }),
+                eventEnd: item.end?.dateTime
+                  ? formatDateWithMoment(item.end?.dateTime)
+                  : formatDateWithMoment(item.end?.date, { useFormat: 'YYYY. MM. DD.' }),
+                eventEndShort: formatDateWithMoment(item.end?.dateTime ?? item.end.date, {
+                  useFormat: 'HH:mm',
+                }),
+                organizer: item?.organizer,
+                hangoutLink: item?.hangoutLink ?? null,
+                location: item?.location ?? null,
+                attendees: (item?.attendees ?? []).map((a: any) => {
                   return {
                     email: a.email,
                     responseStatus: a.responseStatus,
@@ -101,6 +110,10 @@ export class GoogleCalendarService {
               formats: ['YYYY-MM-DDTHH:mm:ss[Z]'],
               useFormat: task.due.includes('00:00:00') ? 'YYYY. MM. DD.' : 'YYYY. MM. DD. HH:mm:ss',
             });
+
+            if (!task.title) {
+              task.title = '(Nincs cím)';
+            }
             return task;
           }),
         ),

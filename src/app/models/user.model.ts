@@ -18,3 +18,12 @@ export interface IUserPayload {
   user_id: string;
   email: string;
 }
+
+export interface IUserWorkStatus {
+  id: string;
+  userId: string;
+  created: string;
+  workStart: string;
+  workEnd: string | null;
+  report: string | null;
+}

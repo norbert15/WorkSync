@@ -67,16 +67,9 @@ export class GoogleAuthService {
       .set('grant_type', 'refresh_token')
       .set('refresh_token', refreshToken);
 
-    return this.httpClient
-      .post('https://oauth2.googleapis.com/token', body.toString(), {
-        headers: this.headers,
-      })
-      .pipe(
-        map((result: Partial<GoogleTokenType>) => {
-          result.refresh_token = refreshToken;
-          return result;
-        }),
-      );
+    return this.httpClient.post('https://oauth2.googleapis.com/token', body.toString(), {
+      headers: this.headers,
+    });
   }
 
   public revokeGoogleTokens(): Observable<void> {

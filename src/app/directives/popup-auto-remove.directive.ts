@@ -17,8 +17,6 @@ import { PopupService } from '../services/popup.service';
 })
 export class PopupAutoRemoveDirective implements OnInit, OnDestroy {
   @Input() public set length(length: number) {
-    console.log('Length: ', length);
-
     this.startCountdown();
   }
 
