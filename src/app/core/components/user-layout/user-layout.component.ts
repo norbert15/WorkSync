@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { catchError, of, ReplaySubject, switchMap, takeUntil, tap } from 'rxjs';
+import { catchError, Observable, of, ReplaySubject, switchMap, takeUntil, tap } from 'rxjs';
 
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { DialogsComponent } from '../dialogs/dialogs.component';
@@ -9,16 +9,22 @@ import { GoogleAuthService } from '../../../services/google/google-auth.service'
 import { UserFirebaseService } from '../../../services/firebase/user-firebase.service';
 import { IUser } from '../../../models/user.model';
 import { PopupService } from '../../../services/popup.service';
+import { BranchFirebaseService } from '../../../services/firebase/branch-firebase.service';
+import moment from 'moment';
+import { IBranch } from '../../../models/branch.model';
+import { DeviceType, DeviceTypeService } from '../../../services/device-type.service';
 
 @Component({
   selector: 'app-user-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SidebarComponent, DialogsComponent],
+  imports: [CommonModule, RouterOutlet, SidebarComponent, DialogsComponent, AsyncPipe],
   templateUrl: './user-layout.component.html',
   styleUrl: './user-layout.component.scss',
 })
 export class UserLayoutComponent implements OnInit, OnDestroy {
   public sidebarIsOpened = signal(true);
+
+  public deviceType = signal<DeviceType>('desktop');
 
   private fetched = false;
 
@@ -26,14 +32,45 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly userFirebaseService = inject(UserFirebaseService);
   private readonly popupService = inject(PopupService);
+  private readonly branchFirebaseService = inject(BranchFirebaseService);
+  private readonly deviceTypeService = inject(DeviceTypeService);
 
   public ngOnInit(): void {
+    this.fetchDeviceType();
     this.fetchGoogleApiTokens();
+    this.fetchBarnchForPublications();
   }
 
   public ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  private fetchBarnchForPublications(): void {
+    this.branchFirebaseService
+      .getBranches('publish')
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (branches: Array<IBranch>) => {
+          const today = moment();
+          const data: Array<IBranch> = branches
+            .map((branch) => {
+              const createdMoment = moment(branch.created, ['YYYY. MM. DD. HH:mm:ss']);
+              const daysDiff = today.diff(createdMoment, 'days');
+              return {
+                id: branch.id,
+                name: branch.name,
+                repositoryId: branch.repositoryId,
+                created: branch.created,
+                status:
+                  daysDiff >= 5 ? 'label-danger' : daysDiff >= 3 ? 'label-accent' : 'label-primary',
+              } as IBranch;
+            })
+            .sort((a, b) => a.created.localeCompare(b.created));
+
+          this.branchFirebaseService.setBranchesForPublish(data);
+        },
+      });
   }
 
   private fetchGoogleApiTokens(): void {
@@ -65,5 +102,13 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
         }),
       )
       .subscribe();
+  }
+
+  private fetchDeviceType(): void {
+    this.deviceTypeService.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (dt) => {
+        this.deviceType.set(dt);
+      },
+    });
   }
 }

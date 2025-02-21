@@ -17,12 +17,12 @@ export type PopupGroupsType = Record<string, Array<PopupType>>;
 })
 export class PopupService {
   private readonly _popupGroups = signal<PopupGroupsType>({});
-  private readonly _popupGroupsComputed = computed(() => {
+  /* private readonly _popupGroupsComputed = computed(() => {
     return this._popupGroups();
-  });
+  }); */
 
   public get popupGroups(): Signal<PopupGroupsType> {
-    return this._popupGroupsComputed;
+    return this._popupGroups.asReadonly();
   }
 
   public add(popup: PopupType): void {

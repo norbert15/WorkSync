@@ -201,9 +201,6 @@ export class CalendarEventCreatorComponent implements OnInit {
           });
           return this.calendarFirebaseService.deleteEvent(id);
         }),
-        finalize(() => {
-          newDialog.isDeleteLoading = false;
-        }),
       )
       .subscribe({
         next: () => {

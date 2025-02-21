@@ -156,6 +156,14 @@
   }
 }
 
+.orange-bg {
+  background-color: colors.$orange;
+
+  &-hover:hover {
+    background-color: colors.$orange-dark;
+  }
+}
+
 .danger-bg {
   background-color: colors.$danger;
 

@@ -1,0 +1,68 @@
+@use "../../../../assets/styles/sass/base/variables/colors" as colors;
+@use "../../../../assets/styles/sass/base/variables/media" as media;
+
+.repository-card {
+  padding: 15px 10px;
+  border-radius: 12px;
+  background-color: white;
+  border: 1px solid colors.$gray-light;
+
+  &--disabled {
+    opacity: 0.5;
+    background-color: rgb(215, 215, 215);
+  }
+
+  &--active {
+    border: 2px solid colors.$success;
+  }
+}
+
+.left-side {
+  width: calc(100% - 400px);
+}
+
+.branches-container {
+  max-width: 400px;
+  width: 100%;
+  min-height: 350px;
+
+  .repository-card {
+    padding: 15px;
+  }
+}
+
+.bi-x-circle:hover {
+  color: colors.$danger;
+}
+
+.publish-btn {
+  font-size: 14px;
+}
+
+.flex-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+@include media.desktop {
+  .flex-item {
+    width: calc(50% - 5px);
+  }
+}
+
+@media screen and (min-width: 1800px) {
+  .flex-item {
+    width: calc(33% - 3px);
+  }
+}
+
+.line-heigth-0 {
+  line-height: 0;
+}
+
+:host::ng-deep {
+  .cdk-drag-placeholder {
+    display: none !important;
+  }
+}
