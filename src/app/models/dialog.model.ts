@@ -1,5 +1,5 @@
-import { TemplateRef } from '@angular/core';
-import { Subject } from 'rxjs';
+import { signal, TemplateRef } from '@angular/core';
+import { Subject, tap } from 'rxjs';
 
 type Size = 'normal' | 'small' | 'medium' | 'large';
 
@@ -27,8 +27,12 @@ export class DialogModel {
   private readonly _afterComplete$ = new Subject<void>();
   public readonly afterComplete$ = this._afterComplete$.asObservable();
   private readonly _delete$ = new Subject<void>();
-  public readonly delete$ = this._delete$.asObservable();
-  public isDeleteLoading = false;
+  public readonly delete$ = this._delete$.asObservable().pipe(
+    tap(() => {
+      this.isDeleteLoading.set(false);
+    }),
+  );
+  public isDeleteLoading = signal(false);
 
   constructor(title: string, settings: DialogSettingsType | null = null) {
     this.title = title;

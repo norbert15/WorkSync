@@ -38,6 +38,7 @@ import { DialogsService } from '../../../../services/dialogs.service';
 import moment from 'moment';
 import { CalendarFirebaseService } from '../../../../services/firebase/calendar-firebase.service';
 import { CalendarEventEnum } from '../../../../core/constans/enums';
+import { BranchFirebaseService } from '../../../../services/firebase/branch-firebase.service';
 
 type EventType = {
   name: string;
@@ -49,7 +50,6 @@ type EventType = {
 
 type EventKey = {
   notificationEvents: Array<EventType>;
-  branchEvents: Array<EventType>;
 };
 
 type InfoCardType = {
@@ -84,6 +84,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     const userWorkStatus = this.userWorkStatus();
     const todayTemplate = this.todayTemplate();
     const events = this.events();
+    const branches = this.branchFirebaseService.branchesForPublications();
 
     const todayEvents: Array<EventType> = [
       {
@@ -136,12 +137,14 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
       {
         title: 'Publikálásra vár',
         bootstrapIconClass: 'bi bi-github',
-        events: events.branchEvents,
+        events: branches.map((branch) => ({
+          name: branch.name,
+          class: branch.status,
+        })),
         showCounter: true,
         fallbackLabel: 'Nincs publikálásra váró branch',
         footer: {
-          label:
-            events.branchEvents.length > 3 ? 'Továbbiak megtekintése' : 'Branch(es) megtekintése',
+          label: branches.length > 3 ? 'Továbbiak megtekintése' : 'Branch(es) megtekintése',
         },
       },
     ];
@@ -154,7 +157,6 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
   private user: IUser | null = null;
 
   private events = signal<EventKey>({
-    branchEvents: [],
     notificationEvents: [],
   });
 
@@ -163,6 +165,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
   private readonly popupService = inject(PopupService);
   private readonly dialogService = inject(DialogsService);
   private readonly calendarFirebaseSevice = inject(CalendarFirebaseService);
+  private readonly branchFirebaseService = inject(BranchFirebaseService);
 
   public ngOnInit(): void {
     this.fetchUserWorkStatus();
@@ -315,11 +318,6 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     // TODO: lekérdezés
     this.events.set({
       // TODO: status alapján sorba rendezés pl due old new
-      branchEvents: [
-        { name: '20250205-BN-Development-AttendanceSheets', class: 'label-danger' },
-        { name: '20250205-BN-Development-AttendanceSheets', class: 'label-accent' },
-        { name: '20250211-BN-Development-Notifications', class: 'label-primary' },
-      ],
       notificationEvents: [
         { class: 'label-primary', name: 'Új branch került publikálásra' },
         { class: 'label-gray', name: 'Horváth Lajos nem elérhető' },

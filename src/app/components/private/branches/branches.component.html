@@ -1,1 +1,132 @@
-<p>branches works!</p>
+<div class="d-flex gap-2" cdkDropListGroup>
+  <div class="left-side">
+    <div class="mb-4">
+      <div class="headline-text-large mb-3">Publikálásra vár</div>
+      <div class="d-flex gap-2 flex-wrap">
+        @for (repository of awatingForPublications(); track repository.id) {
+          <div
+            class="flex-item repository-card"
+            cdkDropList
+            (cdkDropListDropped)="branchDropped($event, repository.id)"
+            [cdkDropListData]="repository.branches"
+            appFade
+            [ngClass]="{
+              'repository-card--disabled':
+                repositoryItemDragged() && repositoryItemDragged() !== repository.id,
+              'repository-card--active':
+                repositoryItemDragged() && repositoryItemDragged() === repository.id,
+            }"
+          >
+            <div class="mb-3 d-flex justify-content-between align-items-center">
+              <div class="label-strong headline-text-normal ellipsis">
+                <i class="bi bi-github me-1"></i>
+                {{ repository.name }}
+              </div>
+              <button app-button class="publish-btn">Publikálva</button>
+            </div>
+
+            <ng-container
+              [ngTemplateOutlet]="branchListTemplate"
+              [ngTemplateOutletContext]="{ $implicit: { repository, type: 'publish' } }"
+            ></ng-container>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="headline-text-large mb-3">Aktív publikálások</div>
+      <div class="d-flex gap-2 flex-wrap">
+        @for (repository of activePublications(); track repository.id) {
+          <div
+            class="flex-item repository-card"
+            cdkDropList
+            (cdkDropListDropped)="branchDropped($event, repository.id, 'active')"
+            [cdkDropListData]="repository.branches"
+            appFade
+            [ngClass]="{
+              'repository-card--disabled':
+                repositoryItemDragged() && repositoryItemDragged() !== repository.id,
+              'repository-card--active':
+                repositoryItemDragged() && repositoryItemDragged() === repository.id,
+            }"
+          >
+            <div class="mb-3 label-strong headline-text-normal ellipsis">
+              <i class="bi bi-github me-1"></i>
+              {{ repository.name }}
+            </div>
+
+            <ng-container
+              [ngTemplateOutlet]="branchListTemplate"
+              [ngTemplateOutletContext]="{ $implicit: { repository, type: 'active' } }"
+            ></ng-container>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="branches-container">
+    <div class="headline-text-large mb-3">Elérhető branches</div>
+    <div class="repository-card flex-grow-1">
+      @for (repository of repositories(); track $index) {
+        <div
+          class="mb-4"
+          cdkDropList
+          [cdkDropListData]="repository.branches"
+          [cdkDropListSortingDisabled]="true"
+        >
+          <div class="headline-text-normal fw-bold mb-2">
+            <i class="bi bi-layers me-2"></i>
+            {{ repository.name }}
+          </div>
+          @for (branch of repository.branches; track $index) {
+            <div
+              cdkDrag
+              [cdkDragData]="branch"
+              (cdkDragStarted)="repositoryItemDragged.set(branch.repositoryId)"
+              (cdkDragEnded)="repositoryItemDragged.set('')"
+              class="d-flex align-items-center justify-content-between small label-gray column-gap-3 mb-1"
+            >
+              <div class="ellipsis">{{ branch.name }}</div>
+              <i class="bi bi-grip-vertical headline-text-normal" cdkDragHandle></i>
+            </div>
+          }
+        </div>
+
+        <hr />
+      }
+    </div>
+  </div>
+</div>
+
+<ng-template #branchListTemplate let-group>
+  @if (group.repository.branches.length) {
+    <div class="small flex-grow-1">
+      @for (branch of group.repository.branches; track branch.id) {
+        <div class="fw-bold mb-1">
+          <div class="d-flex justify-content-between align-items-center">
+            <div
+              class="d-flex align-items-center cursor-pointer overflow-hidden"
+              [ngClass]="[branch.status ?? 'label-primary']"
+              (click)="onCopyBranchNameClick(branch.name)"
+            >
+              <i class="bi bi-dot line-heigth-0 headline-text-normal"></i>
+              <div class="ellipsis me-2">{{ branch.name }}</div>
+            </div>
+            <i
+              class="bi bi-x-circle"
+              (click)="onOpenDeleteWarningDialogClick(branch, group.type)"
+            ></i>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="mt-4">
+      Utoljára frissitve: <span class="fw-bold">{{ group.repository.lastUpdated }}</span>
+    </div>
+  } @else {
+    <div class="flex-grow-1 d-flex align-items-end justify-content-end small fw-bold">
+      A hozzáadáshoz húzz be egy branch-et a jobb oldalról
+    </div>
+  }
+</ng-template>

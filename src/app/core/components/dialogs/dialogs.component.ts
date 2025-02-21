@@ -38,11 +38,11 @@ export class DialogsComponent implements OnInit, OnDestroy {
   }
 
   public onStartDeleteClick(): void {
-    this.dialog()!.startDelete();
     this.dialog.update((dialog) => {
-      dialog!.isDeleteLoading = true;
+      dialog!.isDeleteLoading.set(true);
       return dialog;
     });
+    this.dialog()!.startDelete();
   }
 
   private fetchLastOpenedDialog(): void {
