@@ -1,0 +1,54 @@
+<i
+  class="bi bi-chat-left-dots label-primary line-height-0 cursor-pointer"
+  (click)="onOpenCommentsDialogClick()"
+></i>
+
+<ng-template #commentsDialogContentTemplate>
+  <div
+    appScrollToBottom
+    [items]="displayedCommentGroups()"
+    [class]="displayedCommentGroups().length ? 'pb-2' : 'h-100'"
+  >
+    @for (commentGroup of displayedCommentGroups(); track $index) {
+      <div class="fw-bold small mt-3">{{ commentGroup.dateStr }}</div>
+      <hr />
+      @for (commentItem of commentGroup.comments; track $index) {
+        <div class="d-flex justify-content-between gap-3 mb-2">
+          <div class="d-flex gap-2">
+            <div
+              class="monogram"
+              [ngClass]="{ 'monogram--current-user': commentItem.userId === user()?.id }"
+            >
+              <span>{{ commentItem.monogram }}</span>
+            </div>
+            <div>
+              <div class="fw-bold small">{{ commentItem.userName }}</div>
+              <div>{{ commentItem.text }}</div>
+            </div>
+          </div>
+          <div class="fw-bold small">{{ commentItem.time }}</div>
+        </div>
+      }
+    } @empty {
+      <div class="empty-comments-placeholder h-100">Még nem került megjegyzés hozzáadásra.</div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #commentsDialogFooterTemplate>
+  <textarea [(ngModel)]="comment" rows="3" placeholder="Megjegyzés hozzáadása..."></textarea>
+  <div class="d-flex gap-2 mt-2">
+    <button class="w-100" app-button color="transparent" (click)="onCloseCommentsDialogClick()">
+      Bezár
+    </button>
+    <button
+      class="w-100"
+      app-button
+      [disabled]="!comment()"
+      [isLoading]="commentSendIsLoading()"
+      (click)="onSendClick()"
+    >
+      Hozzáadás
+    </button>
+  </div>
+</ng-template>

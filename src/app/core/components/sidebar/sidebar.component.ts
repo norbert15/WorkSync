@@ -32,7 +32,7 @@ export class SidebarComponent {
   // TODO: role alapján beállítani
   public sidebarItems = signal<Array<SidebarItem>>([
     { icon: 'bi bi-calendar3', label: 'Naptár', route: APP_PATHS.calendar },
-    { icon: 'bi bi-github', label: 'Branches', route: APP_PATHS.branches.root, count: 3 },
+    { icon: 'bi bi-github', label: 'Publikációk', route: APP_PATHS.publications, count: 3 },
     { icon: 'bi bi-database', label: 'API Projektek', route: APP_PATHS.chatRooms.root },
     { icon: 'bi bi-chat-dots', label: 'Csevegő szobák', route: APP_PATHS.chatRooms.root },
     { icon: 'bi bi-clock-history', label: 'Szabadságok', route: APP_PATHS.holidays.root },

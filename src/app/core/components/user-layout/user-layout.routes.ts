@@ -10,10 +10,10 @@ export const USER_LAYOUT_ROUTES: Routes = [
       ),
   },
   {
-    path: APP_PATHS.branches.root,
+    path: APP_PATHS.publications,
     loadComponent: () =>
-      import('../../../components/private/branches/branches.component').then(
-        (component) => component.BranchesComponent,
+      import('../../../components/private/publications/publications.component').then(
+        (component) => component.PublicationsComponent,
       ),
   },
   {
