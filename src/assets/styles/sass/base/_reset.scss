@@ -72,3 +72,7 @@ hr {
   scrollbar-width: thin; /* Vékony sáv */
   scrollbar-color: colors.$primary #f1f1f1; /* Csúszka és háttérszín */
 }
+
+input[type="checkbox"] {
+  appearance: checkbox !important;
+}

@@ -24,3 +24,8 @@ export enum GoogleCalendarResponseStatus {
   TENTATIVE = 'tentative', // A meghívott bizonytalan (esetleg eljön).
   ACCEPTED = 'accepted', // A meghívott elfogadta a meghívást.
 }
+
+export enum RepositroyEnum {
+  PUBLISH = 'publish',
+  ACTIVE = 'active',
+}

@@ -1,0 +1,20 @@
+@use "../../../../../assets/styles/sass/base/variables/colors" as colors;
+
+.monogram {
+  font-size: 12px;
+  padding: 10px;
+  background-color: colors.$primary;
+  color: white;
+  border-radius: 50px;
+  height: max-content;
+
+  &--current-user {
+    background-color: colors.$success;
+  }
+}
+
+.empty-comments-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

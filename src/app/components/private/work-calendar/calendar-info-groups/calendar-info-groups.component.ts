@@ -12,13 +12,7 @@ import {
   TemplateRef,
   viewChild,
 } from '@angular/core';
-
-import { ButtonComponent } from '../../../reusables/button/button.component';
-import {
-  CalendarRegisterType,
-  CalendarTodayEventTaskType,
-} from '../../../../models/calendar.model';
-import { UserFirebaseService } from '../../../../services/firebase/user-firebase.service';
+import { FormsModule } from '@angular/forms';
 import {
   catchError,
   finalize,
@@ -30,15 +24,21 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
+import moment from 'moment';
+
+import { ButtonComponent } from '../../../reusables/button/button.component';
+import {
+  CalendarRegisterType,
+  CalendarTodayEventTaskType,
+} from '../../../../models/calendar.model';
+import { UserFirebaseService } from '../../../../services/firebase/user-firebase.service';
 import { IUser, IUserWorkStatus } from '../../../../models/user.model';
 import { PopupService } from '../../../../services/popup.service';
-import { FormsModule } from '@angular/forms';
 import { DialogModel } from '../../../../models/dialog.model';
 import { DialogsService } from '../../../../services/dialogs.service';
-import moment from 'moment';
 import { CalendarFirebaseService } from '../../../../services/firebase/calendar-firebase.service';
 import { CalendarEventEnum } from '../../../../core/constans/enums';
-import { BranchFirebaseService } from '../../../../services/firebase/branch-firebase.service';
+import { PublicationFirebaseService } from '../../../../services/firebase/publication-firebase.service';
 
 type EventType = {
   name: string;
@@ -84,7 +84,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     const userWorkStatus = this.userWorkStatus();
     const todayTemplate = this.todayTemplate();
     const events = this.events();
-    const branches = this.branchFirebaseService.branchesForPublications();
+    const branches = this.publicationFirebaseService.branchesForPublications();
 
     const todayEvents: Array<EventType> = [
       {
@@ -165,7 +165,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
   private readonly popupService = inject(PopupService);
   private readonly dialogService = inject(DialogsService);
   private readonly calendarFirebaseSevice = inject(CalendarFirebaseService);
-  private readonly branchFirebaseService = inject(BranchFirebaseService);
+  private readonly publicationFirebaseService = inject(PublicationFirebaseService);
 
   public ngOnInit(): void {
     this.fetchUserWorkStatus();

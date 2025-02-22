@@ -1,6 +1,17 @@
 @use "../../../../assets/styles/sass/base/variables/colors" as colors;
 @use "../../../../assets/styles/sass/base/variables/media" as media;
 
+:host::ng-deep {
+  .cdk-drag-placeholder {
+    display: none !important;
+  }
+}
+
+.publications {
+  display: flex;
+  flex-direction: column;
+}
+
 .repository-card {
   padding: 15px 10px;
   border-radius: 12px;
@@ -18,13 +29,12 @@
 }
 
 .left-side {
-  width: calc(100% - 400px);
+  width: 100%;
+  order: 1;
 }
 
 .branches-container {
-  max-width: 400px;
   width: 100%;
-  min-height: 350px;
 
   .repository-card {
     padding: 15px;
@@ -45,24 +55,38 @@
   width: 100%;
 }
 
-@include media.desktop {
+.line-height-0 {
+  line-height: 0;
+}
+
+@include media.tablet {
   .flex-item {
     width: calc(50% - 5px);
+  }
+}
+
+@include media.desktop {
+  .publications {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  .flex-item {
+    width: calc(50% - 5px);
+  }
+
+  .left-side {
+    width: calc(100% - 400px);
+    order: unset;
+  }
+
+  .branches-container {
+    max-width: 400px;
   }
 }
 
 @media screen and (min-width: 1800px) {
   .flex-item {
     width: calc(33% - 3px);
-  }
-}
-
-.line-heigth-0 {
-  line-height: 0;
-}
-
-:host::ng-deep {
-  .cdk-drag-placeholder {
-    display: none !important;
   }
 }

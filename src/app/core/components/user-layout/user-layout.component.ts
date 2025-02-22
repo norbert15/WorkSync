@@ -1,7 +1,8 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { catchError, Observable, of, ReplaySubject, switchMap, takeUntil, tap } from 'rxjs';
+import { catchError, of, ReplaySubject, switchMap, takeUntil, tap } from 'rxjs';
+import moment from 'moment';
 
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { DialogsComponent } from '../dialogs/dialogs.component';
@@ -9,10 +10,10 @@ import { GoogleAuthService } from '../../../services/google/google-auth.service'
 import { UserFirebaseService } from '../../../services/firebase/user-firebase.service';
 import { IUser } from '../../../models/user.model';
 import { PopupService } from '../../../services/popup.service';
-import { BranchFirebaseService } from '../../../services/firebase/branch-firebase.service';
-import moment from 'moment';
+import { PublicationFirebaseService } from '../../../services/firebase/publication-firebase.service';
 import { IBranch } from '../../../models/branch.model';
 import { DeviceType, DeviceTypeService } from '../../../services/device-type.service';
+import { RepositroyEnum } from '../../constans/enums';
 
 @Component({
   selector: 'app-user-layout',
@@ -32,7 +33,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly userFirebaseService = inject(UserFirebaseService);
   private readonly popupService = inject(PopupService);
-  private readonly branchFirebaseService = inject(BranchFirebaseService);
+  private readonly publicationFirebaseService = inject(PublicationFirebaseService);
   private readonly deviceTypeService = inject(DeviceTypeService);
 
   public ngOnInit(): void {
@@ -47,8 +48,8 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
   }
 
   private fetchBarnchForPublications(): void {
-    this.branchFirebaseService
-      .getBranches('publish')
+    this.publicationFirebaseService
+      .getBranches(RepositroyEnum.PUBLISH)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (branches: Array<IBranch>) => {
@@ -68,7 +69,7 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
             })
             .sort((a, b) => a.created.localeCompare(b.created));
 
-          this.branchFirebaseService.setBranchesForPublish(data);
+          this.publicationFirebaseService.setBranchesForPublish(data);
         },
       });
   }

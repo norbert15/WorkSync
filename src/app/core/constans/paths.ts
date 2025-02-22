@@ -8,9 +8,7 @@ export const APP_PATHS = {
   holidays: {
     root: 'holidays',
   },
-  branches: {
-    root: 'branches',
-  },
+  publications: 'publications',
   users: {
     root: 'users',
   },
