@@ -1,36 +1,16 @@
 @if (dialog()) {
-  <div [ngClass]="['dialog', dialog()!.class.join(' '), 'dialog--' + dialog()?.size]" appFade>
+  <div [ngClass]="['dialog', 'dialog--' + dialog()?.size]" appFade>
     <div class="dialog-header">
       <div class="headline-text-normal">{{ dialog()?.title }}</div>
-      @if (dialog()?.headerCloseButton) {
-        <i class="bi bi-x-circle cursor-pointer" (click)="onCloseClick()"></i>
-      }
+      <i class="bi bi-x-circle cursor-pointer" (click)="onCloseClick()"></i>
     </div>
     <div class="dialog-content">
-      <!-- Eltávolítás üzenet vagy template -->
-      @if (dialog()?.deleteMessage) {
-        <div class="dialog-content--delete-message" [innerHTML]="dialog()?.deleteMessage"></div>
-      } @else {
-        <ng-container [ngTemplateOutlet]="dialog()?.content || null"></ng-container>
-      }
+      <ng-container [ngTemplateOutlet]="dialog()!.content ?? null"></ng-container>
     </div>
     <div class="dialog-footer">
-      <!-- Saját footer tempalte vagy beépített delete vagy footer gombok -->
       @if (dialog()?.footer) {
         <ng-container [ngTemplateOutlet]="dialog()!.footer!"></ng-container>
-      } @else if (dialog()?.isDelete) {
-        <div class="dialog-footer-delete">
-          <button app-button color="transparent" (click)="onCloseClick()">Bezár</button>
-          <button
-            app-button
-            color="danger"
-            (click)="onStartDeleteClick()"
-            [isLoading]="dialog()!.isDeleteLoading()"
-          >
-            Eltávolítás
-          </button>
-        </div>
-      } @else if (dialog()?.footerCloseButton) {
+      } @else {
         <div class="dialog-footer-cancel">
           <button app-button color="primary" (click)="onCloseClick()">Bezár</button>
         </div>
@@ -40,3 +20,26 @@
 
   <div class="dialog__bg" appFade></div>
 }
+
+<ng-template #defaultContentTemplate>
+  <div
+    class="dialog-content--delete-message"
+    [innerHTML]="dialog()?.templateConfig?.contentText"
+  ></div>
+</ng-template>
+<ng-template #defaultFooterTemplate>
+  <div class="config-btn-group">
+    <button app-button color="transparent" (click)="onCloseClick()">Bezár</button>
+
+    @if (dialog()?.templateConfig?.triggerBtnLabel) {
+      <button
+        app-button
+        [color]="dialog()?.templateConfig?.triggerBtnColor ?? 'primary'"
+        [isLoading]="dialog()!.triggerIsLoading()"
+        (click)="onTriggerClick()"
+      >
+        {{ dialog()?.templateConfig?.triggerBtnLabel }}
+      </button>
+    }
+  </div>
+</ng-template>

@@ -5,9 +5,7 @@ export const APP_PATHS = {
   chatRooms: {
     root: 'chats',
   },
-  holidays: {
-    root: 'holidays',
-  },
+  holidays: 'holidays',
   publications: 'publications',
   users: {
     root: 'users',

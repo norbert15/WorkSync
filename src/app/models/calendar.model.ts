@@ -6,10 +6,11 @@ import {
 
 export interface ICalendarEvent {
   id: string;
-  type: string;
+  type: CalendarEventEnum;
   summary: string;
   description: string | null;
   location: string | null;
+  userId: string;
   organizer: {
     email: string;
     displayName?: string;
@@ -43,7 +44,7 @@ export type CalendarRegisterType = {
   organizerEmail: string;
   organizerDisplayName: string;
   summary: string;
-  description: string;
+  description: string | null;
   type: CalendarEventEnum;
 };
 

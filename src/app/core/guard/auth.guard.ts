@@ -15,9 +15,9 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   const userPayload = authFirebaseService.decodeAccessToken();
 
-  if (userPayload && userPayload.user_id) {
+  if (userPayload && userPayload.userId) {
     const userFirebaseService = inject(UserFirebaseService);
-    return userFirebaseService.getUserDetails(userPayload.user_id).pipe(
+    return userFirebaseService.getUserDetails(userPayload.userId).pipe(
       catchError(() => {
         popupService.add({
           details: 'Hiba történt a felhasználói adatok lekérdezése során.',

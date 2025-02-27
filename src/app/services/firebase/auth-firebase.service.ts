@@ -74,7 +74,12 @@ export class AuthFirebaseService {
   public decodeAccessToken(): IUserPayload | null {
     if (this.accessToken) {
       const jwtHelper = new JwtHelperService();
-      this._userPayload.set(jwtHelper.decodeToken(this.accessToken));
+      const payload = jwtHelper.decodeToken(this.accessToken);
+
+      this._userPayload.set({
+        email: payload?.email,
+        userId: payload?.user_id,
+      });
       return this._userPayload();
     }
 

@@ -50,6 +50,13 @@ import { PopupService } from '../../../services/popup.service';
 import { DialogsService } from '../../../services/dialogs.service';
 import { DialogModel } from '../../../models/dialog.model';
 
+type ResultType = {
+  year: number;
+  month: number;
+  byInterval: boolean;
+  payload: { accessToken: string; refreshToken: string } | null;
+};
+
 @Component({
   selector: 'app-work-calendar',
   standalone: true,
@@ -93,8 +100,6 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
 
   public month = model(new Date().getMonth() + 1);
   public year = model(new Date().getFullYear());
-  /* public month = model(9);
-  public year = model(2024); */
   private year$ = toObservable(this.year);
   private month$ = toObservable(this.month);
 
@@ -123,8 +128,9 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
   public selectedGoogleCalendarEvent = signal<ICalendarEvent | null>(null);
   public selectedGoogleCalendarTask = signal<ICalendarTask | null>(null);
 
+  private readonly INTERVAL_TIME = 600000;
   private readonly destroyed$ = new ReplaySubject<void>(1);
-  private readonly interval$ = interval(600000); //600000
+  private readonly interval$ = interval(this.INTERVAL_TIME);
 
   private readonly deviceTypeSerivce$ = inject(DeviceTypeService);
   private readonly googleCalendarService = inject(GoogleCalendarService);
@@ -135,7 +141,7 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
   private readonly popupService = inject(PopupService);
 
   public ngOnInit(): void {
-    this.fetchGoogleCalendarEvents();
+    this.fetchAllCalendarEvents();
     this.fetchDeviceType();
   }
 
@@ -145,78 +151,9 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
   }
 
   public fetchCalendarEvents(): void {
-    this.calendarFirebaseService
-      .getCalendarEvents(this.year(), this.month())
-      .pipe(take(1))
-      .subscribe({
-        next: (calendarEvents) => {
-          this.calendarEvents.set(calendarEvents);
-        },
-      });
-  }
-
-  public fetchGoogleCalendarEvents(): void {
-    this.userFirebaseService.user$
-      .pipe(
-        takeUntil(this.destroyed$),
-        switchMap((user: IUser | null) => {
-          this.user.set(user);
-          if (user && user.googleRefreshToken) {
-            return merge(
-              combineLatest({
-                year: this.year$,
-                month: this.month$,
-                payload: this.googleAuthService.googleApiPayload$,
-                byInterval: of(false),
-              }),
-              this.interval$.pipe(
-                switchMap(() =>
-                  combineLatest({
-                    year: this.year$,
-                    month: this.month$,
-                    payload: this.googleAuthService.googleApiPayload$,
-                    byInterval: of(true),
-                  }),
-                ),
-              ),
-            );
-          }
-
-          return of(null);
-        }),
-        switchMap((result) => {
-          if (result && result.payload) {
-            const todayDate = moment();
-            const isToday =
-              todayDate.year() === result.year && todayDate.month() + 1 === result.month;
-
-            const combinedObservable: Array<Observable<any>> = [
-              this.getGoogleCalendarEventsObservable(result.year, result.month, isToday),
-              this.getGoogleCalendarTasksObservable(result.year, result.month, isToday),
-            ];
-
-            if (result.byInterval && !isToday) {
-              combinedObservable.push(
-                this.getGoogleCalendarEventsObservable(
-                  todayDate.year(),
-                  todayDate.month() + 1,
-                  true,
-                ),
-                this.getGoogleCalendarTasksObservable(
-                  todayDate.year(),
-                  todayDate.month() + 1,
-                  true,
-                ),
-              );
-            }
-
-            return combineLatest(combinedObservable);
-          }
-
-          return of(null);
-        }),
-      )
-      .subscribe();
+    if (this.user()) {
+      this.getCalendarEventsObservable(this.year(), this.month()).pipe(take(1)).subscribe();
+    }
   }
 
   public onCalendarEventSelect(event: ICalendarEvent): void {
@@ -233,7 +170,7 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
     }
 
     if (event.type === CalendarEventEnum.DAY_START || event.type === CalendarEventEnum.DAY_END) {
-      this.calendarInfoGroupsComponent()?.onOpenEndOfDayDialog();
+      this.calendarInfoGroupsComponent()?.onOpenEndOfDayDialog(event);
       return;
     }
 
@@ -251,18 +188,102 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
     );
   }
 
+  private fetchAllCalendarEvents(): void {
+    this.userFirebaseService.user$
+      .pipe(
+        takeUntil(this.destroyed$),
+        switchMap((user: IUser | null) => this.handleDataChangeObservable(user)),
+        switchMap((result) => this.handleResultObservable(result)),
+      )
+      .subscribe();
+  }
+
+  private handleDataChangeObservable(user: IUser | null): Observable<ResultType | null> {
+    this.user.set(user);
+
+    if (!user) {
+      return of(null);
+    }
+
+    const combinedObservable = {
+      year: this.year$,
+      month: this.month$,
+      payload: user.googleRefreshToken ? this.googleAuthService.googleApiPayload$ : of(null),
+    };
+
+    return merge(
+      combineLatest({
+        ...combinedObservable,
+        byInterval: of(false),
+      }),
+      this.interval$.pipe(
+        switchMap(() =>
+          combineLatest({
+            ...combinedObservable,
+            byInterval: of(true),
+          }),
+        ),
+      ),
+    );
+  }
+
+  private handleResultObservable(result: ResultType | null): Observable<Array<any> | null> {
+    if (!result) {
+      return of(null);
+    }
+
+    const combinedObservable: Array<Observable<any>> = [
+      this.getCalendarEventsObservable(result.year, result.month),
+    ];
+
+    if (result.payload) {
+      const todayDate = moment();
+      const isToday = todayDate.year() === result.year && todayDate.month() + 1 === result.month;
+
+      combinedObservable.push(
+        this.getGoogleCalendarEventsObservable(result.year, result.month, isToday),
+        this.getGoogleCalendarTasksObservable(result.year, result.month, isToday),
+      );
+
+      if (result.byInterval && !isToday) {
+        combinedObservable.push(
+          this.getGoogleCalendarEventsObservable(todayDate.year(), todayDate.month() + 1, true),
+          this.getGoogleCalendarTasksObservable(todayDate.year(), todayDate.month() + 1, true),
+        );
+      }
+    }
+
+    return combineLatest(combinedObservable);
+  }
+
+  private getCalendarEventsObservable(
+    year: number,
+    month: number,
+  ): Observable<Array<ICalendarEvent> | null> {
+    return this.calendarFirebaseService
+      .getCalendarEvents(year, month, this.user()!.id, this.user()!.role)
+      .pipe(
+        tap((calendarEvents) => {
+          this.calendarEvents.set(calendarEvents);
+        }),
+        catchError(() => of(null)),
+      );
+  }
+
   private getGoogleCalendarEventsObservable(
     year: number,
     month: number,
     today: boolean,
   ): Observable<Array<ICalendarEvent> | null> {
-    return this.googleCalendarService.getEvents(year, month).pipe(
+    return this.googleCalendarService.getEvents(year, month, this.user()!.id).pipe(
       tap((events) => {
         this.googleCalendarEvents.set(events);
+
         if (today) {
           const now = moment();
           const nowDate = now.format('YYYY. MM. DD.');
           now.minute(now.minute() + 10);
+
           this.googleCalendarTodayEvents.set(
             events
               .filter(

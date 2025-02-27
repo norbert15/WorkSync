@@ -57,11 +57,11 @@
 
 <ng-template #todayTemplate>
   <div class="text-end">
-    @if (!userWorkStatus()) {
+    @if (!ownWorkStatus()) {
       <button app-button (click)="onStartTheDayClick()">Munka kezdés</button>
-    } @else if (!userWorkStatus()!.workEnd) {
+    } @else if (!ownWorkStatus()!.workEnd) {
       <button app-button (click)="onOpenEndOfDayDialog()">Munka befejezése</button>
-    } @else if (userWorkStatus()?.report) {
+    } @else if (ownWorkStatus()?.report) {
       <span
         class="text-decoration-underline user-select-none cursor-pointer"
         (click)="onOpenEndOfDayDialog()"
@@ -76,7 +76,7 @@
   <div class="d-flex gap-4 mb-4">
     <div class="w-50">
       <div class="label-strong">Nap kezdete</div>
-      <div>{{ userWorkStatus()?.workStart ?? "-" }}</div>
+      <div>{{ startOfDatetime() || "-" }}</div>
     </div>
     <div class="w-50">
       <div class="label-strong">Nap vége</div>
@@ -86,19 +86,20 @@
 
   <div>
     <div class="label-strong">Nap végi jelentés</div>
-    <textarea
-      rows="4"
-      placeholder="Összegzés..."
-      [(ngModel)]="userReport"
-      [disabled]="!!userWorkStatus()?.workEnd"
-    ></textarea>
+    @if (onlyView()) {
+      <div class="end-of-day-container">
+        {{ userReport() }}
+      </div>
+    } @else {
+      <textarea rows="4" placeholder="Összegzés..." [(ngModel)]="userReport"></textarea>
+    }
   </div>
 </ng-template>
 <ng-template #endOfDayButtonDialogTemplate>
   <button app-button color="transparent" class="mb-2 w-100" (click)="onCloseDialogClick()">
     Bezár
   </button>
-  @if (userWorkStatus() && !userWorkStatus()?.workEnd) {
+  @if (ownWorkStatus() && !ownWorkStatus()?.workEnd && !onlyView()) {
     <button
       app-button
       class="mb-2 w-100"

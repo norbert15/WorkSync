@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
 import { PopupComponent } from './core/components/popup/popup.component';
 
 @Component({

@@ -1,0 +1,91 @@
+<div class="app-table-container" [ngStyle]="{ 'min-width': minWidth() }">
+  <table class="app-table">
+    <thead class="app-table-head">
+      <tr>
+        @for (title of titles(); track $index) {
+          <th [class]="title.class ?? ''">
+            <div class="app-table-head-item">
+              <span>{{ title.text }}</span>
+
+              @if (title.order) {
+                <div class="order-icons">
+                  <div
+                    [ngClass]="{
+                      'order-icon--active':
+                        activeSort()?.index === $index && !activeSort()?.lowToHigh,
+                    }"
+                    class="order-icon"
+                    (click)="onSetActiveSortingClick($index, false)"
+                  >
+                    ▲
+                  </div>
+                  <div
+                    [ngClass]="{
+                      'order-icon--active':
+                        activeSort()?.index === $index && activeSort()?.lowToHigh,
+                    }"
+                    class="order-icon"
+                    (click)="onSetActiveSortingClick($index, true)"
+                  >
+                    ▼
+                  </div>
+                </div>
+              }
+            </div>
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody class="app-table-body">
+      @for (row of displayedRows(); let rowIndex = $index; track rowIndex) {
+        <tr class="app-table-body-row">
+          @for (
+            cell of makeIterable(row.cells).slice(0, titles().length);
+            let cellIndex = $index;
+            track cellIndex
+          ) {
+            <td>
+              @if (cell.templateRef) {
+                <ng-container
+                  [ngTemplateOutlet]="cell.templateRef"
+                  [ngTemplateOutletContext]="{ $implicit: row }"
+                ></ng-container>
+              } @else if (cell.operations) {
+                <div class="app-table-body-row-operations">
+                  @for (operation of cell.operations; track $index) {
+                    @if (operation.templateRef) {
+                      <ng-container
+                        [ngTemplateOutlet]="operation.templateRef"
+                        [ngTemplateOutletContext]="{ $implicit: row }"
+                      ></ng-container>
+                    } @else {
+                      <i
+                        (click)="onOperationClick(row, operation)"
+                        [class]="OPERATIONS[operation.name]"
+                      ></i>
+                    }
+                  }
+                </div>
+              } @else {
+                <div
+                  [ngClass]="{ ellipsis: cell.truncate }"
+                  [class]="cell.class ?? ''"
+                  [innerHTML]="cell.value"
+                  (click)="onCellClick(row, cell)"
+                ></div>
+              }
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr>
+          <td [colSpan]="titles().length">
+            <div class="empty-placholder">
+              {{ rows().length ? notFoundPlaceholder() : emptyPlaceholder() }}
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

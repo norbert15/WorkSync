@@ -1,0 +1,42 @@
+$chat-color: #61bbec;
+
+.chat-area {
+  border-radius: 16px;
+  border-color: $chat-color;
+  min-height: 65px;
+}
+
+.chat-send-btn {
+  position: absolute;
+  color: $chat-color;
+  font-size: 20px;
+  cursor: pointer;
+  bottom: 12px;
+  right: 12px;
+}
+
+.chat-messages-container {
+  overflow: auto;
+  height: calc(100% - 90px);
+  width: 100%;
+  position: absolute;
+}
+
+.chat-box-label {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background: white;
+}
+
+.empty-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 700;
+}
+
+.system-message {
+  background-color: #50b3e6;
+}

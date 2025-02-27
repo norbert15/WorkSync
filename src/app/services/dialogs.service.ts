@@ -19,14 +19,14 @@ export class DialogsService {
   public removeLastOpenedDialog(): void {
     const dialogs = this._dialogsSubject$.value;
     const removedDiaog = dialogs.pop();
-    removedDiaog?.complete();
+    removedDiaog?.closeDialog();
 
     this._dialogsSubject$.next([...dialogs]);
   }
 
   public clearAll(): void {
     this._dialogsSubject$.value.forEach((dialog) => {
-      dialog.complete();
+      dialog.closeDialog();
     });
     this._dialogsSubject$.next([]);
   }

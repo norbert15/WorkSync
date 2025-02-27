@@ -5,11 +5,7 @@
 ></app-calendar-info-groups>
 
 <div class="mb-4 d-flex gap-3 justify-content-between">
-  <app-datepicker
-    [(year)]="year"
-    [(month)]="month"
-    (valuesChange)="fetchCalendarEvents()"
-  ></app-datepicker>
+  <app-datepicker [(year)]="year" [(month)]="month"></app-datepicker>
   <app-calendar-event-creator
     [calendarEvent]="selectedCalendarEvent()"
     (eventSave)="fetchCalendarEvents()"
@@ -81,15 +77,19 @@
       {{ calendarEvent.summary }}
     </div>
     <div class="calendar-grid-item-event-options">
-      <i
-        [class]="
-          calendarEvent.organizer.email === user()?.email &&
-          ![CALENDAR_EVENTS.DAY_END, CALENDAR_EVENTS.DAY_START].includes(calendarEvent.type)
-            ? 'bi bi-pen'
-            : 'bi bi-eye'
-        "
-        (click)="onCalendarEventSelect(calendarEvent)"
-      ></i>
+      @if (
+        calendarEvent.type !== CALENDAR_EVENTS.DAY_START || calendarEvent.userId === user()?.id
+      ) {
+        <i
+          [class]="
+            calendarEvent.userId.email === user()?.id &&
+            ![CALENDAR_EVENTS.DAY_END, CALENDAR_EVENTS.DAY_START].includes(calendarEvent.type)
+              ? 'bi bi-pen'
+              : 'bi bi-eye'
+          "
+          (click)="onCalendarEventSelect(calendarEvent)"
+        ></i>
+      }
     </div>
     <div class="small">
       <div>

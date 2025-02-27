@@ -8,12 +8,12 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { DialogsComponent } from '../dialogs/dialogs.component';
 import { GoogleAuthService } from '../../../services/google/google-auth.service';
 import { UserFirebaseService } from '../../../services/firebase/user-firebase.service';
-import { IUser } from '../../../models/user.model';
-import { PopupService } from '../../../services/popup.service';
 import { PublicationFirebaseService } from '../../../services/firebase/publication-firebase.service';
-import { IBranch } from '../../../models/branch.model';
 import { DeviceType, DeviceTypeService } from '../../../services/device-type.service';
+import { PopupService } from '../../../services/popup.service';
 import { RepositroyEnum } from '../../constans/enums';
+import { IUser } from '../../../models/user.model';
+import { IBranch } from '../../../models/branch.model';
 
 @Component({
   selector: 'app-user-layout',

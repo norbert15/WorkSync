@@ -1,9 +1,10 @@
 <div class="app-main">
   @if (deviceType() !== "mobile") {
-    <app-sidebar (openedChange)="sidebarIsOpened.set($event)"></app-sidebar>
+    <app-sidebar [(opened)]="sidebarIsOpened"></app-sidebar>
   }
 
   <main
+    class="stretch"
     [ngClass]="deviceType() === 'mobile' ? '' : sidebarIsOpened() ? 'max-distance' : 'min-distance'"
   >
     <router-outlet></router-outlet>

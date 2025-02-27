@@ -1,5 +1,9 @@
 @use "../../../../assets/styles/sass/base/variables/colors" as colors;
 
+:host {
+  position: absolute;
+}
+
 .popup-groups {
   position: fixed;
   bottom: 50px;

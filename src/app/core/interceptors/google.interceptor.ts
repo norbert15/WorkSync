@@ -1,8 +1,9 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 import { inject } from '@angular/core';
-import { GoogleAuthService } from '../../services/google/google-auth.service';
 import { catchError, switchMap, throwError } from 'rxjs';
+
+import { environment } from '../../../environments/environment';
+import { GoogleAuthService } from '../../services/google/google-auth.service';
 
 export const googleAuthInterceptor: HttpInterceptorFn = (req, next) => {
   const googleAuthService = inject(GoogleAuthService);

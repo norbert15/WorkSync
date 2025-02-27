@@ -10,12 +10,14 @@ import {
   query,
   where,
   addDoc,
+  setDoc,
 } from '@angular/fire/firestore';
 import { BehaviorSubject, from, map, Observable, of, switchMap, take } from 'rxjs';
 
 import { IUser, IUserBase, IUserWorkStatus } from '../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import moment from 'moment';
+import { UserEnum } from '../../core/constans/enums';
 
 @Injectable({
   providedIn: 'root',
@@ -72,9 +74,9 @@ export class UserFirebaseService {
   public startUserWorkDay(userId: string, startDate: string): Observable<string> {
     const userWorkStatusesRef = collection(this.firestore, this.USER_WORK_STATUS_COLLECTION);
     const data: Partial<IUserWorkStatus> = {
-      created: moment(startDate).format('YYYY. MM. DD.'),
+      created: moment(startDate, ['YYYY. MM. DD. HH:mm:ss']).format('YYYY. MM. DD.'),
       userId: userId,
-      workStart: moment(startDate).format('YYYY. MM. DD. HH:mm'),
+      workStart: moment(startDate, ['YYYY. MM. DD. HH:mm:ss']).format('YYYY. MM. DD. HH:mm'),
       workEnd: null,
       report: null,
     };
@@ -91,7 +93,27 @@ export class UserFirebaseService {
     return from(updateDoc(userDocRef, data)).pipe(map(() => docId));
   }
 
+  public getAllUsers(): Observable<Array<IUser>> {
+    const usersRef = collection(this.firestore, this.USERS_COLLECTION);
+    return collectionData(usersRef, { idField: 'id' }) as Observable<Array<IUser>>;
+  }
+
   public setUser(user: IUser): void {
     this._user.next(user);
+  }
+
+  private addTestUser(): void {
+    const userRef = doc(this.firestore, this.USERS_COLLECTION, 'HuTYMa6gx1VUAnIfSDVqBlLx4DX2');
+    const user: Partial<IUser> = {
+      email: 'szilagyi.tamas@bnorbi1599.com',
+      firstName: 'Tamás',
+      lastName: 'Szilágyi',
+      jobTitle: 'Full stack developer',
+      phone: '06304445433',
+      role: UserEnum.ADMINISTRATOR,
+      googleRefreshToken: '',
+    };
+
+    from(setDoc(userRef, user)).subscribe();
   }
 }

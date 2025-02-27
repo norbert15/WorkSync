@@ -1,0 +1,26 @@
+<button app-button (click)="onShowHolidayRequestDialogClick()">Új szabadság kérelem</button>
+
+<ng-template #dialogContentTemplate>
+  <form [formGroup]="holidayForm" class="mt-4">
+    <div class="d-flex gap-3 mb-3">
+      <app-input formControlName="start" label="Kezdete" type="date"></app-input>
+      <app-input formControlName="end" label="Vége" type="date"></app-input>
+    </div>
+
+    <textarea formControlName="reason" rows="4" placeholder="Indoklás"></textarea>
+  </form>
+</ng-template>
+<ng-template #dialogFooterTemplate>
+  <button app-button color="transparent" class="mb-2 w-100" (click)="onCloseDialogClick()">
+    Bezár
+  </button>
+  <button
+    [disabled]="holidayForm.invalid"
+    app-button
+    class="w-100"
+    (click)="onSendClick()"
+    [isLoading]="isLoading()"
+  >
+    {{ holidayRequest() ? "Módosítás" : "Igénylés" }}
+  </button>
+</ng-template>
