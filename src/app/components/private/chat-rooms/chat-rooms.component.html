@@ -1,1 +1,57 @@
-<p>chat-rooms works!</p>
+<div class="d-flex flex-grow-1 gap-3">
+  <div class="stretch">
+    <div class="d-flex gap-2 justify-content-between align-items-center mb-3">
+      <div class="headline-text-medium">Csevegő szobák</div>
+
+      <app-chat-room-dialog-form
+        [users]="usersWithMonogram()"
+        [room]="chatRoomToEdit()"
+        (closed)="chatRoomToEdit.set(null)"
+        (roomCreate)="activeChatRoomId.set($event)"
+      >
+      </app-chat-room-dialog-form>
+    </div>
+    @if (chatRooms().length) {
+      <div class="d-flex gap-2 flex-wrap mb-3">
+        @for (chatRoom of chatRooms(); track $index) {
+          <div
+            (click)="activeChatRoomId.set(chatRoom.id)"
+            class="chat-room"
+            [ngClass]="{ 'chat-room--active': chatRoom.id === activeChatRoomId() }"
+          >
+            <i
+              class="bi me-1"
+              [ngClass]="
+                chatRoom.id === activeChatRoomId() ? 'bi-chat-square-dots' : 'bi-chat-square'
+              "
+            ></i>
+            {{ chatRoom.name }}
+          </div>
+        }
+      </div>
+    }
+    <app-chat-messages
+      class="stretch chat"
+      [chatRoomId]="activeChatRoomId()"
+      [roomOwnerUserId]="activeChatRoom()?.ownedUserId ?? ''"
+      [roomParticipants]="activeChatRoom()?.participants ?? []"
+      (openRoomEditor)="chatRoomToEdit.set(activeChatRoom() ?? null)"
+    ></app-chat-messages>
+  </div>
+  <div class="users-container stretch">
+    <div class="headline-text-medium mb-3">Felhasználók</div>
+    <div class="flex-grow-1 users-container-card">
+      @for (userGroup of userGroups(); track userGroup.name) {
+        <div class="headline-text-normal mb-3">{{ userGroup.name }}</div>
+
+        @for (user of userGroup.users; track user.id) {
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <div class="user-monogram user-monogram--flex">{{ user.monogram }}</div>
+            <div>{{ user.lastName }} {{ user.firstName }}</div>
+          </div>
+        }
+        <hr />
+      }
+    </div>
+  </div>
+</div>

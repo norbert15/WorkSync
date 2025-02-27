@@ -91,7 +91,9 @@ export class SelectComponent<T> implements ControlValueAccessor {
       this.selectedValuesChange.emit(this.selectedOptions());
       this.onChange(this.selectedOptions().map((sc) => sc.value ?? sc.label));
     } else {
-      this.selectedValue.set(option.value ?? (option.label as any));
+      const isSame = option.label === this.selectedValue() || option.value === this.selectedValue();
+
+      this.selectedValue.set(isSame ? null : (option.value ?? (option.label as any)));
       this.selectEvent.emit(this.selectedValue());
       this.onChange(this.selectedValue());
       this.toggleOpened();

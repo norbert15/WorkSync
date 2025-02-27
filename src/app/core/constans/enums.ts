@@ -29,3 +29,16 @@ export enum RepositroyEnum {
   PUBLISH = 'publish',
   ACTIVE = 'active',
 }
+
+export enum TableOperationEnum {
+  EDIT = 'edit',
+  DELETE = 'delete',
+  CHECK = 'checkMark',
+  CANCEL = 'cancel',
+}
+
+export enum HolidayRequestStatus {
+  UNDER_EVALUATION = 'Elbírálás alatt',
+  ACCEPTED = 'Elfogadva',
+  REJECTED = 'Elutasítva',
+}

@@ -8,12 +8,14 @@ import {
   query,
   updateDoc,
   where,
+  writeBatch,
 } from '@angular/fire/firestore';
 import { inject, Injectable } from '@angular/core';
-import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
+import { catchError, filter, forkJoin, from, map, Observable, of } from 'rxjs';
 import moment from 'moment';
 
 import { CalendarRegisterType, ICalendarEvent } from '../../models/calendar.model';
+import { CalendarEventEnum, UserEnum } from '../../core/constans/enums';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +24,12 @@ export class CalendarFirebaseService {
   private readonly CALENDAR_COLLECTION = 'calendar-events';
   private readonly firestore = inject(Firestore);
 
-  public getCalendarEvents(year: number, month: number): Observable<Array<ICalendarEvent>> {
+  public getCalendarEvents(
+    year: number,
+    month: number,
+    userId: string,
+    role: UserEnum,
+  ): Observable<Array<ICalendarEvent>> {
     const calendarCollection = collection(this.firestore, this.CALENDAR_COLLECTION);
 
     const fromDate = moment()
@@ -41,16 +48,32 @@ export class CalendarFirebaseService {
       where('eventStart', '>=', fromDate),
       where('eventStart', '<=', toDate),
     );
-    return from(getDocs(cquery)).pipe(
+
+    const results = from(getDocs(cquery)).pipe(
       map((snapshot) => snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))),
     ) as Observable<Array<ICalendarEvent>>;
+
+    if (role === UserEnum.ADMINISTRATOR) {
+      return results;
+    }
+
+    return results.pipe(
+      map((items) =>
+        items.filter(
+          (item) =>
+            item.userId === userId ||
+            [CalendarEventEnum.HOLIDAY, CalendarEventEnum.OUT_OF_HOME].includes(item.type),
+        ),
+      ),
+    );
   }
 
-  public createEvent(register: CalendarRegisterType): Observable<string[]> {
+  public createEvent(register: CalendarRegisterType, userId: string): Observable<void> {
     const eventStartMoment = moment(register.eventStart, ['YYYY-MM-DDTHH:mm']);
     const eventEndMoment = moment(register.eventEnd, ['YYYY-MM-DDTHH:mm']);
 
     const newEvent: Partial<ICalendarEvent> = {
+      userId: userId,
       attendees: null,
       hangoutLink: null,
       location: null,
@@ -75,25 +98,23 @@ export class CalendarFirebaseService {
       newEvent.eventEndShort = '';
     }
 
-    let days = Math.abs(eventEndMoment.date() - eventStartMoment.date()) || 1;
-    const observables: Array<Observable<string>> = [];
-    const calendarCollection = collection(this.firestore, this.CALENDAR_COLLECTION);
+    let days = eventEndMoment.isValid()
+      ? Math.abs(eventEndMoment.date() - eventStartMoment.date())
+      : 0;
 
-    for (days; days > 0; days--) {
+    const batch = writeBatch(this.firestore);
+
+    for (days; days > -1; days--) {
       newEvent.eventEnd = eventEndMoment.isValid()
         ? `${eventStartMoment.format('YYYY. MM. DD.')} ${eventEndMoment.format('HH:mm:ss')}`
         : null;
-      observables.push(
-        from(addDoc(calendarCollection, { ...newEvent })).pipe(
-          map((doc) => doc.id),
-          catchError(() => of('')),
-        ),
-      );
+
+      batch.set(doc(collection(this.firestore, this.CALENDAR_COLLECTION)), newEvent);
       eventStartMoment.date(eventStartMoment.date() + 1);
       newEvent.eventStart = eventStartMoment.format('YYYY. MM. DD. HH:mm:ss');
     }
 
-    return forkJoin(observables);
+    return from(batch.commit());
   }
 
   /**

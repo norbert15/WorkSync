@@ -30,6 +30,8 @@ import { ButtonComponent } from '../../../reusables/button/button.component';
 import {
   CalendarRegisterType,
   CalendarTodayEventTaskType,
+  ICalendar,
+  ICalendarEvent,
 } from '../../../../models/calendar.model';
 import { UserFirebaseService } from '../../../../services/firebase/user-firebase.service';
 import { IUser, IUserWorkStatus } from '../../../../models/user.model';
@@ -75,13 +77,17 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
 
   public googleCalendarEventsAndTasks = input<Array<CalendarTodayEventTaskType>>([]);
 
+  public userWorkStatusCalendarEvent = input<ICalendar | null>(null);
+
   public calendarSave = output<void>();
 
-  public userWorkStatus = signal<IUserWorkStatus | null>(null);
+  public onlyView = signal(false);
+
+  public ownWorkStatus = signal<IUserWorkStatus | null>(null);
 
   public infoCards = computed<Array<InfoCardType>>(() => {
     const calendarEventsAndTasks = this.googleCalendarEventsAndTasks();
-    const userWorkStatus = this.userWorkStatus();
+    const userWorkStatus = this.ownWorkStatus();
     const todayTemplate = this.todayTemplate();
     const events = this.events();
     const branches = this.publicationFirebaseService.branchesForPublications();
@@ -152,6 +158,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
 
   public userReport = model('');
   public endOfDayDatetime = model('');
+  public startOfDatetime = model('');
   public endOfDayBtnIsLoading = signal(false);
 
   private user: IUser | null = null;
@@ -181,10 +188,21 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     this.dialogService.removeLastOpenedDialog();
   }
 
-  public onOpenEndOfDayDialog(): void {
-    const workEnd = this.userWorkStatus()?.workEnd;
+  public onOpenEndOfDayDialog(calendarEvent: ICalendarEvent | null = null): void {
+    let { workEnd, workStart } = this.ownWorkStatus()!;
+    this.onlyView.set(!!workEnd);
+    this.userReport.set(this.ownWorkStatus()?.report ?? '');
+
+    if (calendarEvent) {
+      workStart = calendarEvent.eventStart;
+      workEnd = calendarEvent.eventEnd;
+      this.onlyView.set(true);
+      this.userReport.set(calendarEvent.description ?? '');
+    }
+
     this.endOfDayDatetime.set(workEnd ?? moment().format('YYYY. MM. DD. HH:mm'));
-    this.userReport.set(this.userWorkStatus()?.report ?? '');
+    this.startOfDatetime.set(workStart);
+
     const newDialog: DialogModel = new DialogModel(
       workEnd ? 'Munka befejezve' : 'Munka befejezése',
       {
@@ -193,8 +211,9 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
       },
     );
     this.dialogService.addNewDialog(newDialog);
-    newDialog.afterComplete$.pipe(takeUntil(this.destroyed$)).subscribe({
+    newDialog.dialogClosed$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: () => {
+        this.onlyView.set(false);
         this.userReport.set('');
         this.endOfDayDatetime.set('');
       },
@@ -202,7 +221,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
   }
 
   public onEndOfDayClick(): void {
-    const workStatus = this.userWorkStatus();
+    const workStatus = this.ownWorkStatus();
     if (workStatus && !workStatus.workEnd && this.userReport()) {
       const endDateTime = this.endOfDayDatetime() + ':00';
       this.endOfDayBtnIsLoading.set(true);
@@ -219,7 +238,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
             const report = this.userReport();
             this.dialogService.removeLastOpenedDialog();
             return this.addCalendarEventByWorkStatusChange(
-              this.userWorkStatus()!.workStart,
+              this.ownWorkStatus()!.workStart,
               endDateTime,
               CalendarEventEnum.DAY_END,
               report,
@@ -241,7 +260,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
   }
 
   public onStartTheDayClick(): void {
-    if (!this.userWorkStatus() && this.user) {
+    if (!this.ownWorkStatus() && this.user) {
       const startDatetime = moment().format('YYYY. MM. DD. HH:mm:ss');
       this.endOfDayBtnIsLoading.set(true);
       this.userFirebaseService
@@ -281,7 +300,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     endDateTime: string,
     type: CalendarEventEnum,
     report: string,
-  ): Observable<string[]> {
+  ): Observable<void | null> {
     const summary =
       type === CalendarEventEnum.DAY_START ? 'megkezdte a napját' : 'befejezte a napját';
     const userName = `${this.user?.lastName} ${this.user?.firstName}`;
@@ -294,7 +313,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
       summary: `${userName} ${summary}`,
       type: type,
     };
-    return this.calendarFirebaseSevice.createEvent(register).pipe(
+    return this.calendarFirebaseSevice.createEvent(register, this.user!.id).pipe(
       tap(() => {
         this.popupService.add({
           details: 'A művelethez tartozó naptári esemény létrehozva.',
@@ -309,7 +328,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
           severity: 'error',
           title: `Naptári esemény`,
         });
-        return of([]);
+        return of(null);
       }),
     );
   }
@@ -341,7 +360,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (result: IUserWorkStatus | null) => {
-          this.userWorkStatus.set(result);
+          this.ownWorkStatus.set(result);
         },
       });
   }

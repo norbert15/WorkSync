@@ -1,4 +1,4 @@
-import { GoogleCalendarResponseStatus } from './enums';
+import { GoogleCalendarResponseStatus, UserEnum } from './enums';
 
 export const HUN_MONTHS: Array<{ monthName: string; shortName: string; monthNumber: string }> = [
   { monthName: 'Január', shortName: 'Jan', monthNumber: '01' },
@@ -40,3 +40,10 @@ export const GOOGLE_CALENDAR_RESPONES_CLASSES: Record<
 
 export const EMAIL_VALIDATION_REGEX =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+export const HUN_USER_ENUM_LABELS: Record<UserEnum, string> = {
+  [UserEnum.DEVELOPER]: 'Fejlesztő',
+  [UserEnum.ADMINISTRATOR]: 'Adminisztrátor',
+};
+
+export const SYSTEM: { id: string; name: string } = { id: 'SYSTEM', name: 'Rendszer üzenet!' };

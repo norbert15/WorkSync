@@ -140,7 +140,7 @@ export class RepositoryCommentsComponent {
       size: 'normal',
     });
     this.dialogsService.addNewDialog(newDialog);
-    newDialog.afterComplete$.pipe(take(1)).subscribe({
+    newDialog.dialogClosed$.pipe(take(1)).subscribe({
       next: () => {
         this.comment.set('');
       },

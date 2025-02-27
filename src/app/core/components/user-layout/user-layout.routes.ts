@@ -17,7 +17,7 @@ export const USER_LAYOUT_ROUTES: Routes = [
       ),
   },
   {
-    path: APP_PATHS.holidays.root,
+    path: APP_PATHS.holidays,
     loadComponent: () =>
       import('../../../components/private/holidays/holidays.component').then(
         (component) => component.HolidaysComponent,

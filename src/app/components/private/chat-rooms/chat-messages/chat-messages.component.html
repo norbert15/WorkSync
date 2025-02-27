@@ -1,0 +1,63 @@
+<div class="d-flex justify-content-between">
+  <div class="d-flex gap-2 mb-3 flex-wrap">
+    @for (participant of roomParticipants(); track $index) {
+      <div class="user-monogram user-monogram--flex">{{ participant.monogram }}</div>
+    }
+  </div>
+  @if (userId() === roomOwnerUserId()) {
+    <i class="bi bi-pencil-square mt-2 me-2 label-primary" (click)="openRoomEditor.emit()"></i>
+  }
+</div>
+
+<div class="stretch position-relative">
+  <div class="flex-grow-1" [ngStyle]="{ 'min-height': '350px' }">
+    <div #chatContainerRef class="chat-messages-container">
+      @for (chaGroup of chatGroupMessages(); track chaGroup.date) {
+        <div class="mb-3">
+          <div class="fw-bold">{{ chaGroup.date }}</div>
+          <hr />
+
+          @for (chatTimeGroup of chaGroup.timeGroups; track $index) {
+            <div class="mb-3">
+              <div class="flex-grow-1 d-flex gap-2">
+                <div
+                  class="user-monogram user-monogram--flex"
+                  [ngClass]="{
+                    'user-monogram--active': chatTimeGroup.userId === userId(),
+                    'system-message': chatTimeGroup.userId === SYSTEM_ID,
+                  }"
+                >
+                  {{ chatTimeGroup.userMonogram }}
+                </div>
+                <div>
+                  <div class="fw-bold">
+                    {{ chatTimeGroup.userName }}
+                    <span class="small fw-normal ms-1">({{ chatTimeGroup.time }})</span>
+                  </div>
+                  @for (chatMessage of chatTimeGroup.messages; track $index) {
+                    <div [innerHTML]="chatMessage.text"></div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @empty {
+        <div class="empty-placeholder">
+          {{
+            chatRoomId() ? "Még nem került sor üzenet váltásra" : "Nincs csevegő szoba kiválasztva"
+          }}
+        </div>
+      }
+    </div>
+  </div>
+  @if (chatRoomId()) {
+    <div class="chat-container flex-shrink-0">
+      <div class="position-relative">
+        <label for="chat-box" class="label-gray small chat-box-label">Üzenet:</label>
+        <textarea id="chat-box" class="chat-area" [(ngModel)]="message"></textarea>
+        <i class="bi bi-send chat-send-btn" (click)="onSendMessageClick()"></i>
+      </div>
+    </div>
+  }
+</div>

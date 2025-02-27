@@ -44,7 +44,13 @@
           (valueChange)="onGoogleSync($event)"
         ></app-switch-button>
       </div>
-      <button type="submit" class="save-btn" app-button [disabled]="profileForm.invalid">
+      <button
+        type="submit"
+        class="save-btn"
+        app-button
+        [disabled]="profileForm.invalid"
+        [isLoading]="isLoading()"
+      >
         Módosítás
       </button>
     </div>

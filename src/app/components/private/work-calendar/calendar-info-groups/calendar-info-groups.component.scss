@@ -25,3 +25,11 @@ $info-gap: 20px;
     width: calc(25% - 15px);
   }
 }
+
+.end-of-day-container {
+  min-height: 118px;
+  overflow-y: auto;
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 10px;
+}

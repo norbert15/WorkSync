@@ -124,7 +124,17 @@ export function convertToLink(text: string | null): string | null {
         href = `mailto:${match}`;
       }
 
-      return '<a class="blue cursor-pointer" target="_blank" href="' + href + '">' + match + '</a>';
+      return (
+        '<a class="label-primary cursor-pointer" target="_blank" href="' +
+        href +
+        '">' +
+        match +
+        '</a>'
+      );
     },
   );
+}
+
+export function getMonogram(str: string): string {
+  return str.split(' ').reduce((prev, currnet) => `${prev}${currnet.charAt(0)}`, '');
 }

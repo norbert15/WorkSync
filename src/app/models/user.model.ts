@@ -12,10 +12,11 @@ export interface IUser extends IUserBase {
   id: string;
   googleRefreshToken: string;
   role: UserEnum;
+  monogram?: string;
 }
 
 export interface IUserPayload {
-  user_id: string;
+  userId: string;
   email: string;
 }
 

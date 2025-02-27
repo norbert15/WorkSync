@@ -1,6 +1,6 @@
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { catchError, of, ReplaySubject, switchMap, take, takeUntil } from 'rxjs';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { catchError, finalize, of, ReplaySubject, switchMap, take, takeUntil } from 'rxjs';
 
 import { InputComponent } from '../../../reusables/input/input.component';
 import { ButtonComponent } from '../../../reusables/button/button.component';
@@ -8,6 +8,7 @@ import { SwitchButtonComponent } from '../../../reusables/switch-button/switch-b
 import { UserFirebaseService } from '../../../../services/firebase/user-firebase.service';
 import { IUser, IUserBase } from '../../../../models/user.model';
 import { GoogleAuthService } from '../../../../services/google/google-auth.service';
+import { PopupService } from '../../../../services/popup.service';
 
 @Component({
   selector: 'app-profile-data-form',
@@ -19,12 +20,15 @@ import { GoogleAuthService } from '../../../../services/google/google-auth.servi
 export class ProfileDataFormComponent implements OnInit, OnDestroy {
   public profileForm!: FormGroup;
 
+  public isLoading = signal(false);
+
   private user: IUser | null = null;
 
   private readonly destroyed$ = new ReplaySubject<void>(1);
   private readonly userFirebaseService = inject(UserFirebaseService);
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly formBudiler = inject(FormBuilder);
+  private readonly popupService = inject(PopupService);
 
   public ngOnInit(): void {
     this.initForm();
@@ -36,20 +40,8 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  public initForm(): void {
-    this.profileForm = this.formBudiler.nonNullable.group({
-      firstName: [this.user?.firstName, Validators.required],
-      lastName: [this.user?.lastName, Validators.required],
-      phone: [this.user?.phone, Validators.required],
-      email: [this.user?.email, [Validators.required, Validators.email]],
-      jobTitle: [this.user?.jobTitle, Validators.required],
-      hasGoogleSyns: [this.user?.googleRefreshToken !== ''],
-      role: this.formBudiler.control({ value: this.user?.role, disabled: true }),
-    });
-  }
-
   public onSubmit(): void {
-    if (this.profileForm.valid && this.user) {
+    if (this.profileForm.valid && this.user && !this.isLoading()) {
       const form = this.profileForm.getRawValue();
       const userBase: IUserBase = {
         email: form['email'],
@@ -59,12 +51,36 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
         phone: form['phone'],
       };
 
+      this.isLoading.set(true);
+
+      this.popupService.add({
+        details: 'A felhasználói adatok mentése folyamatban...',
+        severity: 'info',
+      });
+
       this.userFirebaseService
         .updateUserDetails(this.user.id, userBase)
-        .pipe(take(1))
+        .pipe(
+          take(1),
+          finalize(() => {
+            this.isLoading.set(false);
+          }),
+        )
         .subscribe({
-          next: () => {},
-          error: () => {},
+          next: () => {
+            this.popupService.add({
+              details: 'A felhasználói adatok mentése sikeresen megtörtént',
+              severity: 'success',
+              title: 'Sikeres művelet!',
+            });
+          },
+          error: () => {
+            this.popupService.add({
+              details: 'A felhasználói adatok mentése során hiba történt',
+              severity: 'error',
+              title: 'Sikertelen művelet!',
+            });
+          },
         });
     }
   }
@@ -86,18 +102,41 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  private initForm(): void {
+    this.profileForm = this.formBudiler.nonNullable.group({
+      firstName: [this.user?.firstName, Validators.required],
+      lastName: [this.user?.lastName, Validators.required],
+      phone: [this.user?.phone, Validators.required],
+      email: [this.user?.email, [Validators.required, Validators.email]],
+      jobTitle: [this.user?.jobTitle, Validators.required],
+      hasGoogleSyns: [this.user?.googleRefreshToken !== ''],
+      role: this.formBudiler.control({ value: this.user?.role, disabled: true }),
+    });
+  }
+
   private revokeGoogleTokens(): void {
+    this.popupService.add({
+      details: 'A google naptár szinkron visszavonása folyamatban...',
+      severity: 'info',
+    });
+
     this.googleAuthService
       .revokeGoogleTokens()
       .pipe(
         take(1),
-        switchMap(() =>
-          this.userFirebaseService.updateUserGoogleRefreshToken(this.user!.id, '').pipe(
+        switchMap(() => {
+          this.popupService.add({
+            details: 'A google naptár szinkron visszavonása sikeresen megtörtént',
+            severity: 'success',
+            title: 'Sikeres művelet!',
+          });
+
+          return this.userFirebaseService.updateUserGoogleRefreshToken(this.user!.id, '').pipe(
             catchError((err) => {
               return of('failed');
             }),
-          ),
-        ),
+          );
+        }),
       )
       .subscribe({
         next: (result) => {
@@ -106,7 +145,13 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
             this.userFirebaseService.user$.next(this.user);
           }
         },
-        error: (err) => {},
+        error: () => {
+          this.popupService.add({
+            details: 'A google naptár szinkron visszavonása során hiba történt',
+            severity: 'error',
+            title: 'Sikertelen művelet!',
+          });
+        },
       });
   }
 }

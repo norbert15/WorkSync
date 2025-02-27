@@ -3,56 +3,78 @@ import { Subject, tap } from 'rxjs';
 
 type Size = 'normal' | 'small' | 'medium' | 'large';
 
+type DialogType = 'default' | 'warning' | 'delete';
+
+type DialogTemplateConfigType = {
+  contentText: string;
+  triggerBtnLabel: string;
+  triggerBtnColor: any; // A gomb Paletta color típusa miatt sír így ezért any
+};
+
 type DialogSettingsType = {
-  content?: TemplateRef<any> | null;
-  footer?: TemplateRef<any> | null;
-  class?: Array<string>;
-  headerCloseButton?: boolean;
-  footerCloseButton?: boolean;
+  content?: TemplateRef<any>;
+  footer?: TemplateRef<any>;
   size?: Size;
-  isDelete?: boolean;
-  deleteMessage?: string;
+  type?: DialogType;
+  templateConfig?: Partial<DialogTemplateConfigType>;
 };
 
 export class DialogModel {
   public title: string;
-  public content: TemplateRef<any> | null;
-  public footer: TemplateRef<any> | null;
-  public headerCloseButton: boolean;
-  public footerCloseButton: boolean;
-  public class: Array<string>;
   public size: Size;
-  public isDelete: boolean;
-  public deleteMessage: string;
-  private readonly _afterComplete$ = new Subject<void>();
-  public readonly afterComplete$ = this._afterComplete$.asObservable();
-  private readonly _delete$ = new Subject<void>();
-  public readonly delete$ = this._delete$.asObservable().pipe(
+  public type: DialogType;
+  public content: TemplateRef<any> | undefined;
+  public footer: TemplateRef<any> | undefined;
+
+  public triggerIsLoading = signal(false);
+
+  public templateConfig: DialogTemplateConfigType;
+
+  private readonly _dialogClosed$ = new Subject<void>();
+  public readonly dialogClosed$ = this._dialogClosed$.asObservable();
+
+  private readonly _trigger$ = new Subject<void>();
+  public readonly trigger$ = this._trigger$.asObservable().pipe(
     tap(() => {
-      this.isDeleteLoading.set(false);
+      this.triggerIsLoading.set(false);
     }),
   );
-  public isDeleteLoading = signal(false);
 
   constructor(title: string, settings: DialogSettingsType | null = null) {
     this.title = title;
-    this.content = settings?.content || null;
-    this.footer = settings?.footer || null;
-    this.class = settings?.class ?? [];
-    this.headerCloseButton = settings?.headerCloseButton ?? true;
-    this.footerCloseButton = settings?.footerCloseButton ?? true;
+    this.content = settings?.content;
     this.size = settings?.size ?? 'small';
-    this.isDelete = settings?.isDelete ?? false;
-    this.deleteMessage = settings?.deleteMessage ?? '';
+    this.type = settings?.type ?? 'default';
+    this.footer = settings?.footer;
+
+    const defaultConfig = this.getConfig(this.type);
+    const templateConfig = settings?.templateConfig;
+
+    this.templateConfig = {
+      contentText: templateConfig?.contentText ?? '',
+      triggerBtnColor: templateConfig?.triggerBtnColor ?? defaultConfig.color,
+      triggerBtnLabel: templateConfig?.triggerBtnLabel ?? defaultConfig.label,
+    };
   }
 
-  public complete(): void {
-    this._afterComplete$.next();
-    this._afterComplete$.complete();
+  public closeDialog(): void {
+    this._dialogClosed$.next();
+    this._dialogClosed$.complete();
+    this._trigger$.complete();
   }
 
-  public startDelete(): void {
-    this._delete$.next();
-    this._delete$.complete();
+  public trigger(): void {
+    this._trigger$.next();
+  }
+
+  private getConfig(type: DialogType): { color: string; label: string } {
+    switch (type) {
+      case 'delete':
+        return { label: 'Eltávolítás', color: 'danger' };
+      case 'warning':
+        return { label: 'Végrahajtás', color: 'primary' };
+      default:
+        return { label: '', color: 'primary' };
+    }
   }
 }

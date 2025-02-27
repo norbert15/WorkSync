@@ -15,7 +15,7 @@ import { GOOGLE_CALENDAR_RESPONES_CLASSES } from '../../core/constans/variables'
 export class GoogleCalendarService {
   private httpClient = inject(HttpClient);
 
-  public getEvents(year: number, month: number): Observable<Array<ICalendarEvent>> {
+  public getEvents(year: number, month: number, userId: string): Observable<Array<ICalendarEvent>> {
     const lastMonth = moment()
       .year(year)
       .month(month - 2)
@@ -37,6 +37,7 @@ export class GoogleCalendarService {
           return items
             .map((item: any) => {
               const calendarItem: ICalendarEvent = {
+                userId: userId,
                 id: item.id,
                 type: CalendarEventEnum.GOOGLE_EVENT,
                 summary: item.summary,

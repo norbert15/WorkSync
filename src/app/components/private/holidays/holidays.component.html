@@ -1,1 +1,23 @@
-<p>holidays works!</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="headline-text-large">Szabadságaim</div>
+  <app-holiday-request [(holidayRequest)]="holidayRequest"></app-holiday-request>
+</div>
+
+<app-table [titles]="tableTitles" [rows]="ownHolidaytableRows()" minWidth="900px"></app-table>
+
+@if (isAdministrator()) {
+  <div class="headline-text-large my-4">Igényelt szabadságok</div>
+
+  <app-table
+    [titles]="tableTitles"
+    [rows]="requestedHolidayTableRows()"
+    minWidth="900px"
+  ></app-table>
+}
+
+<ng-template #rejectHolidayRequestDialogTemplate>
+  <div class="text-center fw-bold my-4">
+    Biztos abban, hogy <span class="label-danger">elutasítja</span> a szabadság kérelmet?
+  </div>
+  <textarea rows="4" placeholder="Indoklás..." [(ngModel)]="reasonForReject"></textarea>
+</ng-template>

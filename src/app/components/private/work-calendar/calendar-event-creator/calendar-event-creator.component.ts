@@ -2,8 +2,6 @@ import {
   Component,
   inject,
   Input,
-  input,
-  model,
   OnInit,
   output,
   Signal,
@@ -11,21 +9,25 @@ import {
   TemplateRef,
   viewChild,
 } from '@angular/core';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { finalize, switchMap, take } from 'rxjs';
+
 import { ButtonComponent } from '../../../reusables/button/button.component';
 import { InputComponent } from '../../../reusables/input/input.component';
 import { IOption, SelectComponent } from '../../../reusables/select/select.component';
 import { DialogsService } from '../../../../services/dialogs.service';
 import { DialogModel } from '../../../../models/dialog.model';
-import { finalize, switchMap, take } from 'rxjs';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { PopupService } from '../../../../services/popup.service';
 import { CalendarFirebaseService } from '../../../../services/firebase/calendar-firebase.service';
 import { UserFirebaseService } from '../../../../services/firebase/user-firebase.service';
 import { CalendarRegisterType, ICalendarEvent } from '../../../../models/calendar.model';
-import { CalendarEventEnum } from '../../../../core/constans/enums';
+import { CalendarEventEnum, HolidayRequestStatus } from '../../../../core/constans/enums';
 import { formatDateWithMoment } from '../../../../core/helpers';
-import { CommonModule } from '@angular/common';
+import { HolidayFirebaseService } from '../../../../services/firebase/holiday-firebase.service';
+import { IRequestedHoliday } from '../../../../models/holiday.model';
+import { APP_PATHS } from '../../../../core/constans/paths';
 
 @Component({
   selector: 'app-calendar-event-creator',
@@ -52,7 +54,7 @@ export class CalendarEventCreatorComponent implements OnInit {
 
   public dialogClosed = output<void>();
 
-  public eventSave = output<string[]>();
+  public eventSave = output<void>();
 
   public eventForm!: FormGroup;
 
@@ -70,12 +72,16 @@ export class CalendarEventCreatorComponent implements OnInit {
 
   private _calendarEvent = signal<ICalendarEvent | null>(null);
 
+  private navigateAfterClose = false;
+
   private readonly dialogsService = inject(DialogsService);
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly popupService = inject(PopupService);
   private readonly userFirebaseService = inject(UserFirebaseService);
   private readonly calendarFirebaseService = inject(CalendarFirebaseService);
+  private readonly holidayFirebaseService = inject(HolidayFirebaseService);
+  private readonly router = inject(Router);
 
   public get calendarEvent(): Signal<ICalendarEvent | null> {
     return this._calendarEvent.asReadonly();
@@ -102,7 +108,7 @@ export class CalendarEventCreatorComponent implements OnInit {
         }),
         Validators.required,
       ],
-      reason: [this.calendarEvent()?.description],
+      reason: [this.calendarEvent()?.description, Validators.required],
       organizer: [this.calendarEvent()?.organizer.displayName],
     });
 
@@ -110,7 +116,7 @@ export class CalendarEventCreatorComponent implements OnInit {
     if (
       this.calendarEvent() &&
       (!user ||
-        user.email !== this.calendarEvent()?.organizer.email ||
+        user.id !== this.calendarEvent()?.userId ||
         [CalendarEventEnum.DAY_END, CalendarEventEnum.DAY_START].includes(
           this.calendarEvent()!.type as CalendarEventEnum,
         ))
@@ -132,29 +138,31 @@ export class CalendarEventCreatorComponent implements OnInit {
   }
 
   public onSaveClick(): void {
-    // TODO: a szabadság kérelmek nem eseményként kerülnek be a naptárba
-    // A szabadság kérelmek a szabadság menübe vesznek fel új rekordot
     const user = this.userFirebaseService.user$.getValue();
     if (this.eventForm.valid && user) {
       this.isSaveBtnLoading.set(true);
-
       const form = this.eventForm.getRawValue();
-      const userName = `${user.lastName} ${user.firstName}`;
 
-      const register: CalendarRegisterType = {
-        eventEnd: form['eventEnd'],
-        eventStart: form['eventStart'],
-        organizerEmail: user.email,
-        organizerDisplayName: userName,
-        summary: `${userName} ${this.getSummaryByEventType(form['eventType'])}`,
-        description: form['reason'],
-        type: form['eventType'],
-      };
-
-      if (this.calendarEvent()) {
-        this.updateEvent(register);
+      if (form['eventType'] === CalendarEventEnum.HOLIDAY) {
+        this.createHolidayRequest();
       } else {
-        this.createEvent(register);
+        const userName = `${user.lastName} ${user.firstName}`;
+
+        const register: CalendarRegisterType = {
+          eventEnd: form['eventEnd'],
+          eventStart: form['eventStart'],
+          organizerEmail: user.email,
+          organizerDisplayName: userName,
+          summary: `${userName} ${this.getSummaryByEventType(form['eventType'])}`,
+          description: form['reason'],
+          type: form['eventType'],
+        };
+
+        if (this.calendarEvent()) {
+          this.updateEvent(register);
+        } else {
+          this.createEvent(register, user.id);
+        }
       }
     }
   }
@@ -176,7 +184,7 @@ export class CalendarEventCreatorComponent implements OnInit {
       size: 'normal',
     });
     this.dialogsService.addNewDialog(newDialog);
-    newDialog.afterComplete$.pipe(take(1)).subscribe({
+    newDialog.dialogClosed$.pipe(take(1)).subscribe({
       next: () => {
         this.resetAfterDialogClosed();
       },
@@ -184,14 +192,15 @@ export class CalendarEventCreatorComponent implements OnInit {
   }
 
   public onWarningDeleteClick(): void {
+    const warningMessage = 'Biztos abban, hogy szeretné eltávolítani a kiválasztott eseményt?';
     const newDialog: DialogModel = new DialogModel('Figyelmeztetés', {
-      isDelete: true,
-      deleteMessage: 'Biztos abban, hogy szeretné eltávolítani a kiválasztott eseményt?',
+      type: 'delete',
+      templateConfig: { contentText: warningMessage },
     });
     this.dialogsService.addNewDialog(newDialog);
     const id = this.calendarEvent()!.id!;
 
-    newDialog.delete$
+    newDialog.trigger$
       .pipe(
         take(1),
         switchMap(() => {
@@ -205,7 +214,7 @@ export class CalendarEventCreatorComponent implements OnInit {
       .subscribe({
         next: () => {
           this.dialogsService.clearAll();
-          this.eventSave.emit([id]);
+          this.eventSave.emit();
           this.popupService.add({
             details: 'Az esemény törlése sikeresen megtörtént.',
             severity: 'success',
@@ -215,6 +224,52 @@ export class CalendarEventCreatorComponent implements OnInit {
         error: () => {
           this.popupService.add({
             details: 'Az esemény törlése során hiba történt.',
+            severity: 'error',
+            title: 'Sikertelen művelet!',
+          });
+        },
+      });
+  }
+
+  private createHolidayRequest(): void {
+    this.popupService.add({
+      details: 'Esemény felvétele folyamatban...',
+      severity: 'info',
+    });
+
+    const user = this.userFirebaseService.user$.getValue()!;
+    const form = this.eventForm.getRawValue();
+
+    const holidayRequest: Partial<IRequestedHoliday> = {
+      claimant: `${user.lastName} ${user.firstName}`,
+      endDate: formatDateWithMoment(form['eventEnd'], { useFormat: 'YYYY. MM. DD.' }),
+      startDate: formatDateWithMoment(form['eventStart'], { useFormat: 'YYYY. MM. DD.' }),
+      reason: form['reason'],
+      role: user.role,
+      status: HolidayRequestStatus.UNDER_EVALUATION,
+      userId: user.id,
+    };
+    this.holidayFirebaseService
+      .addHolidayRequest(holidayRequest)
+      .pipe(
+        take(1),
+        finalize(() => {
+          this.isSaveBtnLoading.set(false);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.popupService.add({
+            details: 'A szabadság kérelem felvétele sikeresen megtörtént',
+            severity: 'success',
+            title: 'Sikeres művelet!',
+          });
+          this.navigateAfterClose = true;
+          this.dialogsService.removeLastOpenedDialog();
+        },
+        error: () => {
+          this.popupService.add({
+            details: 'A szabadság kérelem felvétele során hiba törént.',
             severity: 'error',
             title: 'Sikertelen művelet!',
           });
@@ -239,7 +294,7 @@ export class CalendarEventCreatorComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.eventSave.emit([id]);
+          this.eventSave.emit();
           this.popupService.add({
             details: 'Az esemény felvétele sikeresen megtörtént.',
             severity: 'success',
@@ -256,14 +311,14 @@ export class CalendarEventCreatorComponent implements OnInit {
       });
   }
 
-  private createEvent(register: CalendarRegisterType): void {
+  private createEvent(register: CalendarRegisterType, userId: string): void {
     this.popupService.add({
       details: 'Esemény létrehozása folyamatban...',
       severity: 'info',
     });
 
     this.calendarFirebaseService
-      .createEvent(register)
+      .createEvent(register, userId)
       .pipe(
         take(1),
         finalize(() => {
@@ -271,13 +326,14 @@ export class CalendarEventCreatorComponent implements OnInit {
         }),
       )
       .subscribe({
-        next: (result) => {
-          this.eventSave.emit(result);
+        next: () => {
+          this.eventSave.emit();
           this.popupService.add({
             details: 'Az esemény felvétele sikeresen megtörtént.',
             severity: 'success',
             title: 'Sikeres művelet!',
           });
+          this.dialogsService.removeLastOpenedDialog();
         },
         error: () => {
           this.popupService.add({
@@ -293,6 +349,11 @@ export class CalendarEventCreatorComponent implements OnInit {
     this.dialogClosed.emit();
     this.eventForm.reset();
     this._calendarEvent.set(null);
+
+    if (this.navigateAfterClose) {
+      this.navigateAfterClose = false;
+      this.router.navigate([APP_PATHS.root, APP_PATHS.holidays]);
+    }
   }
 
   private getSummaryByEventType(eventType: CalendarEventEnum): string {

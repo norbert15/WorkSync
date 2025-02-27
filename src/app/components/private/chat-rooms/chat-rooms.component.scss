@@ -1,0 +1,27 @@
+@use "../../../../assets/styles/sass/base/variables/colors" as colors;
+
+.users-container-card,
+.chat,
+.chat-room {
+  background-color: white;
+  border: 1px solid colors.$blue-light;
+  padding: 10px;
+  border-radius: 16px;
+}
+
+.chat-room {
+  border: 1px solid colors.$blue-light;
+  cursor: pointer;
+  user-select: none;
+
+  &--active,
+  &:hover {
+    background-color: colors.$primary;
+    color: white;
+  }
+}
+
+.users-container {
+  max-width: 300px;
+  width: 100%;
+}

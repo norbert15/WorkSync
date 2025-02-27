@@ -203,7 +203,7 @@ export class PublicationsComponent implements OnInit, OnDestroy {
       footer: this.publicationsButtonsDialogTemplate(),
     });
     this.dialogService.addNewDialog(newDialog);
-    newDialog.afterComplete$.pipe(take(1)).subscribe({
+    newDialog.dialogClosed$.pipe(take(1)).subscribe({
       next: () => {
         this.selectedBranches.set([]);
       },
@@ -211,12 +211,14 @@ export class PublicationsComponent implements OnInit, OnDestroy {
   }
 
   public onOpenDeleteWarningDialogClick(branch: IBranch, type: RepositroyEnum): void {
+    const warningMessage = `<span>Biztos abban, hogy eltávolitja a(z) <span class="label-primary">"${branch.name}"</span> nevű branch-et?</span>`;
     const newDialog: DialogModel = new DialogModel('Figyelmeztetés', {
-      isDelete: true,
-      deleteMessage: `<span>Biztos abban, hogy eltávolitja a(z) <span class="label-primary">"${branch.name}"</span> nevű branch-et?</span>`,
+      type: 'delete',
+      templateConfig: { contentText: warningMessage },
     });
     this.dialogService.addNewDialog(newDialog);
-    newDialog.delete$
+
+    newDialog.trigger$
       .pipe(
         take(1),
         switchMap(() => {
