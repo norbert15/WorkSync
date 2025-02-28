@@ -1,6 +1,7 @@
 import { Component, inject, model, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
 import { ReplaySubject, takeUntil } from 'rxjs';
 
 import { AuthFirebaseService } from '../../../services/firebase/auth-firebase.service';
@@ -8,11 +9,11 @@ import { UserFirebaseService } from '../../../services/firebase/user-firebase.se
 import { IUser } from '../../../models/user.model';
 import { APP_PATHS } from '../../constans/paths';
 import { getMonogram } from '../../helpers';
-import { UserEnum } from '../../constans/enums';
+import { IconIds, UserEnum } from '../../constans/enums';
 
-type SidebarItem = {
+type SidebarItemType = {
   label: string;
-  icon: string;
+  icon: IconIds;
   route: string;
   count?: string;
 };
@@ -20,18 +21,19 @@ type SidebarItem = {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, MatIcon],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   public readonly PROFILE_PATH: string = APP_PATHS.profileDetails;
+  public readonly ICON_IDS = IconIds;
 
   public opened = model(true);
 
   public userMonogram = signal<string>('');
 
-  public sidebarItems = signal<Array<SidebarItem>>([]);
+  public sidebarItems = signal<SidebarItemType[]>([]);
 
   private readonly destroyed$ = new ReplaySubject<void>(1);
 
@@ -66,7 +68,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
           if (role === UserEnum.ADMINISTRATOR) {
             this.sidebarItems.set([
               ...this.sidebarItems(),
-              { icon: 'bi bi-people', label: 'Felhasználók', route: APP_PATHS.users.root },
+              { icon: IconIds.PEOPLES, label: 'Felhasználók', route: APP_PATHS.users.root },
             ]);
           }
         }
@@ -74,18 +76,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getBaseSidebarItems(): Array<SidebarItem> {
+  private getBaseSidebarItems(): SidebarItemType[] {
     return [
-      { icon: 'bi bi-calendar3', label: 'Naptár', route: APP_PATHS.calendar },
-      { icon: 'bi bi-github', label: 'Publikációk', count: '3', route: APP_PATHS.publications },
-      { icon: 'bi bi-database', label: 'API Projektek', route: APP_PATHS.chatRooms.root },
-      { icon: 'bi bi-chat-dots', label: 'Csevegő szobák', route: APP_PATHS.chatRooms.root },
-      { icon: 'bi bi-clock-history', label: 'Szabadságok', route: APP_PATHS.holidays },
+      { icon: IconIds.CALENDAR3, label: 'Naptár', route: APP_PATHS.calendar },
+      { icon: IconIds.GITHUB, label: 'Publikációk', count: '3', route: APP_PATHS.publications },
+      { icon: IconIds.DATABASE, label: 'API Projektek', route: APP_PATHS.root },
+      { icon: IconIds.CHAT_DOTS, label: 'Csevegő szobák', route: APP_PATHS.chatRooms },
+      { icon: IconIds.CLOCK_HISTORY, label: 'Szabadságok', route: APP_PATHS.holidays },
       {
-        icon: 'bi bi-bell',
+        icon: IconIds.BELL_FILL,
         label: 'Értesítések',
         count: '9+',
-        route: APP_PATHS.notifications.root,
+        route: APP_PATHS.notifications,
       },
     ];
   }

@@ -2,17 +2,13 @@ export const APP_PATHS = {
   root: 'app',
   login: 'login',
   calendar: 'calendar',
-  chatRooms: {
-    root: 'chats',
-  },
+  chatRooms: 'chats',
   holidays: 'holidays',
   publications: 'publications',
   users: {
     root: 'users',
   },
-  notifications: {
-    root: 'notifications',
-  },
+  notifications: 'notifications',
   profileDetails: 'profile',
 };
 

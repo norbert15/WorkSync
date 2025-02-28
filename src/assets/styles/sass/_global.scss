@@ -5,6 +5,31 @@ app-root {
   height: 100%;
 }
 
+mat-icon {
+  cursor: pointer;
+  overflow: initial !important;
+  width: 16px !important;
+  height: 16px !important;
+
+  svg {
+    vertical-align: top !important;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.big-icon,
+.big-icon > svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.small-icon,
+.small-icon > svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
 .app-card {
   background-color: #ffffff;
   display: block;
@@ -48,20 +73,6 @@ app-root {
   }
 }
 
-.text-line-through {
-  text-decoration: line-through;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.ellipsis {
-  white-space: nowrap; /* Ne törje meg a sort */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Helyettesítse a levágott részt "..."-tal */
-}
-
 .counter {
   line-height: 1.2;
   border-radius: 50%;
@@ -69,9 +80,10 @@ app-root {
   color: white;
   padding: 4px 9px;
   font-size: 12px;
-  display: flex;
+  /* display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; */
+  text-align: center;
   width: 25px;
 }
 

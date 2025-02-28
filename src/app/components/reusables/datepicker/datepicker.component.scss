@@ -18,6 +18,7 @@ $transition: 0.3s all ease-in;
   background-color: colors.$primary;
   padding: 10px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   min-width: 232px;
 
@@ -54,16 +55,13 @@ $transition: 0.3s all ease-in;
       &--active {
         border-bottom: 1px solid colors.$primary;
       }
-
-      i {
-        font-size: 16px;
-        height: 20px;
-      }
     }
 
     &-body {
       .arrow-item {
-        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
       .under {
@@ -75,11 +73,6 @@ $transition: 0.3s all ease-in;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 5px;
-
-        i {
-          cursor: pointer;
-          text-align: center;
-        }
 
         &-item {
           cursor: pointer;
@@ -100,12 +93,10 @@ $transition: 0.3s all ease-in;
   }
 
   .arrow-icon {
-    &::before {
-      transition: $transition;
-      transform: rotate(-90deg);
-    }
+    transition: $transition;
+    transform: rotate(-90deg);
 
-    &--opened::before {
+    &--opened {
       transform: rotate(90deg);
     }
   }

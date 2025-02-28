@@ -1,0 +1,14 @@
+@use "../../../../assets/styles/sass/base/variables/colors" as colors;
+
+.users-container-card,
+.chat {
+  background-color: white;
+  border: 1px solid colors.$blue-light;
+  padding: 10px;
+  border-radius: 16px;
+}
+
+.users-container {
+  max-width: 300px;
+  width: 100%;
+}

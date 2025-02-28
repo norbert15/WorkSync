@@ -1,0 +1,8 @@
+<button app-button (click)="onOpenNotificationFormDialogClick()">Új értesítés közzététele</button>
+
+<ng-template #notificationFormContentTemplate>
+  <form [formGroup]="notificationForm">
+    <app-input formControlName="subject" class="mb-3" label="Tárgy"></app-input>
+    <textarea formControlName="text" rows="6" placeholder="Üzenet"></textarea>
+  </form>
+</ng-template>

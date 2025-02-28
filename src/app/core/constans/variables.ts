@@ -1,4 +1,4 @@
-import { GoogleCalendarResponseStatus, UserEnum } from './enums';
+import { GoogleCalendarResponseStatus, IconIds, NotificationEnum, UserEnum } from './enums';
 
 export const HUN_MONTHS: Array<{ monthName: string; shortName: string; monthNumber: string }> = [
   { monthName: 'Január', shortName: 'Jan', monthNumber: '01' },
@@ -27,15 +27,15 @@ export const HUN_DAYS: Array<{ dayName: string; shortName: string; order: number
 
 export const GOOGLE_CALENDAR_RESPONES_CLASSES: Record<
   GoogleCalendarResponseStatus,
-  { class: string; icon: string }
+  { class: string; icon: IconIds }
 > = {
-  [GoogleCalendarResponseStatus.NEEDS_ACTION]: { class: '', icon: 'bi bi-hourglass-split' },
-  [GoogleCalendarResponseStatus.DECLINED]: { class: 'text-danger', icon: 'bi bi-x-circle' },
+  [GoogleCalendarResponseStatus.NEEDS_ACTION]: { class: '', icon: IconIds.HOURGLASS_SPLIT },
+  [GoogleCalendarResponseStatus.DECLINED]: { class: 'text-danger', icon: IconIds.X_CIRCLE },
   [GoogleCalendarResponseStatus.TENTATIVE]: {
     class: 'text-secondary',
-    icon: 'bi bi-question-circle',
+    icon: IconIds.QUESTION_CIRCLE,
   },
-  [GoogleCalendarResponseStatus.ACCEPTED]: { class: 'text-success', icon: 'bi bi-check2-circle' },
+  [GoogleCalendarResponseStatus.ACCEPTED]: { class: 'text-success', icon: IconIds.CHECK_SQUARE },
 };
 
 export const EMAIL_VALIDATION_REGEX =
@@ -47,3 +47,10 @@ export const HUN_USER_ENUM_LABELS: Record<UserEnum, string> = {
 };
 
 export const SYSTEM: { id: string; name: string } = { id: 'SYSTEM', name: 'Rendszer üzenet!' };
+
+export const NOTIFICATION_COLORS: Record<NotificationEnum, string> = {
+  [NotificationEnum.INFO]: 'label-primary',
+  [NotificationEnum.ATTENTION]: 'label-secondary',
+  [NotificationEnum.BAD]: 'label-danger',
+  [NotificationEnum.GOOD]: 'label-success',
+};

@@ -24,10 +24,17 @@ export const USER_LAYOUT_ROUTES: Routes = [
       ),
   },
   {
-    path: APP_PATHS.chatRooms.root,
+    path: APP_PATHS.chatRooms,
     loadComponent: () =>
-      import('../../../components/private/chat-rooms/chat-rooms.component').then(
-        (component) => component.ChatRoomsComponent,
+      import('../../../components/private/chat/chat.component').then(
+        (component) => component.ChatComponent,
+      ),
+  },
+  {
+    path: APP_PATHS.notifications,
+    loadComponent: () =>
+      import('../../../components/private/notifications/notifications.component').then(
+        (component) => component.NotificationsComponent,
       ),
   },
   {

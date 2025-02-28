@@ -1,0 +1,16 @@
+@if (chatRooms().length) {
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    @for (chatRoom of chatRooms(); track $index) {
+      <div
+        (click)="onChatRoomSelect(chatRoom.id)"
+        class="chat-room"
+        [ngClass]="{ 'chat-room--active': chatRoom.id === activeChatRoomId() }"
+      >
+        <mat-icon
+          [svgIcon]="chatRoom.id === activeChatRoomId() ? CHAT_SQUARE_DOTS_ICON : CHAT_SQUARE_ICON"
+        ></mat-icon>
+        {{ chatRoom.name }}
+      </div>
+    }
+  </div>
+}

@@ -1,7 +1,6 @@
 import {
   Component,
   computed,
-  ElementRef,
   inject,
   input,
   model,
@@ -10,19 +9,21 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { finalize, take } from 'rxjs';
+import moment from 'moment';
 
+import { PublicationFirebaseService } from '../../../../services/firebase/publication-firebase.service';
+import { ScrollToBottomDirective } from '../../../../directives/scroll-to-bottom.directive';
+import { ButtonComponent } from '../../../reusables/button/button.component';
 import { IRepositoryComment } from '../../../../models/branch.model';
 import { DialogsService } from '../../../../services/dialogs.service';
-import { DialogModel } from '../../../../models/dialog.model';
-import { ButtonComponent } from '../../../reusables/button/button.component';
-import { PublicationFirebaseService } from '../../../../services/firebase/publication-firebase.service';
 import { PopupService } from '../../../../services/popup.service';
-import moment from 'moment';
+import { DialogModel } from '../../../../models/dialog.model';
 import { HUN_DAYS } from '../../../../core/constans/variables';
 import { IUser } from '../../../../models/user.model';
-import { CommonModule } from '@angular/common';
-import { ScrollToBottomDirective } from '../../../../directives/scroll-to-bottom.directive';
+import { IconIds } from '../../../../core/constans/enums';
+import { MatIcon } from '@angular/material/icon';
 
 type CommentType = {
   monogram: string;
@@ -41,7 +42,7 @@ type CommentGroupType = {
 @Component({
   selector: 'app-repository-comments',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, FormsModule, ScrollToBottomDirective],
+  imports: [CommonModule, ButtonComponent, FormsModule, ScrollToBottomDirective, MatIcon],
   templateUrl: './repository-comments.component.html',
   styleUrl: './repository-comments.component.scss',
 })
@@ -56,6 +57,8 @@ export class RepositoryCommentsComponent {
   public repositroyId = input.required<string>();
 
   public user = input<IUser | null>(null);
+
+  public readonly CHAT_DOTS_ICON = IconIds.CHAT_DOTS;
 
   public displayedCommentGroups = computed<Array<CommentGroupType>>(() => {
     const comments = this.comments();

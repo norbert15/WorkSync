@@ -12,6 +12,7 @@ import {
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
 import { finalize, switchMap, take } from 'rxjs';
 
 import { ButtonComponent } from '../../../reusables/button/button.component';
@@ -23,18 +24,25 @@ import { PopupService } from '../../../../services/popup.service';
 import { CalendarFirebaseService } from '../../../../services/firebase/calendar-firebase.service';
 import { UserFirebaseService } from '../../../../services/firebase/user-firebase.service';
 import { CalendarRegisterType, ICalendarEvent } from '../../../../models/calendar.model';
-import { CalendarEventEnum, HolidayRequestStatus } from '../../../../core/constans/enums';
+import { CalendarEventEnum, HolidayRequestStatus, IconIds } from '../../../../core/constans/enums';
 import { formatDateWithMoment } from '../../../../core/helpers';
 import { HolidayFirebaseService } from '../../../../services/firebase/holiday-firebase.service';
 import { IRequestedHoliday } from '../../../../models/holiday.model';
 import { APP_PATHS } from '../../../../core/constans/paths';
+import { AuthFirebaseService } from '../../../../services/firebase/auth-firebase.service';
 
 @Component({
   selector: 'app-calendar-event-creator',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, InputComponent, SelectComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ButtonComponent,
+    InputComponent,
+    SelectComponent,
+    MatIcon,
+  ],
   templateUrl: './calendar-event-creator.component.html',
-  styleUrl: './calendar-event-creator.component.scss',
 })
 export class CalendarEventCreatorComponent implements OnInit {
   public newEventDialogContentTemplate = viewChild<TemplateRef<any>>(
@@ -56,11 +64,12 @@ export class CalendarEventCreatorComponent implements OnInit {
 
   public eventSave = output<void>();
 
+  public readonly GOOGLE_EVENT = CalendarEventEnum.GOOGLE_EVENT;
+  public readonly ICON_IDS = IconIds;
+
   public eventForm!: FormGroup;
 
   public isSaveBtnLoading = signal(false);
-
-  public readonly GOOGLE_EVENT = CalendarEventEnum.GOOGLE_EVENT;
 
   public readonly eventTypeOptions: Array<IOption<CalendarEventEnum>> = [
     { label: 'Házon kívűl', value: CalendarEventEnum.OUT_OF_HOME },
@@ -79,6 +88,7 @@ export class CalendarEventCreatorComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly popupService = inject(PopupService);
   private readonly userFirebaseService = inject(UserFirebaseService);
+  private readonly authFirebaseService = inject(AuthFirebaseService);
   private readonly calendarFirebaseService = inject(CalendarFirebaseService);
   private readonly holidayFirebaseService = inject(HolidayFirebaseService);
   private readonly router = inject(Router);
@@ -112,14 +122,16 @@ export class CalendarEventCreatorComponent implements OnInit {
       organizer: [this.calendarEvent()?.organizer.displayName],
     });
 
-    const user = this.userFirebaseService.user$.getValue();
+    const { userId } = this.authFirebaseService.userPayload()!;
+
     if (
       this.calendarEvent() &&
-      (!user ||
-        user.id !== this.calendarEvent()?.userId ||
-        [CalendarEventEnum.DAY_END, CalendarEventEnum.DAY_START].includes(
-          this.calendarEvent()!.type as CalendarEventEnum,
-        ))
+      (userId !== this.calendarEvent()?.userId ||
+        [
+          CalendarEventEnum.DAY_END,
+          CalendarEventEnum.DAY_START,
+          CalendarEventEnum.HOLIDAY,
+        ].includes(this.calendarEvent()!.type as CalendarEventEnum))
     ) {
       this.eventForm.disable();
       this.viewOnly.set(true);
@@ -238,6 +250,7 @@ export class CalendarEventCreatorComponent implements OnInit {
     });
 
     const user = this.userFirebaseService.user$.getValue()!;
+
     const form = this.eventForm.getRawValue();
 
     const holidayRequest: Partial<IRequestedHoliday> = {

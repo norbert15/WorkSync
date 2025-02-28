@@ -1,8 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { loadGapiInsideDOM } from 'gapi-script';
-
 import { environment } from '../../../environments/environment';
 
 declare const gapi: any;

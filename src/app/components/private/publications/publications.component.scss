@@ -7,6 +7,10 @@
   }
 }
 
+ul {
+  padding-left: 20px;
+}
+
 .publications {
   display: flex;
   flex-direction: column;
@@ -16,7 +20,7 @@
   padding: 15px 10px;
   border-radius: 12px;
   background-color: white;
-  border: 1px solid colors.$gray-light;
+  border: 1px solid colors.$blue-light;
 
   &--disabled {
     opacity: 0.5;
@@ -41,12 +45,8 @@
   }
 }
 
-.bi-x-circle:hover {
+.x-circle:hover {
   color: colors.$danger;
-}
-
-.publish-btn {
-  font-size: 14px;
 }
 
 .flex-item {

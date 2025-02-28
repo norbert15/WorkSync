@@ -12,18 +12,18 @@
     <div
       class="select-label"
       [ngClass]="{
-        'select-label-focus': selectedOption() || selectedOptions().length,
-        'select--disabled': disabled(),
+        'select-label--focus': selectedOption() || selectedOptions().length,
+        'select-label--transparent': disabled(),
       }"
     >
-      @if (bootstrapIcon()) {
-        <i [ngClass]="['bi me-1', bootstrapIcon()]"></i>
+      @if (icon()) {
+        <mat-icon class="me-1" [svgIcon]="icon()!"></mat-icon>
       }
       {{ label() }}
     </div>
 
     <div class="arrow-down" [ngClass]="{ 'arrow-down--opened': opened() }">
-      <i class="bi bi-chevron-left"></i>
+      <mat-icon [svgIcon]="CHEVRON_LEFT_ICON"></mat-icon>
     </div>
   </div>
 

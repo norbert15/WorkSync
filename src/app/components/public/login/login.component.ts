@@ -9,6 +9,7 @@ import { FadeDirective } from '../../../directives/fade.directive';
 import { APP_PATHS } from '../../../core/constans/paths';
 import { AuthFirebaseService } from '../../../services/firebase/auth-firebase.service';
 import { PopupService } from '../../../services/popup.service';
+import { IconIds } from '../../../core/constans/enums';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,8 @@ import { PopupService } from '../../../services/popup.service';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
+  public readonly ICON_IDS = IconIds;
+
   public loginForm!: FormGroup;
 
   public showForgottenPasswordCard = signal(false);

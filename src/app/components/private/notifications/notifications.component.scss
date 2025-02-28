@@ -1,0 +1,19 @@
+:host::ng-deep {
+  th:nth-child(2) {
+    width: 50%;
+  }
+
+  th:last-child {
+    width: 120px;
+  }
+
+  td,
+  th {
+    &:first-of-type {
+      width: 36px;
+      text-align: center;
+      padding-left: 10px !important;
+      padding-right: 0px !important;
+    }
+  }
+}

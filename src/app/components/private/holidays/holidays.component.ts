@@ -49,7 +49,6 @@ import { formatDateWithMoment } from '../../../core/helpers';
   standalone: true,
   imports: [TableComponent, ButtonComponent, HolidayRequestComponent, FormsModule],
   templateUrl: './holidays.component.html',
-  styleUrl: './holidays.component.scss',
 })
 export class HolidaysComponent implements OnInit, OnDestroy {
   public rejectHolidayRequestDialogTemplate = viewChild<TemplateRef<any>>(
@@ -253,7 +252,11 @@ export class HolidaysComponent implements OnInit, OnDestroy {
       severity: 'info',
     });
 
-    const user = this.userFirebaseService.user$.getValue()!;
+    const user = this.userFirebaseService.user$.getValue();
+
+    if (!user) {
+      return of(null);
+    }
 
     const data: Partial<IRequestedHoliday> = {
       decisionBy: `${user.lastName} ${user.firstName}`,

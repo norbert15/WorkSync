@@ -11,7 +11,7 @@ import {
   where,
   writeBatch,
 } from '@angular/fire/firestore';
-import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 
 import { ChatParticipantType, IChatRoom, IMessage } from '../../models/chat.model';
 import { UserFirebaseService } from './user-firebase.service';
@@ -19,6 +19,7 @@ import moment from 'moment';
 import { getMonogram } from '../../core/helpers';
 import { IUser } from '../../models/user.model';
 import { SYSTEM } from '../../core/constans/variables';
+import { AuthFirebaseService } from './auth-firebase.service';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,7 @@ export class ChatFirebaseService {
 
   private readonly firestore = inject(Firestore);
   private readonly userFirebaseService = inject(UserFirebaseService);
+  private readonly authFirebaseService = inject(AuthFirebaseService);
 
   public getUserChatRooms(userId: string): Observable<Array<IChatRoom>> {
     const chatRoomsRef = collection(this.firestore, this.CHAT_ROOMS_COLLECTION);
@@ -51,10 +53,9 @@ export class ChatFirebaseService {
     return collectionData(q, { idField: 'id' }) as Observable<Array<IMessage>>;
   }
 
-  public getAddressAndSendedMessages(
-    userId: string,
-    addressUserId: string,
-  ): Observable<Array<IMessage>> {
+  public getAddressAndSendedMessages(addressUserId: string): Observable<Array<IMessage>> {
+    const { userId } = this.authFirebaseService.userPayload()!;
+
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
     const q = query(chatMessagesRef, where('chatRoomId', '==', null));
     const result = collectionData(q, { idField: 'id' }) as Observable<Array<IMessage>>;
@@ -70,14 +71,18 @@ export class ChatFirebaseService {
   }
 
   public createChatRoom(
-    userId: string,
     chatRoomName: string,
     participants: Array<ChatParticipantType>,
   ): Observable<string> {
     const chatRoomsRef = collection(this.firestore, this.CHAT_ROOMS_COLLECTION);
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
 
-    const user = this.userFirebaseService.user$.getValue()!;
+    const user = this.userFirebaseService.user$.getValue();
+
+    if (!user) {
+      return throwError(() => new Error('User not found'));
+    }
+
     const userName = `${user.lastName} ${user.firstName}`;
 
     participants!.push({ monogram: getMonogram(userName), userId: user.id, userName: userName });
@@ -85,7 +90,7 @@ export class ChatFirebaseService {
     const now = moment().format('YYYY. MM. DD. HH:mm:ss');
     const newChatRoom: Partial<IChatRoom> = {
       name: chatRoomName,
-      ownedUserId: userId,
+      ownedUserId: user.id,
       participants: participants,
       createdDatetime: now,
     };
@@ -117,7 +122,12 @@ export class ChatFirebaseService {
     const chatRoomsRef = doc(this.firestore, this.CHAT_ROOMS_COLLECTION, chatRoomId);
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
 
-    const user = this.userFirebaseService.user$.getValue()!;
+    const user = this.userFirebaseService.user$.getValue();
+
+    if (!user) {
+      return throwError(() => new Error('User not found'));
+    }
+
     const userName = `${user.lastName} ${user.firstName}`;
 
     participants.push({
@@ -195,7 +205,11 @@ export class ChatFirebaseService {
 
   public createChatMessage(message: string, chatRoomId: string): Observable<string> {
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
-    const user = this.userFirebaseService.user$.getValue()!;
+    const user = this.userFirebaseService.user$.getValue();
+
+    if (!user) {
+      return throwError(() => new Error('User not found'));
+    }
 
     const newChatMessage: Partial<IMessage> = {
       chatRoomId: chatRoomId,
@@ -203,6 +217,28 @@ export class ChatFirebaseService {
       sender: { userId: user.id, userName: `${user.lastName} ${user.firstName}` },
       text: message,
       address: null,
+    };
+
+    return from(addDoc(chatMessagesRef, newChatMessage)).pipe(map((doc) => doc.id));
+  }
+
+  public createChatMessageWithParticipant(message: string, participant: IUser): Observable<string> {
+    const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
+    const user = this.userFirebaseService.user$.getValue();
+
+    if (!user) {
+      return throwError(() => new Error('User not found'));
+    }
+
+    const newChatMessage: Partial<IMessage> = {
+      chatRoomId: null,
+      sendedDatetime: moment().format('YYYY. MM. DD. HH:mm:ss'),
+      sender: { userId: user.id, userName: `${user.lastName} ${user.firstName}` },
+      address: {
+        userId: participant.id,
+        userName: `${participant.lastName} ${participant.firstName}`,
+      },
+      text: message,
     };
 
     return from(addDoc(chatMessagesRef, newChatMessage)).pipe(map((doc) => doc.id));

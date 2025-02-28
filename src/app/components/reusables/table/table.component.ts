@@ -7,14 +7,15 @@ import {
   TableCellConfigType,
   TableCellOperationType,
 } from '../../../models/table.model';
-import { TableOperationEnum } from '../../../core/constans/enums';
+import { IconIds, TableOperationEnum } from '../../../core/constans/enums';
+import { MatIcon } from '@angular/material/icon';
 
 type ActiveSorType = { index: number; lowToHigh: boolean };
 
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule, NgTemplateOutlet],
+  imports: [CommonModule, NgTemplateOutlet, MatIcon],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
 })
@@ -39,11 +40,12 @@ export class TableComponent {
   public rowClick = output<ITableRow>();
   public operationClick = output<{ row: ITableRow; operationName: TableOperationEnum }>();
 
-  public readonly OPERATIONS: Record<TableOperationEnum | any, string> = {
-    [TableOperationEnum.DELETE]: 'bi bi-trash3 label-danger',
-    [TableOperationEnum.EDIT]: 'bi bi-pencil-square label-primary',
-    [TableOperationEnum.CANCEL]: 'bi bi-x-circle label-danger',
-    [TableOperationEnum.CHECK]: 'bi bi-check-circle label-success',
+  public readonly OPERATIONS: Record<TableOperationEnum | any, { icon: IconIds; class: string }> = {
+    [TableOperationEnum.DELETE]: { icon: IconIds.TRASH, class: 'label-danger' },
+    [TableOperationEnum.EDIT]: { icon: IconIds.PENCIL_SQUARE, class: 'label-primary' },
+    [TableOperationEnum.CANCEL]: { icon: IconIds.X_CIRCLE, class: 'label-danger' },
+    [TableOperationEnum.CHECK]: { icon: IconIds.CHECK_CIRCLE, class: 'label-success' },
+    [TableOperationEnum.SEE]: { icon: IconIds.EYE, class: 'label-secondary' },
   };
 
   public displayedRows = computed(() => {

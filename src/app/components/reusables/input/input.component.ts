@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   forwardRef,
@@ -11,13 +10,16 @@ import {
   viewChild,
 } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
+
+import { IconIds } from '../../../core/constans/enums';
 
 type InputType = 'text' | 'number' | 'password' | 'file' | 'date' | 'datetime-local';
 
 @Component({
   selector: 'app-input',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIcon],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
   providers: [
@@ -49,7 +51,7 @@ export class InputComponent implements ControlValueAccessor {
    */
   public id = input<string | null>(null);
 
-  public bootstrapIcon = input<string | null>(null);
+  public icon = input<IconIds | null>(null);
 
   public autocompleteName = input<string | null>(null);
 
@@ -69,6 +71,8 @@ export class InputComponent implements ControlValueAccessor {
   public nativeChange = output<string>();
 
   public value = model('');
+
+  public readonly ICON_IDS = IconIds;
 
   public focused = signal(false);
 

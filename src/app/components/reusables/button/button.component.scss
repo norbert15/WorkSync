@@ -1,11 +1,15 @@
 .app-button {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: max-content;
   text-align: center;
   padding: 12px;
   border-radius: 4px;
   color: white;
   font-weight: 700;
+  gap: 5px;
+  cursor: pointer;
 
   &-disabled {
     opacity: 0.5;

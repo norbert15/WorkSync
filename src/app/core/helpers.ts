@@ -109,9 +109,9 @@ export function generateMonthlyCalendar(
   return days.sort((a, b) => a.date.localeCompare(b.date));
 }
 
-export function convertToLink(text: string | null): string | null {
+export function convertToLink(text: string | null): string {
   if (!text) {
-    return null;
+    return '';
   }
 
   return text.replace(

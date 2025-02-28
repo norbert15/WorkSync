@@ -1,0 +1,21 @@
+<div class="mb d-flex justify-between">
+  <div class="headline-text-large">Értesítések</div>
+
+  <app-notification-button
+    [notification]="notificationForEdit()"
+    (dialogClose)="notificationForEdit.set(null)"
+  ></app-notification-button>
+</div>
+
+<app-table
+  [titles]="tableTitles"
+  [rows]="tableRows()"
+  (rowClick)="markNotificationAsSeen($event.model)"
+  minWidth="900px"
+></app-table>
+
+<ng-template #bellNotificationTemplate let-row>
+  @if (!row.model.seen) {
+    <mat-icon class="label-accent" [svgIcon]="BELL_FILL_ICON"></mat-icon>
+  }
+</ng-template>

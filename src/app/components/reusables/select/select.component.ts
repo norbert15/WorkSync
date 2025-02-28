@@ -11,7 +11,10 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+import { IconIds } from '../../../core/constans/enums';
 
 export interface IOption<T = any> {
   label: string;
@@ -22,7 +25,7 @@ export interface IOption<T = any> {
 @Component({
   selector: 'app-select',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIcon],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   providers: [
@@ -38,7 +41,7 @@ export class SelectComponent<T> implements ControlValueAccessor {
 
   public options = input<Array<IOption<T>>>([]);
 
-  public bootstrapIcon = input('');
+  public icon = input<IconIds | null>(null);
 
   public filterable = input(false);
 
@@ -50,6 +53,8 @@ export class SelectComponent<T> implements ControlValueAccessor {
 
   public selectEvent = output<T | null>();
   public selectedValuesChange = output<Array<IOption<T>>>();
+
+  public readonly CHEVRON_LEFT_ICON = IconIds.CHEVRON_LEFT;
 
   public focused = signal(false);
 

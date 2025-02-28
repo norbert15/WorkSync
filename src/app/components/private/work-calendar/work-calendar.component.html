@@ -4,7 +4,7 @@
   (calendarSave)="fetchCalendarEvents()"
 ></app-calendar-info-groups>
 
-<div class="mb-4 d-flex gap-3 justify-content-between">
+<div class="flex-between mb-4 gap-3">
   <app-datepicker [(year)]="year" [(month)]="month"></app-datepicker>
   <app-calendar-event-creator
     [calendarEvent]="selectedCalendarEvent()"
@@ -17,7 +17,7 @@
 <div class="calendar" appDragScroll>
   <div class="calendar-grid" appFade>
     @for (day of SORTED_HUN_DAYS; track $index) {
-      <div class="calendar-grid-item text-center fw-bold py-2">
+      <div class="calendar-grid-item text-center label-strong py-2">
         {{ day.dayName }}
       </div>
     }
@@ -61,18 +61,18 @@
     appFade
     [ngClass]="['calendar-grid-item-event', 'calendar-grid-item-event--' + calendarEvent.type]"
   >
-    <div class="calendar-grid-item-event-summary mb-1">
+    <div class="calendar-grid-item-event-summary d-flex gap-2 mb-1">
       @if (calendarEvent.type === CALENDAR_EVENTS.GOOGLE_EVENT) {
-        <i class="bi bi-google small me-1"></i>
+        <mat-icon class="vertical-align-text-top" [svgIcon]="ICON_IDS.GOOGLE"></mat-icon>
       } @else if (calendarEvent.type === CALENDAR_EVENTS.OUT_OF_HOME) {
-        <i class="bi bi-clock-history small me-1"></i>
+        <mat-icon class="vertical-align-text-top" [svgIcon]="ICON_IDS.CLOCK_HISTORY"></mat-icon>
       } @else if (
         calendarEvent.type === CALENDAR_EVENTS.HOLIDAY ||
         calendarEvent.type == CALENDAR_EVENTS.DAY_END
       ) {
-        <i class="bi bi-calendar-x small me-1"></i>
+        <mat-icon class="vertical-align-text-top" [svgIcon]="ICON_IDS.CALENDAR_X"></mat-icon>
       } @else if (calendarEvent.type === CALENDAR_EVENTS.DAY_START) {
-        <i class="bi bi-calendar-check small me-1"></i>
+        <mat-icon class="vertical-align-text-top" [svgIcon]="ICON_IDS.CALENDAR_CHECK"></mat-icon>
       }
       {{ calendarEvent.summary }}
     </div>
@@ -80,18 +80,20 @@
       @if (
         calendarEvent.type !== CALENDAR_EVENTS.DAY_START || calendarEvent.userId === user()?.id
       ) {
-        <i
-          [class]="
-            calendarEvent.userId.email === user()?.id &&
-            ![CALENDAR_EVENTS.DAY_END, CALENDAR_EVENTS.DAY_START].includes(calendarEvent.type)
-              ? 'bi bi-pen'
-              : 'bi bi-eye'
-          "
+        <mat-icon
           (click)="onCalendarEventSelect(calendarEvent)"
-        ></i>
+          [svgIcon]="
+            calendarEvent.userId === user()?.id &&
+            ![CALENDAR_EVENTS.DAY_END, CALENDAR_EVENTS.DAY_START, CALENDAR_EVENTS.HOLIDAY].includes(
+              calendarEvent.type
+            )
+              ? ICON_IDS.PEN
+              : ICON_IDS.EYE
+          "
+        ></mat-icon>
       }
     </div>
-    <div class="small">
+    <div class="label-normal">
       <div>
         @if (calendarEvent.hangoutLink) {
           <a [href]="calendarEvent.hangoutLink" target="_blank">{{ calendarEvent.hangoutLink }}</a>
@@ -99,7 +101,7 @@
           {{ calendarEvent.location }}
         }
       </div>
-      <div class="text-end" [ngClass]="{ 'fw-bold': calendarEvent.eventStartShort }">
+      <div class="text-end" [ngClass]="{ 'label-strong': calendarEvent.eventStartShort }">
         {{ calendarEvent.eventStartShort || "Egésznap" }}
         @if (calendarEvent.eventEndShort) {
           - {{ calendarEvent.eventEndShort }}
@@ -163,11 +165,12 @@
     <div class="label-strong mb-2">Résztvevők</div>
     <div class="">
       @for (attendee of selectedGoogleCalendarEvent()?.attendees; track $index) {
-        <div class="d-flex gap-2 align-items-center">
-          <i
+        <div class="d-flex items-center gap-2">
+          <mat-icon
             class="attendee-icon"
-            [ngClass]="[attendee.response?.class, attendee.response?.icon]"
-          ></i>
+            [ngClass]="[attendee.response?.class]"
+            [svgIcon]="attendee.response?.icon ?? ''"
+          ></mat-icon>
           {{ attendee.displayName ?? attendee.email ?? "-" }}
         </div>
       }
@@ -178,13 +181,13 @@
 <ng-template #googleCalendarTaskTemplate let-googleTask>
   <div appFade [ngClass]="['calendar-grid-item-event', 'calendar-grid-item-event--google-task']">
     <div class="calendar-grid-item-event-summary">
-      <i class="bi bi-card-text small me-1"></i>
+      <mat-icon class="vertical-align-text-top me-1" [svgIcon]="ICON_IDS.CARD_TEXT"></mat-icon>
       {{ googleTask.title }}
     </div>
     <div class="calendar-grid-item-event-options">
-      <i class="bi bi-eye" (click)="onCalendarTaskSelect(googleTask)"></i>
+      <mat-icon [svgIcon]="ICON_IDS.EYE" (click)="onCalendarTaskSelect(googleTask)"></mat-icon>
     </div>
-    <div class="small">
+    <div class="label-normal">
       Esedékes:
       <div class="text-end">{{ googleTask.due }}</div>
     </div>
@@ -216,10 +219,12 @@
       <div class="label-strong">Állapot</div>
       <div>
         @if (selectedGoogleCalendarTask()?.status === "completed") {
-          <i class="bi bi-check2-square text-success me-2"></i>
-          <span>Teljesítve</span>
+          <div class="label-success">
+            <mat-icon [svgIcon]="ICON_IDS.CHECK_SQUARE" class="me-2"></mat-icon>
+            <span>Teljesítve</span>
+          </div>
         } @else {
-          <i class="bi bi-app me-2"></i>
+          <mat-icon [svgIcon]="ICON_IDS.EMPTY_SQUARE" class="me-2"></mat-icon>
           <span>Még nem teljesült</span>
         }
       </div>

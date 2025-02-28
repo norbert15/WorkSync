@@ -2,7 +2,7 @@
   <div [ngClass]="['dialog', 'dialog--' + dialog()?.size]" appFade>
     <div class="dialog-header">
       <div class="headline-text-normal">{{ dialog()?.title }}</div>
-      <i class="bi bi-x-circle cursor-pointer" (click)="onCloseClick()"></i>
+      <mat-icon [svgIcon]="X_CIRCLE_ICON" (click)="onCloseClick()"></mat-icon>
     </div>
     <div class="dialog-content">
       <ng-container [ngTemplateOutlet]="dialog()!.content ?? null"></ng-container>
@@ -24,6 +24,7 @@
 <ng-template #defaultContentTemplate>
   <div
     class="dialog-content--delete-message"
+    [ngClass]="dialog()?.templateConfig?.contentClass"
     [innerHTML]="dialog()?.templateConfig?.contentText"
   ></div>
 </ng-template>

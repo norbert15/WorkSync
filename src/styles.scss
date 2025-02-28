@@ -1,15 +1,14 @@
-@use "../node_modules/bootstrap/scss/bootstrap";
 @use "assets/styles/sass/styles";
 
 html,
 body {
-  //background-color: #f0f8ff;
   background-color: #e3edf7;
   font-family: "zilla-slab", sans-serif !important;
   font-weight: 500;
   font-style: normal;
   color: #474748;
   height: 100vh;
+  line-height: 1.53;
   overflow: hidden;
 }
 
