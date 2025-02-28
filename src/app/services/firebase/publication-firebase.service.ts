@@ -10,7 +10,7 @@ import {
   updateDoc,
   writeBatch,
 } from '@angular/fire/firestore';
-import { from, map, Observable } from 'rxjs';
+import { from, map, Observable, throwError } from 'rxjs';
 import moment from 'moment';
 
 import { IBranch, IRepository, IRepositoryComment } from '../../models/branch.model';
@@ -118,8 +118,11 @@ export class PublicationFirebaseService {
   public addCommentToRepository(repositoryId: string, comment: string): Observable<void> {
     const repositoryRef = doc(this.firestore, this.REPOSITORIES_COLLECTION, repositoryId);
 
-    // Biztos, hogy van user különben megse lehetne hívni a végpontott.
-    const user = this.userFirebaseService.user$.getValue()!;
+    const user = this.userFirebaseService.user$.getValue();
+
+    if (!user) {
+      return throwError(() => new Error('User not exist'));
+    }
 
     const newComment: Partial<IRepositoryComment> = {
       created: moment().format('YYYY. MM. DD. HH:mm:ss'),

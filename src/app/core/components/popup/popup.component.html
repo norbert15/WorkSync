@@ -8,8 +8,12 @@
         [ngClass]="['popup', 'popup--' + popup.severity]"
       >
         <div class="popup-container">
-          <i [class]="ICONS[popup.severity]"></i>
-          <i [id]="popup.key" class="close-icon" [class]="ICONS['close']"></i>
+          <mat-icon class="big-icon" [svgIcon]="ICONS[popup.severity]"></mat-icon>
+          <mat-icon
+            [id]="popup.key"
+            class="close-icon small-icon"
+            [svgIcon]="ICONS['close']"
+          ></mat-icon>
           @if (popup.length > 1) {
             <div class="counter">{{ popup.length }}</div>
           }

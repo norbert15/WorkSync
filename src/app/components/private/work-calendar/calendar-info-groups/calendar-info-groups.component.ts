@@ -39,8 +39,9 @@ import { PopupService } from '../../../../services/popup.service';
 import { DialogModel } from '../../../../models/dialog.model';
 import { DialogsService } from '../../../../services/dialogs.service';
 import { CalendarFirebaseService } from '../../../../services/firebase/calendar-firebase.service';
-import { CalendarEventEnum } from '../../../../core/constans/enums';
+import { CalendarEventEnum, IconIds } from '../../../../core/constans/enums';
 import { PublicationFirebaseService } from '../../../../services/firebase/publication-firebase.service';
+import { MatIcon } from '@angular/material/icon';
 
 type EventType = {
   name: string;
@@ -56,7 +57,8 @@ type EventKey = {
 
 type InfoCardType = {
   title: string;
-  bootstrapIconClass: string;
+  icon: IconIds;
+  iconColor: string;
   events: Array<EventType>;
   fallbackLabel?: string;
   showCounter?: boolean;
@@ -66,7 +68,7 @@ type InfoCardType = {
 @Component({
   selector: 'app-calendar-info-groups',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, FormsModule],
+  imports: [CommonModule, ButtonComponent, FormsModule, MatIcon],
   templateUrl: './calendar-info-groups.component.html',
   styleUrl: './calendar-info-groups.component.scss',
 })
@@ -108,9 +110,10 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     return [
       {
         title: 'Közelgő esemény(ek)',
-        bootstrapIconClass: 'bi bi-calendar2-check',
+        icon: IconIds.CALENDAR_CHECK,
         fallbackLabel: 'Nincs előre ütemezett esemény.',
         showCounter: true,
+        iconColor: 'label-success',
         footer: { label: 'További részletek' }, // TODO: navigációs link vagy callback ki találni...
         events: calendarEventsAndTasks.map((et) => {
           return {
@@ -124,7 +127,8 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
       },
       {
         title: 'Értesítések',
-        bootstrapIconClass: 'bi bi-bell',
+        icon: IconIds.BELL_FILL,
+        iconColor: 'label-accent',
         showCounter: true,
         events: events.notificationEvents,
         fallbackLabel: 'Nincs elérhető értesítés.',
@@ -136,13 +140,15 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
       },
       {
         title: 'Mai napom',
-        bootstrapIconClass: 'bi bi-person-workspace',
+        icon: IconIds.CARD_TEXT,
+        iconColor: 'label-secondary',
         events: todayEvents,
         footer: { templateRef: todayTemplate },
       },
       {
         title: 'Publikálásra vár',
-        bootstrapIconClass: 'bi bi-github',
+        icon: IconIds.GITHUB,
+        iconColor: 'label-primary',
         events: branches.map((branch) => ({
           name: branch.name,
           class: branch.status,
@@ -208,6 +214,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
       {
         footer: this.endOfDayButtonDialogTemplate(),
         content: this.endOfDayDialogTemplate(),
+        size: 'normal',
       },
     );
     this.dialogService.addNewDialog(newDialog);

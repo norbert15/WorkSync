@@ -1,47 +1,76 @@
 <button app-button color="success" class="text-nowrap" (click)="onOpenNewEventDialogClick()">
-  <i class="bi bi-calendar2-plus me-2"></i>
+  <mat-icon [svgIcon]="ICON_IDS.CALENDAR_PLUS"></mat-icon>
   Esemény létrehozása
 </button>
 
 <ng-template #newEventDialogContentTemplate>
-  <form [formGroup]="eventForm">
-    <div class="mb-3">
+  @if (!viewOnly()) {
+    <form [formGroup]="eventForm">
       <app-select
+        class="mb-4"
         [options]="eventTypeOptions"
         label="Esemény kiválasztása*"
         formControlName="eventType"
-        bootstrapIcon="bi-calendar2-event"
+        [icon]="ICON_IDS.CALENDAR_PLUS"
         (selectEvent)="onOptionSelect($event)"
       ></app-select>
-    </div>
 
-    <div class="mb-3 d-flex gap-3">
-      <app-input
-        formControlName="eventStart"
-        class="w-100"
-        label="Esemény kezdete*"
-        type="datetime-local"
-      ></app-input>
-      <app-input
-        formControlName="eventEnd"
-        class="w-100"
-        label="Esemény vége*"
-        type="datetime-local"
-      ></app-input>
-    </div>
-    @if (eventForm.get("eventType")?.value && eventForm.get("eventType")?.value !== GOOGLE_EVENT) {
-      <textarea formControlName="reason" placeholder="Megjegyzés" rows="3"></textarea>
-
-      @if (calendarEvent()) {
+      <div class="mb-4 d-flex gap-3">
         <app-input
-          formControlName="organizer"
-          class="w-100 mt-3"
-          label="Szervező"
-          bootstrapIcon="bi-pen"
+          formControlName="eventStart"
+          class="w-100"
+          label="Esemény kezdete*"
+          type="datetime-local"
         ></app-input>
+        <app-input
+          formControlName="eventEnd"
+          class="w-100"
+          label="Esemény vége*"
+          type="datetime-local"
+        ></app-input>
+      </div>
+      @if (
+        eventForm.get("eventType")?.value && eventForm.get("eventType")?.value !== GOOGLE_EVENT
+      ) {
+        <textarea formControlName="reason" placeholder="Megjegyzés" rows="3"></textarea>
+
+        @if (calendarEvent()) {
+          <div class="label-strong mt-4 d-flex items-center">
+            <mat-icon [svgIcon]="ICON_IDS.PEN" class="me-2"></mat-icon>
+            <span>Szervező:</span>
+            <span class="label-gray ms-2">{{ calendarEvent()?.organizer?.displayName }}</span>
+          </div>
+        }
       }
-    }
-  </form>
+    </form>
+  } @else {
+    <div class="mb-3">
+      <div class="label-strong">Esemény</div>
+      <div class="label-gray">{{ calendarEvent()?.summary ?? "-" }}</div>
+    </div>
+
+    <div class="d-flex mb-3 gap-4">
+      <div class="w-50">
+        <div class="label-strong">Esemény kezdete</div>
+        <div class="label-gray">{{ calendarEvent()?.eventStart ?? "-" }}</div>
+      </div>
+
+      <div class="w-50">
+        <div class="label-strong">Esemény vége</div>
+        <div class="label-gray">{{ calendarEvent()?.eventEnd ?? "-" }}</div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <div class="label-strong">Megjegyzés</div>
+      <div class="label-gray">{{ calendarEvent()?.description ?? "-" }}</div>
+    </div>
+
+    <div class="mb-3">
+      <div class="label-strong">Szervező</div>
+      <div class="label-gray">{{ calendarEvent()?.organizer?.displayName ?? "-" }}</div>
+    </div>
+  }
 </ng-template>
 
 <ng-template #footerDialogTemplate>

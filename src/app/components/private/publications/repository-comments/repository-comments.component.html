@@ -1,7 +1,8 @@
-<i
-  class="bi bi-chat-left-dots label-primary line-height-0 cursor-pointer"
+<mat-icon
+  class="label-primary"
+  [svgIcon]="CHAT_DOTS_ICON"
   (click)="onOpenCommentsDialogClick()"
-></i>
+></mat-icon>
 
 <ng-template #commentsDialogContentTemplate>
   <div
@@ -10,10 +11,10 @@
     [class]="displayedCommentGroups().length ? 'pb-2' : 'h-100'"
   >
     @for (commentGroup of displayedCommentGroups(); track $index) {
-      <div class="fw-bold small mt-3">{{ commentGroup.dateStr }}</div>
+      <div class="label-strong label-normal mt-3">{{ commentGroup.dateStr }}</div>
       <hr />
       @for (commentItem of commentGroup.comments; track $index) {
-        <div class="d-flex justify-content-between gap-3 mb-2">
+        <div class="flex-between gap-3 mb-2">
           <div class="d-flex gap-2">
             <div
               class="monogram"
@@ -22,15 +23,15 @@
               <span>{{ commentItem.monogram }}</span>
             </div>
             <div>
-              <div class="fw-bold small">{{ commentItem.userName }}</div>
+              <div class="label-strong label-normal">{{ commentItem.userName }}</div>
               <div>{{ commentItem.text }}</div>
             </div>
           </div>
-          <div class="fw-bold small">{{ commentItem.time }}</div>
+          <div class="label-normal label-strong">{{ commentItem.time }}</div>
         </div>
       }
     } @empty {
-      <div class="empty-comments-placeholder h-100">Még nem került megjegyzés hozzáadásra.</div>
+      <div class="empty-comments-placeholder">Még nem került megjegyzés hozzáadásra.</div>
     }
   </div>
 </ng-template>

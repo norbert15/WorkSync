@@ -1,0 +1,42 @@
+@mixin margin-generator($max) {
+  @for $i from 1 through $max {
+    $rem: #{$i * 0.25}rem;
+    .mb-#{$i} {
+      margin-bottom: $rem !important;
+    }
+
+    .mt-#{$i} {
+      margin-top: $rem !important;
+    }
+
+    .ms-#{$i} {
+      margin-left: $rem !important;
+    }
+
+    .me-#{$i} {
+      margin-right: $rem !important;
+    }
+
+    .my-#{$i} {
+      margin-block: $rem !important;
+    }
+
+    .mx-#{$i} {
+      margin-inline: $rem !important;
+    }
+
+    .gap-#{$i} {
+      gap: $rem !important;
+    }
+
+    .row-gap-#{$i} {
+      row-gap: $rem !important;
+    }
+
+    .column-gap-#{$i} {
+      column-gap: $rem !important;
+    }
+  }
+}
+
+@include margin-generator(10);

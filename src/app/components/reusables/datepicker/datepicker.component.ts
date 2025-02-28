@@ -12,15 +12,18 @@ import {
 import { CommonModule } from '@angular/common';
 
 import { HUN_MONTHS } from '../../../core/constans/variables';
+import { IconIds } from '../../../core/constans/enums';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-datepicker',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIcon],
   templateUrl: './datepicker.component.html',
   styleUrl: './datepicker.component.scss',
 })
 export class DatepickerComponent implements OnInit {
+  public readonly CHEVRON_LEFT_ICON = IconIds.CHEVRON_LEFT;
   public readonly HUN_MONTHS = HUN_MONTHS;
 
   public readonly TODAY = new Date();

@@ -1,6 +1,6 @@
 <div
   class="input-wrapper"
-  (click)="inputField?.showPicker()"
+  (click)="type() === 'date' || type() === 'datetime-local' ? inputField?.showPicker() : null"
   [ngClass]="{ 'input-disabled': disabled() }"
 >
   <input
@@ -19,26 +19,26 @@
     (blur)="focused.set(false)"
   />
 
-  <div
+  <label
     class="input-label"
+    [attr.for]="id()"
     (click)="inputField.focus()"
     [ngClass]="{
-      'input-label-focus': value() || focused() || type() === 'date' || type() == 'datetime-local',
-      'input-disabled': disabled(),
+      'input-label--focus': value() || focused() || type() === 'date' || type() == 'datetime-local',
+      'input-label--transparent': disabled(),
     }"
   >
-    @if (bootstrapIcon()) {
-      <i [ngClass]="['bi', bootstrapIcon()]"></i>
+    @if (icon()) {
+      <mat-icon [svgIcon]="icon()!"></mat-icon>
     }
     {{ label() }}
-  </div>
+  </label>
 
   @if (type() === "password") {
     <div class="password-icon" (click)="passwordVisible.set(!passwordVisible())">
-      <i
-        class="bi"
-        [ngClass]="disabled() || !passwordVisible() ? 'bi-eye-slash-fill' : 'bi-eye-fill'"
-      ></i>
+      <mat-icon
+        [svgIcon]="disabled() || !passwordVisible() ? ICON_IDS.EYE_SLASH : ICON_IDS.EYE"
+      ></mat-icon>
     </div>
   }
 </div>

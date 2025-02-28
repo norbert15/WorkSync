@@ -12,12 +12,13 @@ import {
   addDoc,
   setDoc,
 } from '@angular/fire/firestore';
-import { BehaviorSubject, from, map, Observable, of, switchMap, take } from 'rxjs';
-
-import { IUser, IUserBase, IUserWorkStatus } from '../../models/user.model';
+import { BehaviorSubject, from, map, Observable, of, switchMap, take, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import moment from 'moment';
+
+import { IUser, IUserBase, IUserWorkStatus } from '../../models/user.model';
 import { UserEnum } from '../../core/constans/enums';
+import { AuthFirebaseService } from './auth-firebase.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,7 @@ export class UserFirebaseService {
   private readonly USER_WORK_STATUS_COLLECTION = 'user-work-statuses';
 
   private readonly firestore = inject(Firestore);
+  private readonly authFirebaseService = inject(AuthFirebaseService);
 
   private readonly _user = new BehaviorSubject<IUser | null>(null);
 
@@ -50,12 +52,13 @@ export class UserFirebaseService {
     return from(updateDoc(userDocRef, user));
   }
 
-  public updateUserGoogleRefreshToken(
-    userId: string,
-    googleRefreshToken: string,
-  ): Observable<void> {
+  public updateUserGoogleRefreshToken(googleRefreshToken: string): Observable<IUser> {
+    const { userId } = this.authFirebaseService.userPayload()!;
+
     const userDocRef = doc(this.firestore, this.USERS_COLLECTION, userId);
-    return from(updateDoc(userDocRef, { googleRefreshToken }));
+    return from(updateDoc(userDocRef, { googleRefreshToken })).pipe(
+      switchMap(() => this.getUserDetails(userId)),
+    );
   }
 
   public getUserWorkStatus(userId: string): Observable<IUserWorkStatus | null> {
@@ -100,20 +103,5 @@ export class UserFirebaseService {
 
   public setUser(user: IUser): void {
     this._user.next(user);
-  }
-
-  private addTestUser(): void {
-    const userRef = doc(this.firestore, this.USERS_COLLECTION, 'HuTYMa6gx1VUAnIfSDVqBlLx4DX2');
-    const user: Partial<IUser> = {
-      email: 'szilagyi.tamas@bnorbi1599.com',
-      firstName: 'Tamás',
-      lastName: 'Szilágyi',
-      jobTitle: 'Full stack developer',
-      phone: '06304445433',
-      role: UserEnum.ADMINISTRATOR,
-      googleRefreshToken: '',
-    };
-
-    from(setDoc(userRef, user)).subscribe();
   }
 }

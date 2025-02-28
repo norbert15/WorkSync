@@ -1,0 +1,57 @@
+<button app-button (click)="onOpenChatRoomFormDialogClick()">Új csevegő szóba</button>
+
+<ng-template #chatRoomFormTemplate>
+  <app-input
+    [(ngModel)]="chatRoomName"
+    class="my-3"
+    label="Csevegő szoba"
+    [icon]="CHAT_DOTS_ICON"
+  ></app-input>
+
+  @if (chatRoomForEdit()) {
+    <div class="mb-4">
+      <app-select
+        [(ngModel)]="transferedUser"
+        [options]="selecableUserOptions()"
+        label="Csevegő szoba átruházása"
+        (selectedValueChange)="onTransferedUserChange($event)"
+      ></app-select>
+    </div>
+  }
+
+  <div class="label-strong mb-3">Résztvevők</div>
+  @for (user of selectableUsers(); track user.id) {
+    <div class="flex-between items-center gap-3 mb-2 cursor-pointer user-select-none">
+      <label [for]="'user-' + user.id" class="d-flex items-center gap-2">
+        <div class="user-monogram user-monogram--flex">{{ user.monogram }}</div>
+        <div>{{ user.lastName }} {{ user.firstName }}</div>
+      </label>
+
+      <input
+        [id]="'user-' + user.id"
+        type="checkbox"
+        [disabled]="transferedUser()?.id === user.id"
+        [(ngModel)]="user.checked"
+      />
+    </div>
+  }
+</ng-template>
+
+<ng-template #roomDialogFooterTemplate>
+  <button class="w-100 mb-2" app-button color="transparent" (click)="onCloseDialog()">
+    Mégsem
+  </button>
+  @if (chatRoomForEdit()) {
+    <button
+      class="w-100 mb-2"
+      app-button
+      color="danger"
+      (click)="onOpenWarningDeleteDialogTemplate()"
+    >
+      Eltávolítás
+    </button>
+  }
+  <button class="w-100" app-button (click)="handleCreateOrUpdateChatRoom()">
+    {{ chatRoomForEdit() ? "Módosítás" : "Létrehozás" }}
+  </button>
+</ng-template>

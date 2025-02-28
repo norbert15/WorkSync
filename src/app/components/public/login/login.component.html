@@ -12,14 +12,14 @@
             <app-input
               class="mb-3"
               label="E-mail cím"
-              bootstrapIcon="bi-person-circle"
+              [icon]="ICON_IDS.PERSON_CIRCLE"
               formControlName="email"
               autocompleteName="new-username"
             ></app-input>
             <app-input
               type="password"
               label="Jelszó"
-              bootstrapIcon="bi-lock-fill"
+              [icon]="ICON_IDS.LOCK_FILL"
               formControlName="password"
               autocompleteName="new-password"
             ></app-input>
@@ -56,7 +56,7 @@
           <app-input
             class="d-block mb-5"
             formControlName="email"
-            bootstrapIcon="bi-person-circle"
+            [icon]="ICON_IDS.PERSON_CIRCLE"
             label="E-mail cím"
           ></app-input>
           <button

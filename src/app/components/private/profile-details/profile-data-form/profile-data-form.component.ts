@@ -9,6 +9,7 @@ import { UserFirebaseService } from '../../../../services/firebase/user-firebase
 import { IUser, IUserBase } from '../../../../models/user.model';
 import { GoogleAuthService } from '../../../../services/google/google-auth.service';
 import { PopupService } from '../../../../services/popup.service';
+import { IconIds } from '../../../../core/constans/enums';
 
 @Component({
   selector: 'app-profile-data-form',
@@ -18,6 +19,7 @@ import { PopupService } from '../../../../services/popup.service';
   styleUrl: './profile-data-form.component.scss',
 })
 export class ProfileDataFormComponent implements OnInit, OnDestroy {
+  public readonly ICON_IDS = IconIds;
   public profileForm!: FormGroup;
 
   public isLoading = signal(false);
@@ -131,7 +133,7 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
             title: 'Sikeres művelet!',
           });
 
-          return this.userFirebaseService.updateUserGoogleRefreshToken(this.user!.id, '').pipe(
+          return this.userFirebaseService.updateUserGoogleRefreshToken('').pipe(
             catchError((err) => {
               return of('failed');
             }),

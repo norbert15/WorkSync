@@ -33,11 +33,6 @@
     }
   }
 
-  i {
-    line-height: 0;
-    font-size: 25px;
-  }
-
   .counter {
     position: absolute;
     top: -5px;
@@ -49,7 +44,6 @@
 
   .close-icon {
     position: absolute;
-    font-size: 14px;
     right: 15px;
     top: 15px;
     cursor: pointer;

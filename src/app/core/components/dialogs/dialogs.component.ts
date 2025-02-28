@@ -9,23 +9,27 @@ import {
   viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
 import { ReplaySubject, takeUntil } from 'rxjs';
 
 import { DialogsService } from '../../../services/dialogs.service';
 import { FadeDirective } from '../../../directives/fade.directive';
 import { ButtonComponent } from '../../../components/reusables/button/button.component';
 import { DialogModel } from '../../../models/dialog.model';
+import { IconIds } from '../../constans/enums';
 
 @Component({
   selector: 'app-dialogs',
   standalone: true,
-  imports: [CommonModule, FadeDirective, ButtonComponent],
+  imports: [CommonModule, FadeDirective, ButtonComponent, MatIcon],
   templateUrl: './dialogs.component.html',
   styleUrl: './dialogs.component.scss',
 })
 export class DialogsComponent implements OnInit, OnDestroy {
   public defaultContentTemplate = viewChild<TemplateRef<any>>('defaultContentTemplate');
   public defaultFooterTemplate = viewChild<TemplateRef<any>>('defaultFooterTemplate');
+
+  public readonly X_CIRCLE_ICON = IconIds.X_CIRCLE;
 
   public dialog = signal<DialogModel | null>(null);
 

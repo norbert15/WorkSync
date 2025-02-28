@@ -1,0 +1,112 @@
+.mb {
+  margin-bottom: 24px;
+}
+
+.text-end {
+  text-align: end;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-start {
+  text-align: start;
+}
+
+.text-line-through {
+  text-decoration: line-through;
+}
+
+.text-decoration-underline {
+  text-decoration: underline;
+}
+
+.text-nowrap {
+  text-wrap: nowrap;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.user-select-none {
+  user-select: none;
+}
+
+.ellipsis {
+  white-space: nowrap; /* Ne törje meg a sort */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Helyettesítse a levágott részt "..."-tal */
+}
+
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.d-block {
+  display: block;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.items-end {
+  align-items: end;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.vertical-align-text-top {
+  svg {
+    vertical-align: text-top !important;
+  }
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}

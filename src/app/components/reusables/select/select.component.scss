@@ -70,11 +70,15 @@ $select-padding: 10px;
     align-items: center;
     gap: 4px;
 
-    &-focus {
+    &--focus {
       top: calc(0% - $select-padding);
       left: calc($select-padding - 2px);
       font-size: 12px;
       color: colors.$secondary-dark;
+    }
+
+    &--transparent {
+      background-color: transparent;
     }
   }
 
@@ -96,13 +100,13 @@ $select-padding: 10px;
   right: $select-padding;
   top: calc(50% - $select-padding);
 
-  i::before {
+  mat-icon {
     transition: 0.3s all ease-out;
     transform: rotate(-90deg);
   }
 
   &--opened {
-    i::before {
+    mat-icon {
       transform: rotate(90deg);
     }
   }

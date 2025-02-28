@@ -59,10 +59,11 @@
                         [ngTemplateOutletContext]="{ $implicit: row }"
                       ></ng-container>
                     } @else {
-                      <i
+                      <mat-icon
                         (click)="onOperationClick(row, operation)"
-                        [class]="OPERATIONS[operation.name]"
-                      ></i>
+                        [class]="OPERATIONS[operation.name].class"
+                        [svgIcon]="OPERATIONS[operation.name].icon"
+                      ></mat-icon>
                     }
                   }
                 </div>

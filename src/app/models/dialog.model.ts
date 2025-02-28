@@ -9,6 +9,7 @@ type DialogTemplateConfigType = {
   contentText: string;
   triggerBtnLabel: string;
   triggerBtnColor: any; // A gomb Paletta color típusa miatt sír így ezért any
+  contentClass: string;
 };
 
 type DialogSettingsType = {
@@ -54,6 +55,7 @@ export class DialogModel {
       contentText: templateConfig?.contentText ?? '',
       triggerBtnColor: templateConfig?.triggerBtnColor ?? defaultConfig.color,
       triggerBtnLabel: templateConfig?.triggerBtnLabel ?? defaultConfig.label,
+      contentClass: templateConfig?.contentClass ?? '',
     };
   }
 

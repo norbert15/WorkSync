@@ -2,10 +2,8 @@ import {
   Component,
   effect,
   inject,
-  Input,
   model,
   OnInit,
-  output,
   signal,
   TemplateRef,
   viewChild,
@@ -29,7 +27,6 @@ import { formatDateWithMoment } from '../../../../core/helpers';
   standalone: true,
   imports: [ButtonComponent, InputComponent, ReactiveFormsModule],
   templateUrl: './holiday-request.component.html',
-  styleUrl: './holiday-request.component.scss',
 })
 export class HolidayRequestComponent implements OnInit {
   public dialogContentTemplate = viewChild<TemplateRef<any>>('dialogContentTemplate');
@@ -53,7 +50,7 @@ export class HolidayRequestComponent implements OnInit {
         const hr = this.holidayRequest();
 
         if (hr) {
-          this.updateFormValues();
+          this.updateFormValues(hr);
           this.onShowHolidayRequestDialogClick();
         }
       },
@@ -198,18 +195,18 @@ export class HolidayRequestComponent implements OnInit {
     });
   }
 
-  private updateFormValues(): void {
+  private updateFormValues(holidayRequest: IRequestedHoliday): void {
     if (this.holidayForm) {
       this.holidayForm.patchValue({
-        start: formatDateWithMoment(this.holidayRequest()?.startDate, {
+        start: formatDateWithMoment(holidayRequest.startDate, {
           formats: ['YYYY. MM. DD.'],
           useFormat: 'YYYY-MM-DD',
         }),
-        end: formatDateWithMoment(this.holidayRequest()?.endDate, {
+        end: formatDateWithMoment(holidayRequest.endDate, {
           formats: ['YYYY. MM. DD.'],
           useFormat: 'YYYY-MM-DD',
         }),
-        reason: this.holidayRequest()?.reason,
+        reason: holidayRequest.reason,
       });
     }
   }

@@ -1,10 +1,11 @@
 <div class="datepicker-wrapper" #datePicker>
   <div class="datepicker" (click)="toggleOptions()">
     <span>Időszak: {{ year() }}. {{ HUN_MONTHS[month()! - 1].monthName }}</span>
-    <i
-      class="bi bi-chevron-left arrow-icon ms-2"
+    <mat-icon
+      [svgIcon]="CHEVRON_LEFT_ICON"
+      class="arrow-icon"
       [ngClass]="{ 'arrow-icon--opened': showOptions() }"
-    ></i>
+    ></mat-icon>
   </div>
   <div class="datepicker-dropdowns" [ngClass]="{ 'datepicker-dropdowns--opened': showOptions() }">
     <div class="datepicker-dropdowns-header">
@@ -29,13 +30,17 @@
         @if (menu() === "year") {
           <div class="arrow-item">
             @if (page() !== 1) {
-              <i (click)="handlePageChange(-1)" class="bi bi-chevron-left"></i>
+              <mat-icon (click)="handlePageChange(-1)" [svgIcon]="CHEVRON_LEFT_ICON"></mat-icon>
             }
           </div>
           <div class="arrow-item under cursor-pointer" (click)="onTodayClick()">Most</div>
           <div class="arrow-item">
             @if (page() + 1 <= maxPage()) {
-              <i (click)="handlePageChange(1)" class="bi bi-chevron-right"></i>
+              <mat-icon
+                class="rotate-180"
+                (click)="handlePageChange(1)"
+                [svgIcon]="CHEVRON_LEFT_ICON"
+              ></mat-icon>
             }
           </div>
           @for (

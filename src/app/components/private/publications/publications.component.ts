@@ -17,6 +17,7 @@ import {
   CdkDropListGroup,
   CdkDragHandle,
 } from '@angular/cdk/drag-drop';
+import { MatIcon } from '@angular/material/icon';
 import { finalize, Observable, ReplaySubject, switchMap, take, takeUntil } from 'rxjs';
 
 import { ButtonComponent } from '../../reusables/button/button.component';
@@ -26,7 +27,7 @@ import { PublicationFirebaseService } from '../../../services/firebase/publicati
 import { IBranch, IRepository } from '../../../models/branch.model';
 import { DialogModel } from '../../../models/dialog.model';
 import { DialogsService } from '../../../services/dialogs.service';
-import { RepositroyEnum } from '../../../core/constans/enums';
+import { IconIds, RepositroyEnum } from '../../../core/constans/enums';
 import { RepositoryCommentsComponent } from './repository-comments/repository-comments.component';
 import { UserFirebaseService } from '../../../services/firebase/user-firebase.service';
 import { IUser } from '../../../models/user.model';
@@ -47,6 +48,7 @@ type BranchWithCheckType = { checked: boolean } & IBranch;
     FormsModule,
     RepositoryCommentsComponent,
     AsyncPipe,
+    MatIcon,
   ],
   templateUrl: './publications.component.html',
   styleUrl: './publications.component.scss',
@@ -58,6 +60,7 @@ export class PublicationsComponent implements OnInit, OnDestroy {
   );
 
   public readonly ACTIVE = RepositroyEnum.ACTIVE;
+  public readonly ICON_IDS = IconIds;
 
   public repositories = signal<Array<IRepository>>([]);
 

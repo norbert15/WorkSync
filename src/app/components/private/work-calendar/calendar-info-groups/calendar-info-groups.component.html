@@ -1,13 +1,10 @@
 @for (infoCard of infoCards(); track $index) {
   <div class="info-card">
     <!-- Info header -->
-    <div
-      class="mb-3 d-flex justify-content-between"
-      [ngClass]="{ 'flex-grow-1': !infoCard.events.length }"
-    >
+    <div class="flex-between mb-3" [ngClass]="{ 'flex-grow-1': !infoCard.events.length }">
       <!-- Title -->
-      <div>
-        <i [ngClass]="['me-1', infoCard.bootstrapIconClass]"></i>
+      <div class="d-flex items-center gap-2">
+        <mat-icon [class]="infoCard.iconColor" [svgIcon]="infoCard.icon"></mat-icon>
         {{ infoCard.title }}:
       </div>
 
@@ -20,21 +17,16 @@
     <!-- Info body -->
     <div [ngClass]="{ 'flex-grow-1': infoCard.events.length }">
       @for (event of infoCard.events.slice(0, 3); track $index) {
-        <div
-          [ngClass]="[
-            event.subLabel ? 'd-flex justify-content-between gap-2' : 'text-end',
-            event.class ?? '',
-          ]"
-        >
+        <div [ngClass]="[event.subLabel ? 'flex-between gap-2' : 'text-end', event.class ?? '']">
           @if (event.subLabel) {
             <div
               (click)="event?.callback(event.item)"
-              class="small text-end text-nowrap fw-bold cursor-pointer"
+              class="label-normal label-strong text-end text-nowrap cursor-pointer"
             >
               {{ event.subLabel }}
             </div>
           }
-          <div (click)="event?.callback(event.item)" class="ellipsis fw-bold cursor-pointer">
+          <div (click)="event?.callback(event.item)" class="ellipsis label-strong cursor-pointer">
             {{ event.name }}
           </div>
         </div>
@@ -56,7 +48,7 @@
 }
 
 <ng-template #todayTemplate>
-  <div class="text-end">
+  <div class="text-end mt-3">
     @if (!ownWorkStatus()) {
       <button app-button (click)="onStartTheDayClick()">Munka kezdés</button>
     } @else if (!ownWorkStatus()!.workEnd) {
@@ -91,7 +83,7 @@
         {{ userReport() }}
       </div>
     } @else {
-      <textarea rows="4" placeholder="Összegzés..." [(ngModel)]="userReport"></textarea>
+      <textarea rows="6" placeholder="Összegzés..." [(ngModel)]="userReport"></textarea>
     }
   </div>
 </ng-template>

@@ -1,0 +1,19 @@
+@use "../../../../../assets/styles/sass/base/variables/colors" as colors;
+
+.chat-room {
+  background-color: white;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid colors.$blue-light;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+
+  &--active,
+  &:hover {
+    background-color: colors.$primary;
+    color: white;
+  }
+}

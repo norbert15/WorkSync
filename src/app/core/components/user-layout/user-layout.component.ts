@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { catchError, of, ReplaySubject, switchMap, takeUntil, tap } from 'rxjs';
+import { Router, RouterOutlet } from '@angular/router';
+import { catchError, Observable, of, ReplaySubject, switchMap, take, takeUntil, tap } from 'rxjs';
 import moment from 'moment';
 
 import { SidebarComponent } from '../sidebar/sidebar.component';
@@ -14,6 +14,9 @@ import { PopupService } from '../../../services/popup.service';
 import { RepositroyEnum } from '../../constans/enums';
 import { IUser } from '../../../models/user.model';
 import { IBranch } from '../../../models/branch.model';
+import { AuthFirebaseService } from '../../../services/firebase/auth-firebase.service';
+import { APP_PATHS } from '../../constans/paths';
+import { NotificationFirebaseService } from '../../../services/firebase/notification-firebase.service';
 
 @Component({
   selector: 'app-user-layout',
@@ -27,24 +30,60 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
 
   public deviceType = signal<DeviceType>('desktop');
 
-  private fetched = false;
-
   private readonly destroyed$ = new ReplaySubject<void>(1);
+
+  private readonly publicationFirebaseService = inject(PublicationFirebaseService);
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly userFirebaseService = inject(UserFirebaseService);
-  private readonly popupService = inject(PopupService);
-  private readonly publicationFirebaseService = inject(PublicationFirebaseService);
+  private readonly authFirebaseService = inject(AuthFirebaseService);
+  private readonly notiFirebaseService = inject(NotificationFirebaseService);
   private readonly deviceTypeService = inject(DeviceTypeService);
+  private readonly popupService = inject(PopupService);
+  private readonly router = inject(Router);
 
   public ngOnInit(): void {
     this.fetchDeviceType();
-    this.fetchGoogleApiTokens();
     this.fetchBarnchForPublications();
+    this.fetchUserDetails();
+    this.fetchUserNotifications();
   }
 
   public ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  private fetchUserNotifications(): void {
+    this.notiFirebaseService
+      .getUserNotifications()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (notifications) => {
+          this.notiFirebaseService.setUserNotifications(notifications);
+        },
+      });
+  }
+
+  private fetchUserDetails(): void {
+    const userPayload = this.authFirebaseService.userPayload()!;
+    this.userFirebaseService
+      .getUserDetails(userPayload.userId)
+      .pipe(
+        take(1),
+        switchMap((user: IUser) => {
+          this.userFirebaseService.setUser(user);
+          return this.fetchGoogleApiTokens(user);
+        }),
+      )
+      .subscribe({
+        error: () => {
+          this.popupService.add({
+            details: 'Hiba történt a felhasználói adatok lekérdezése során.',
+            severity: 'error',
+          });
+          return this.router.navigate([APP_PATHS.login]);
+        },
+      });
   }
 
   private fetchBarnchForPublications(): void {
@@ -74,35 +113,27 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
       });
   }
 
-  private fetchGoogleApiTokens(): void {
-    this.userFirebaseService.user$
-      .pipe(
-        takeUntil(this.destroyed$),
-        switchMap((user: IUser | null) => {
-          if (user && user.googleRefreshToken && !this.fetched) {
-            return this.googleAuthService.renewAccessToken(user.googleRefreshToken).pipe(
-              tap((result) => {
-                this.fetched = true;
-                this.googleAuthService.setGoogleApiPayload(
-                  result.access_token ?? '',
-                  user.googleRefreshToken,
-                );
-              }),
-              catchError(() => {
-                this.popupService.add({
-                  details: 'Hiba történt a google api hitelesítési adatok megújítása során.',
-                  severity: 'error',
-                  title: 'Google naptár szinkon',
-                });
-                return of(null);
-              }),
-            );
-          }
+  private fetchGoogleApiTokens(user: IUser): Observable<any> {
+    if (!user.googleRefreshToken) {
+      return of(null);
+    }
 
-          return of(null);
-        }),
-      )
-      .subscribe();
+    return this.googleAuthService.renewAccessToken(user.googleRefreshToken).pipe(
+      tap((result) => {
+        this.googleAuthService.setGoogleApiPayload(
+          result.access_token ?? '',
+          user.googleRefreshToken,
+        );
+      }),
+      catchError(() => {
+        this.popupService.add({
+          details: 'Hiba történt a google api hitelesítési adatok megújítása során.',
+          severity: 'error',
+          title: 'Google naptár szinkon',
+        });
+        return of(null);
+      }),
+    );
   }
 
   private fetchDeviceType(): void {

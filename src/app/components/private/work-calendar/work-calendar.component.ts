@@ -45,10 +45,11 @@ import { CalendarFirebaseService } from '../../../services/firebase/calendar-fir
 import { formatDateWithMoment, generateMonthlyCalendar } from '../../../core/helpers';
 import { GoogleAuthService } from '../../../services/google/google-auth.service';
 import { FadeDirective } from '../../../directives/fade.directive';
-import { CalendarEventEnum } from '../../../core/constans/enums';
+import { CalendarEventEnum, IconIds } from '../../../core/constans/enums';
 import { PopupService } from '../../../services/popup.service';
 import { DialogsService } from '../../../services/dialogs.service';
 import { DialogModel } from '../../../models/dialog.model';
+import { MatIcon } from '@angular/material/icon';
 
 type ResultType = {
   year: number;
@@ -67,6 +68,7 @@ type ResultType = {
     CalendarInfoGroupsComponent,
     DragScrollDirective,
     FadeDirective,
+    MatIcon,
   ],
   templateUrl: './work-calendar.component.html',
   styleUrl: './work-calendar.component.scss',
@@ -83,6 +85,8 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
   public calendarInfoGroupsComponent = viewChild<CalendarInfoGroupsComponent>(
     CalendarInfoGroupsComponent,
   );
+
+  public readonly ICON_IDS = IconIds;
 
   public readonly SORTED_HUN_DAYS = HUN_DAYS.sort((a, b) => a.order - b.order);
   public readonly CALENDAR_EVENTS = CalendarEventEnum;
@@ -169,10 +173,10 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (event.type === CalendarEventEnum.DAY_START || event.type === CalendarEventEnum.DAY_END) {
+    /* if (event.type === CalendarEventEnum.DAY_START || event.type === CalendarEventEnum.DAY_END) {
       this.calendarInfoGroupsComponent()?.onOpenEndOfDayDialog(event);
       return;
-    }
+    } */
 
     this.selectedCalendarEvent.set({ ...event });
   }

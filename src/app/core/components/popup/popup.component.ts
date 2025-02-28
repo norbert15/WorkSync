@@ -1,8 +1,10 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
 
 import { PopupService, PopupType } from '../../../services/popup.service';
 import { PopupAutoRemoveDirective } from '../../../directives/popup-auto-remove.directive';
+import { IconIds } from '../../constans/enums';
 
 type GroupedPopups = {
   length: number;
@@ -12,17 +14,17 @@ type GroupedPopups = {
 @Component({
   selector: 'app-popup',
   standalone: true,
-  imports: [CommonModule, PopupAutoRemoveDirective],
+  imports: [CommonModule, PopupAutoRemoveDirective, MatIcon],
   templateUrl: './popup.component.html',
   styleUrl: './popup.component.scss',
 })
 export class PopupComponent {
-  public readonly ICONS: Record<string, string> = {
-    error: 'bi bi-ban',
-    warning: 'bi bi-exclamation-circle',
-    success: 'bi bi-check-circle',
-    info: 'bi bi-info-circle',
-    close: 'bi bi-x-circle',
+  public readonly ICONS: Record<string, IconIds> = {
+    error: IconIds.BAN,
+    warning: IconIds.EXCLAMATION_CIRCLE,
+    success: IconIds.CHECK_CIRCLE,
+    info: IconIds.INFO_CIRCLE,
+    close: IconIds.X_CIRCLE,
   };
 
   public groupedPopups = computed<Array<GroupedPopups>>(() => {

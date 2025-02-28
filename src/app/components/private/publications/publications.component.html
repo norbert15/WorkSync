@@ -2,7 +2,7 @@
   <div class="left-side">
     <div class="mb-4">
       <div class="headline-text-large mb-3">Publikálásra vár</div>
-      <div class="d-flex gap-2 flex-wrap">
+      <div class="d-flex flex-wrap gap-2">
         @for (repository of awatingForPublications(); track repository.id) {
           <div
             class="flex-item repository-card"
@@ -17,15 +17,15 @@
                 repositoryItemDragged() && repositoryItemDragged() === repository.id,
             }"
           >
-            <div class="mb-3 d-flex justify-content-between align-items-center">
-              <div class="label-strong headline-text-normal ellipsis">
-                <i class="bi bi-github me-1"></i>
+            <div class="flex-between items-center mb-3">
+              <div class="label-strong headline-text-normal ellipsis d-flex items-center gap-2">
+                <mat-icon [svgIcon]="ICON_IDS.GITHUB"></mat-icon>
                 {{ repository.name }}
               </div>
               @if (repository.branches.length) {
                 <button
                   app-button
-                  class="publish-btn"
+                  class="label-normal"
                   (click)="onOpenMarkBranchesDialogClick(repository)"
                 >
                   Publikálva
@@ -44,7 +44,7 @@
 
     <div class="mb-4">
       <div class="headline-text-large mb-3">Aktív publikálások</div>
-      <div class="d-flex gap-2 flex-wrap">
+      <div class="d-flex flex-wrap gap-2">
         @for (repository of activePublications(); track repository.id) {
           <div
             class="flex-item repository-card"
@@ -59,8 +59,8 @@
                 repositoryItemDragged() && repositoryItemDragged() === repository.id,
             }"
           >
-            <div class="mb-3 label-strong headline-text-normal ellipsis">
-              <i class="bi bi-github me-1"></i>
+            <div class="label-strong headline-text-normal ellipsis mb-3 d-flex items-center gap-2">
+              <mat-icon [svgIcon]="ICON_IDS.GITHUB"></mat-icon>
               {{ repository.name }}
             </div>
 
@@ -74,7 +74,7 @@
     </div>
   </div>
   <div class="branches-container">
-    <div class="headline-text-large mb-3">Elérhető branches</div>
+    <div class="headline-text-large mb-3">Elérhető branch-ek</div>
     <div class="repository-card flex-grow-1">
       @for (repository of repositories(); track $index) {
         <div
@@ -83,8 +83,8 @@
           [cdkDropListData]="repository.branches"
           [cdkDropListSortingDisabled]="true"
         >
-          <div class="headline-text-normal fw-bold mb-2">
-            <i class="bi bi-layers me-2"></i>
+          <div class="headline-text-normal label-strong d-flex items-center gap-2 mb-2">
+            <mat-icon class="big-icon" [svgIcon]="ICON_IDS.LAYERS"></mat-icon>
             {{ repository.name }}
           </div>
           @for (branch of repository.branches; track $index) {
@@ -93,15 +93,21 @@
               [cdkDragData]="branch"
               (cdkDragStarted)="repositoryItemDragged.set(branch.repositoryId)"
               (cdkDragEnded)="repositoryItemDragged.set('')"
-              class="d-flex align-items-center justify-content-between small label-gray column-gap-3 mb-1"
+              class="flex-between items-center label-normal label-gray column-gap-3 mb-1"
             >
               <div class="ellipsis">{{ branch.name }}</div>
-              <i class="bi bi-grip-vertical headline-text-normal cursor-pointer" cdkDragHandle></i>
+              <mat-icon
+                class="headline-text-normal cursor-pointer big-icon"
+                [svgIcon]="ICON_IDS.GRIP_VERTICAL"
+                cdkDragHandle
+              ></mat-icon>
             </div>
           }
         </div>
 
         <hr />
+      } @empty {
+        <div class="text-center">Nem található branch-ek</div>
       }
     </div>
   </div>
@@ -109,29 +115,29 @@
 
 <ng-template #branchListTemplate let-group>
   @if (group.repository.branches.length) {
-    <div class="small flex-grow-1">
+    <ul class="label-normal flex-grow-1">
       @for (branch of group.repository.branches; track branch.id) {
-        <div class="fw-bold mb-1">
-          <div class="d-flex justify-content-between align-items-center">
+        <li class="label-strong mb-1">
+          <div class="flex-between items-center">
             <div
-              class="d-flex align-items-center cursor-pointer overflow-hidden"
+              class="d-flex items-center cursor-pointer overflow-hidden"
               [ngClass]="[branch.status ?? 'label-primary']"
               (click)="onCopyBranchNameClick(branch.name)"
             >
-              <i class="bi bi-dot line-height-0 headline-text-normal"></i>
               <div class="ellipsis me-2">{{ branch.name }}</div>
             </div>
-            <i
-              class="bi bi-x-circle cursor-pointer"
+            <mat-icon
+              class="small-icon x-circle"
+              [svgIcon]="ICON_IDS.X_CIRCLE"
               (click)="onOpenDeleteWarningDialogClick(branch, group.type)"
-            ></i>
+            ></mat-icon>
           </div>
-        </div>
+        </li>
       }
-    </div>
-    <div class="mt-4 d-flex justify-content-between align-items-center">
+    </ul>
+    <div class="flex-between items-center mt-4">
       <div>
-        Utoljára frissitve: <span class="fw-bold">{{ group.repository.lastUpdated }}</span>
+        Utoljára frissitve: <span class="label-strong">{{ group.repository.lastUpdated }}</span>
       </div>
       @if (group.type !== ACTIVE) {
         <app-repository-comments
@@ -143,24 +149,24 @@
       }
     </div>
   } @else {
-    <div class="flex-grow-1 d-flex align-items-end justify-content-end small fw-bold">
+    <div class="flex-grow-1 flex-between items-end label-normal label-strong">
       A hozzáadáshoz húzz be egy branch-et a jobb oldalról
     </div>
   }
 </ng-template>
 
 <ng-template #publicationsDialogTemplate>
-  <div class="fw-bold my-4 text-center">Megjelöli a következő branch-eket publikáltként?</div>
+  <div class="label-strong my-4 text-center">Megjelöli a következő branch-eket publikáltként?</div>
 
   <div class="px-4">
-    <div class="d-flex justify-content-between">
+    <div class="flex-between">
       <div>Branch</div>
       <div>Megjelölve</div>
     </div>
     <hr />
 
     @for (branch of selectedBranches(); track $index) {
-      <div class="d-flex justify-content-between">
+      <div class="flex-between">
         <div>{{ branch.name }}</div>
         <div><input type="checkbox" [(ngModel)]="branch.checked" /></div>
       </div>

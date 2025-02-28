@@ -5,10 +5,6 @@
   user-select: none;
   border: 1px solid colors.$blue-light;
 
-  i {
-    font-size: 18px;
-  }
-
   transition: general.$sidebar-transition;
   width: general.$sidebar-min-width;
   background: white;
@@ -51,9 +47,13 @@
       margin-bottom: 10px;
       width: 100%;
       padding: 12px;
-      gap: 10px;
+      gap: 5px;
       display: flex;
       align-items: center;
+
+      mat-icon {
+        margin-top: -2px;
+      }
 
       &-label {
         transition: general.$sidebar-transition;
@@ -93,15 +93,6 @@
 
   &-footer {
     text-align: center;
-
-    i {
-      display: block !important;
-      margin-bottom: 10px;
-
-      &:last-child {
-        margin-bottom: unset;
-      }
-    }
 
     &-logout {
       cursor: pointer;
