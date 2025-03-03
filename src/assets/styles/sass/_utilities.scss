@@ -2,8 +2,12 @@
   margin-bottom: 24px;
 }
 
+.ms-auto {
+  margin-left: auto;
+}
+
 .text-end {
-  text-align: end;
+  text-align: right;
 }
 
 .text-center {
@@ -11,7 +15,7 @@
 }
 
 .text-start {
-  text-align: start;
+  text-align: left;
 }
 
 .text-line-through {

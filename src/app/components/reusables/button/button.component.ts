@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Component, HostBinding, HostListener, input, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 type Palette = 'primary' | 'secondary' | 'accent' | 'danger' | 'success' | 'transparent';
 

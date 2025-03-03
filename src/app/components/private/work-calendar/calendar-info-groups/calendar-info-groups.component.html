@@ -55,7 +55,9 @@
 <ng-template #todayTemplate>
   <div class="text-end mt-3">
     @if (!ownWorkStatus()) {
-      <button app-button (click)="onStartTheDayClick()">Munka kezdés</button>
+      <button class="d-flex items-center" app-button (click)="onStartTheDayClick()">
+        Munka kezdés
+      </button>
     } @else if (!ownWorkStatus()!.workEnd) {
       <button app-button (click)="onOpenEndOfDayDialog()">Munka befejezése</button>
     } @else if (ownWorkStatus()?.report) {

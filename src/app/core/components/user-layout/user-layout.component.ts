@@ -17,6 +17,7 @@ import { IBranch } from '../../../models/branch.model';
 import { AuthFirebaseService } from '../../../services/firebase/auth-firebase.service';
 import { APP_PATHS } from '../../constans/paths';
 import { NotificationFirebaseService } from '../../../services/firebase/notification-firebase.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-layout',
@@ -120,18 +121,42 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
 
     return this.googleAuthService.renewAccessToken(user.googleRefreshToken).pipe(
       tap((result) => {
+        console.log('Token?', result);
         this.googleAuthService.setGoogleApiPayload(
           result.access_token ?? '',
           user.googleRefreshToken,
         );
       }),
-      catchError(() => {
+      catchError((response: HttpErrorResponse) => {
+        let errorMessage = 'Hiba történt a google api hitelesítési adatok megújítása során.';
+
+        if (response.error.error === 'invalid_grant') {
+          errorMessage =
+            'A google api hitelesítési adatok érvényessége lejárt. Kérem újítsa meg a fiók adatainál.';
+        }
+
         this.popupService.add({
-          details: 'Hiba történt a google api hitelesítési adatok megújítása során.',
+          details: errorMessage,
           severity: 'error',
           title: 'Google naptár szinkon',
         });
+
         return of(null);
+      }),
+      switchMap((result) => {
+        if (!result) {
+          return this.updateUserGoogleRefreshToken();
+        }
+
+        return of(result);
+      }),
+    );
+  }
+
+  private updateUserGoogleRefreshToken(): Observable<IUser> {
+    return this.userFirebaseService.updateUserGoogleRefreshToken('').pipe(
+      tap((user: IUser) => {
+        this.userFirebaseService.setUser(user);
       }),
     );
   }
