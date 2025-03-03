@@ -38,11 +38,11 @@ export class DatepickerComponent implements OnInit {
   public year = model<number>();
   public month = model<number>();
 
-  public valuesChange = output<Array<number>>();
+  public valuesChange = output<number[]>();
 
   public menu = signal<'year' | 'month'>('year');
 
-  public years = signal<Array<number>>(Array.from({ length: 50 }).map((_, i) => this.MAX_YEAR - i));
+  public years = signal<number[]>(Array.from({ length: 50 }).map((_, i) => this.MAX_YEAR - i));
   public page = signal<number>(1);
   public maxPage = computed(() => Math.ceil(this.years().length / (this.COLUMNS * this.ROWS)));
 

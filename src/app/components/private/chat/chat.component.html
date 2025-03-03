@@ -33,6 +33,7 @@
 
         @for (user of userGroup.users; track user.id) {
           <div
+            aria-hidden="true"
             class="flex-between items-center gap-2 mb-2 cursor-pointer"
             (click)="startChatWithOtherUser(user)"
           >

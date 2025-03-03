@@ -27,9 +27,9 @@ export class PopupComponent {
     close: IconIds.X_CIRCLE,
   };
 
-  public groupedPopups = computed<Array<GroupedPopups>>(() => {
+  public groupedPopups = computed<GroupedPopups[]>(() => {
     const popupGroups = this.popupService.popupGroups();
-    const groupedPopups: Array<GroupedPopups> = [];
+    const groupedPopups: GroupedPopups[] = [];
 
     Object.keys(popupGroups).forEach((key) => {
       const popups = popupGroups[key];

@@ -39,7 +39,7 @@ export interface IOption<T = any> {
 export class SelectComponent<T> implements ControlValueAccessor {
   public label = input('');
 
-  public options = input<Array<IOption<T>>>([]);
+  public options = input<IOption<T>[]>([]);
 
   public icon = input<IconIds | null>(null);
 
@@ -52,7 +52,7 @@ export class SelectComponent<T> implements ControlValueAccessor {
   public selectedValue = model<T | null>(null);
 
   public selectEvent = output<T | null>();
-  public selectedValuesChange = output<Array<IOption<T>>>();
+  public selectedValuesChange = output<IOption<T>[]>();
 
   public readonly CHEVRON_LEFT_ICON = IconIds.CHEVRON_LEFT;
 
@@ -60,7 +60,7 @@ export class SelectComponent<T> implements ControlValueAccessor {
 
   public opened = signal(false);
 
-  public selectedOptions = signal<Array<IOption>>([]);
+  public selectedOptions = signal<IOption[]>([]);
 
   public onChange: any = () => {};
 
@@ -113,7 +113,7 @@ export class SelectComponent<T> implements ControlValueAccessor {
     this.onChange = fn;
   }
 
-  public registerOnTouched(_: any): void {}
+  public registerOnTouched(): void {}
 
   public setDisabledState(isDisabled: boolean): void {
     this.disabled.set(isDisabled);

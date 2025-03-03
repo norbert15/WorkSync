@@ -55,9 +55,13 @@ export class CalendarEventCreatorComponent implements OnInit {
     this._calendarEvent.set(calendarEvent);
 
     if (calendarEvent) {
-      this.initForm();
+      this.patchFormValues(calendarEvent);
       this.onOpenNewEventDialogClick();
     }
+  }
+
+  public get calendarEvent(): Signal<ICalendarEvent | null> {
+    return this._calendarEvent.asReadonly();
   }
 
   public dialogClosed = output<void>();
@@ -71,7 +75,7 @@ export class CalendarEventCreatorComponent implements OnInit {
 
   public isSaveBtnLoading = signal(false);
 
-  public readonly eventTypeOptions: Array<IOption<CalendarEventEnum>> = [
+  public readonly eventTypeOptions: IOption<CalendarEventEnum>[] = [
     { label: 'Házon kívűl', value: CalendarEventEnum.OUT_OF_HOME },
     { label: 'Szabadság kérelem', value: CalendarEventEnum.HOLIDAY },
     { label: 'Google esemény', value: CalendarEventEnum.GOOGLE_EVENT },
@@ -92,10 +96,6 @@ export class CalendarEventCreatorComponent implements OnInit {
   private readonly calendarFirebaseService = inject(CalendarFirebaseService);
   private readonly holidayFirebaseService = inject(HolidayFirebaseService);
   private readonly router = inject(Router);
-
-  public get calendarEvent(): Signal<ICalendarEvent | null> {
-    return this._calendarEvent.asReadonly();
-  }
 
   public ngOnInit(): void {
     this.initForm();
@@ -121,25 +121,6 @@ export class CalendarEventCreatorComponent implements OnInit {
       reason: [this.calendarEvent()?.description, Validators.required],
       organizer: [this.calendarEvent()?.organizer.displayName],
     });
-
-    const { userId } = this.authFirebaseService.userPayload()!;
-
-    if (
-      this.calendarEvent() &&
-      (userId !== this.calendarEvent()?.userId ||
-        [
-          CalendarEventEnum.DAY_END,
-          CalendarEventEnum.DAY_START,
-          CalendarEventEnum.HOLIDAY,
-        ].includes(this.calendarEvent()!.type as CalendarEventEnum))
-    ) {
-      this.eventForm.disable();
-      this.viewOnly.set(true);
-    } else {
-      this.viewOnly.set(false);
-    }
-
-    this.eventForm.get('organizer')?.disable();
   }
 
   public onOptionSelect(value: CalendarEventEnum | null): void {
@@ -361,6 +342,8 @@ export class CalendarEventCreatorComponent implements OnInit {
   private resetAfterDialogClosed(): void {
     this.dialogClosed.emit();
     this.eventForm.reset();
+    this.eventForm.enable();
+    this.viewOnly.set(false);
     this._calendarEvent.set(null);
 
     if (this.navigateAfterClose) {
@@ -378,5 +361,37 @@ export class CalendarEventCreatorComponent implements OnInit {
       default:
         return eventType;
     }
+  }
+
+  private patchFormValues(calendarEvent: ICalendarEvent): void {
+    this.eventForm.patchValue({
+      eventType: calendarEvent.type,
+      eventStart: formatDateWithMoment(calendarEvent.eventStart, {
+        formats: ['YYYY. MM. DD. HH:mm:ss'],
+        useFormat: 'YYYY-MM-DDTHH:mm',
+      }),
+      eventEnd: formatDateWithMoment(calendarEvent.eventEnd, {
+        formats: ['YYYY. MM. DD. HH:mm:ss'],
+        useFormat: 'YYYY-MM-DDTHH:mm',
+      }),
+      reason: calendarEvent.description,
+      organizer: calendarEvent.organizer.displayName,
+    });
+
+    const { userId } = this.authFirebaseService.userPayload()!;
+
+    if (
+      userId !== calendarEvent.userId ||
+      [CalendarEventEnum.DAY_END, CalendarEventEnum.DAY_START, CalendarEventEnum.HOLIDAY].includes(
+        calendarEvent.type as CalendarEventEnum,
+      )
+    ) {
+      this.eventForm.disable();
+      this.viewOnly.set(true);
+    } else {
+      this.viewOnly.set(false);
+    }
+
+    this.eventForm.get('organizer')?.disable();
   }
 }

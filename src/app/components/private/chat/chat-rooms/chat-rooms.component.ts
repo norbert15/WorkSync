@@ -13,7 +13,7 @@ import { IconIds } from '../../../../core/constans/enums';
   styleUrl: './chat-rooms.component.scss',
 })
 export class ChatRoomsComponent {
-  public chatRooms = input<Array<IChatRoom>>([]);
+  public chatRooms = input<IChatRoom[]>([]);
 
   public activeChatRoomId = model<string | null>(null);
 

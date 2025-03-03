@@ -4,20 +4,17 @@ import {
   collectionData,
   doc,
   Firestore,
-  getDocs,
   getDoc,
   updateDoc,
   query,
   where,
   addDoc,
-  setDoc,
 } from '@angular/fire/firestore';
-import { BehaviorSubject, from, map, Observable, of, switchMap, take, throwError } from 'rxjs';
+import { BehaviorSubject, from, map, Observable, switchMap } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import moment from 'moment';
 
 import { IUser, IUserBase, IUserWorkStatus } from '../../models/user.model';
-import { UserEnum } from '../../core/constans/enums';
 import { AuthFirebaseService } from './auth-firebase.service';
 
 @Injectable({
@@ -96,9 +93,9 @@ export class UserFirebaseService {
     return from(updateDoc(userDocRef, data)).pipe(map(() => docId));
   }
 
-  public getAllUsers(): Observable<Array<IUser>> {
+  public getAllUsers(): Observable<IUser[]> {
     const usersRef = collection(this.firestore, this.USERS_COLLECTION);
-    return collectionData(usersRef, { idField: 'id' }) as Observable<Array<IUser>>;
+    return collectionData(usersRef, { idField: 'id' }) as Observable<IUser[]>;
   }
 
   public setUser(user: IUser): void {

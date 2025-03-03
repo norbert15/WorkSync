@@ -25,7 +25,7 @@ export interface ISubmenuItem {
   styleUrl: './submenu-strip.component.scss',
 })
 export class SubmenuStripComponent implements OnInit, OnDestroy {
-  public menus = input<Array<ISubmenuItem>>([]);
+  public menus = input<ISubmenuItem[]>([]);
 
   public emitterMode = input(false);
 

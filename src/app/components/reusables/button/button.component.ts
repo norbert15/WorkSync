@@ -4,6 +4,7 @@ import { Component, HostBinding, HostListener, input, ViewEncapsulation } from '
 type Palette = 'primary' | 'secondary' | 'accent' | 'danger' | 'success' | 'transparent';
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[app-button]',
   standalone: true,
   imports: [CommonModule],

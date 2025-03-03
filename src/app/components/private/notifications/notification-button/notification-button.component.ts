@@ -41,6 +41,10 @@ export class NotificationButtonComponent implements OnInit {
     }
   }
 
+  public get notification(): Signal<INotification | null> {
+    return this._notification.asReadonly();
+  }
+
   public dialogClose = output<void>();
 
   public notificationForm!: FormGroup;
@@ -51,10 +55,6 @@ export class NotificationButtonComponent implements OnInit {
   private readonly dialogsService = inject(DialogsService);
   private readonly popupService = inject(PopupService);
   private readonly notiFirebaseService = inject(NotificationFirebaseService);
-
-  public get notification(): Signal<INotification | null> {
-    return this._notification.asReadonly();
-  }
 
   public ngOnInit(): void {
     this.initForm();

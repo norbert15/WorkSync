@@ -20,13 +20,18 @@
         <div [ngClass]="[event.subLabel ? 'flex-between gap-2' : 'text-end', event.class ?? '']">
           @if (event.subLabel) {
             <div
+              aria-hidden="true"
               (click)="event?.callback(event.item)"
               class="label-normal label-strong text-end text-nowrap cursor-pointer"
             >
               {{ event.subLabel }}
             </div>
           }
-          <div (click)="event?.callback(event.item)" class="ellipsis label-strong cursor-pointer">
+          <div
+            aria-hidden="true"
+            (click)="event?.callback(event.item)"
+            class="ellipsis label-strong cursor-pointer"
+          >
             {{ event.name }}
           </div>
         </div>
@@ -55,6 +60,7 @@
       <button app-button (click)="onOpenEndOfDayDialog()">Munka befejezése</button>
     } @else if (ownWorkStatus()?.report) {
       <span
+        aria-hidden="true"
         class="text-decoration-underline user-select-none cursor-pointer"
         (click)="onOpenEndOfDayDialog()"
       >

@@ -1,9 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
 
-declare const gapi: any;
+import { environment } from '../../../environments/environment';
 
 type GoogleTokenType = {
   access_token: string;
@@ -30,7 +29,7 @@ export class GoogleAuthService {
   });
 
   public navigateToGoogleAuthPage(): void {
-    let url = window.location.href;
+    const url = window.location.href;
     const cleanUrl = url.split('?')[0];
     window.location.href =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -42,7 +41,7 @@ export class GoogleAuthService {
   }
 
   public getGoogleTokens(code: string): Observable<Partial<GoogleTokenType>> {
-    let url = window.location.href;
+    const url = window.location.href;
     const cleanUrl = url.split('?')[0];
     const body = new HttpParams()
       .set('code', code)

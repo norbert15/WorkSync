@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { AuthFirebaseService } from '../../services/firebase/auth-firebase.service';
 import { APP_PATHS } from '../constans/paths';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const authGuard: CanActivateFn = () => {
   const authFirebaseService = inject(AuthFirebaseService);
   const router = inject(Router);
 

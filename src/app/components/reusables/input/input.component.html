@@ -1,5 +1,6 @@
 <div
   class="input-wrapper"
+  aria-hidden="true"
   (click)="type() === 'date' || type() === 'datetime-local' ? inputField?.showPicker() : null"
   [ngClass]="{ 'input-disabled': disabled() }"
 >
@@ -24,7 +25,8 @@
     [attr.for]="id()"
     (click)="inputField.focus()"
     [ngClass]="{
-      'input-label--focus': value() || focused() || type() === 'date' || type() == 'datetime-local',
+      'input-label--focus':
+        value() || focused() || type() === 'date' || type() === 'datetime-local',
       'input-label--transparent': disabled(),
     }"
   >

@@ -7,7 +7,7 @@ import { DialogModel } from '../models/dialog.model';
   providedIn: 'root',
 })
 export class DialogsService {
-  private readonly _dialogsSubject$ = new BehaviorSubject<Array<DialogModel>>([]);
+  private readonly _dialogsSubject$ = new BehaviorSubject<DialogModel[]>([]);
 
   public dialogs$ = this._dialogsSubject$.asObservable();
 

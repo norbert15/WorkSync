@@ -1,4 +1,4 @@
-import { computed, Injectable, Signal, signal } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 
 type SeverityType = 'success' | 'warning' | 'info' | 'error';
 
@@ -10,16 +10,13 @@ export type PopupType<T = any> = {
   item?: T;
 };
 
-export type PopupGroupsType = Record<string, Array<PopupType>>;
+export type PopupGroupsType = Record<string, PopupType[]>;
 
 @Injectable({
   providedIn: 'root',
 })
 export class PopupService {
   private readonly _popupGroups = signal<PopupGroupsType>({});
-  /* private readonly _popupGroupsComputed = computed(() => {
-    return this._popupGroups();
-  }); */
 
   public get popupGroups(): Signal<PopupGroupsType> {
     return this._popupGroups.asReadonly();

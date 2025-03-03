@@ -36,7 +36,7 @@ type CommentType = {
 type CommentGroupType = {
   datetime: string;
   dateStr: string;
-  comments: Array<CommentType>;
+  comments: CommentType[];
 };
 
 @Component({
@@ -52,7 +52,7 @@ export class RepositoryCommentsComponent {
   );
   public commentsDialogFooterTemplate = viewChild<TemplateRef<any>>('commentsDialogFooterTemplate');
 
-  public comments = input<Array<IRepositoryComment>>([]);
+  public comments = input<IRepositoryComment[]>([]);
 
   public repositroyId = input.required<string>();
 
@@ -60,7 +60,7 @@ export class RepositoryCommentsComponent {
 
   public readonly CHAT_DOTS_ICON = IconIds.CHAT_DOTS;
 
-  public displayedCommentGroups = computed<Array<CommentGroupType>>(() => {
+  public displayedCommentGroups = computed<CommentGroupType[]>(() => {
     const comments = this.comments();
 
     const commentGroups: Record<string, CommentGroupType> = {};
@@ -77,7 +77,7 @@ export class RepositoryCommentsComponent {
         };
       }
 
-      let monogram = comment.userName
+      const monogram = comment.userName
         .split(' ')
         .reduce((prev, current) => `${prev}${current.charAt(0)}`, '');
 

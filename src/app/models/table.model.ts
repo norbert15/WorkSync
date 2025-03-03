@@ -13,7 +13,7 @@ export type TableCellConfigType = {
   value?: string | number | boolean;
   templateRef?: TemplateRef<any>;
   truncate?: boolean;
-  operations?: Array<TableCellOperationType>;
+  operations?: TableCellOperationType[];
   triggerOnClick?: (cell: TableCellConfigType) => void;
   item?: any;
 };
