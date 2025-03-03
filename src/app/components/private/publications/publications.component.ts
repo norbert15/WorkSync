@@ -62,9 +62,9 @@ export class PublicationsComponent implements OnInit, OnDestroy {
   public readonly ACTIVE = RepositroyEnum.ACTIVE;
   public readonly ICON_IDS = IconIds;
 
-  public repositories = signal<Array<IRepository>>([]);
+  public repositories = signal<IRepository[]>([]);
 
-  public activePublications = computed<Array<IRepository>>(() => {
+  public activePublications = computed<IRepository[]>(() => {
     const repositories = this.repositories();
     const branches = this.activeBranches();
     return repositories.map((repo) => {
@@ -79,7 +79,7 @@ export class PublicationsComponent implements OnInit, OnDestroy {
     });
   });
 
-  public awatingForPublications = computed<Array<IRepository>>(() => {
+  public awatingForPublications = computed<IRepository[]>(() => {
     const repositories = this.repositories();
     const branches = this.publicationFirebaseService.branchesForPublications();
 
@@ -97,13 +97,13 @@ export class PublicationsComponent implements OnInit, OnDestroy {
 
   public repositoryItemDragged = signal('');
 
-  public selectedBranches = signal<Array<BranchWithCheckType>>([]);
+  public selectedBranches = signal<BranchWithCheckType[]>([]);
 
   public publishMarkBtnIsLoading = signal(false);
 
   public user$!: Observable<IUser | null>;
 
-  private activeBranches = signal<Array<IBranch>>([]);
+  private activeBranches = signal<IBranch[]>([]);
 
   private readonly destroyed$ = new ReplaySubject<void>(1);
 
@@ -124,14 +124,14 @@ export class PublicationsComponent implements OnInit, OnDestroy {
   }
 
   public branchDropped(
-    dragEvent: CdkDragDrop<Array<IBranch>>,
+    dragEvent: CdkDragDrop<IBranch[]>,
     repositoryId: string,
     type: RepositroyEnum = RepositroyEnum.PUBLISH,
   ): void {
     const branch: IBranch = dragEvent.item.data;
 
     if (branch.repositoryId === repositoryId) {
-      const includedBranches: Array<IBranch> = dragEvent.container.data;
+      const includedBranches: IBranch[] = dragEvent.container.data;
       const isAlreadyIn = includedBranches.find((ib) => ib.name === branch.name);
 
       if (!isAlreadyIn) {
@@ -276,7 +276,7 @@ export class PublicationsComponent implements OnInit, OnDestroy {
       .getBranches(RepositroyEnum.ACTIVE)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: (branches: Array<IBranch>) => {
+        next: (branches: IBranch[]) => {
           this.activeBranches.set(branches.sort((a, b) => b.created.localeCompare(a.created)));
         },
       });
@@ -287,7 +287,7 @@ export class PublicationsComponent implements OnInit, OnDestroy {
       .getRepositories()
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: (repositories: Array<IRepository>) => {
+        next: (repositories: IRepository[]) => {
           this.repositories.set(repositories);
         },
       });

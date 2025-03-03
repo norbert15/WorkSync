@@ -134,7 +134,7 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
           });
 
           return this.userFirebaseService.updateUserGoogleRefreshToken('').pipe(
-            catchError((err) => {
+            catchError(() => {
               return of('failed');
             }),
           );

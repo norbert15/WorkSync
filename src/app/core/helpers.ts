@@ -10,7 +10,7 @@ import { EMAIL_VALIDATION_REGEX, HUN_DAYS, HUN_MONTHS } from './constans/variabl
 
 export function formatDateWithMoment(
   date: string | null | undefined,
-  options: { formats?: Array<string>; useFormat?: string; defaultValue?: string } = {},
+  options: { formats?: string[]; useFormat?: string; defaultValue?: string } = {},
 ): string {
   const {
     formats = ['YYYY-MM-DDTHH:mm:ss[Z]', 'YYYY-MM-DD'],
@@ -38,10 +38,10 @@ export function formatMonthToTwoDigits(monthNumber: number): string {
 export function generateMonthlyCalendar(
   year: number,
   month: number,
-  events: Array<ICalendarEvent>,
-  tasks: Array<ICalendarTask> = [],
-): Array<ICalendar> {
-  const days: Array<ICalendar> = [];
+  events: ICalendarEvent[],
+  tasks: ICalendarTask[] = [],
+): ICalendar[] {
+  const days: ICalendar[] = [];
 
   const today = new Date();
 
@@ -75,14 +75,14 @@ export function generateMonthlyCalendar(
             ? CalendarEventStatus.NEXT
             : CalendarEventStatus.PREVIOUS;
 
-    const dayEvents: Array<CalendarItemType> = events
+    const dayEvents: CalendarItemType[] = events
       .filter((event) => event.eventStart.startsWith(loacleDateStr))
       .map((event) => ({
         date: event.eventStart,
         item: event,
         type: 'event',
       }));
-    const dayTaks: Array<CalendarItemType> = tasks
+    const dayTaks: CalendarItemType[] = tasks
       .filter((task) => task.due.startsWith(loacleDateStr))
       .map((task) => ({
         date: task.due,

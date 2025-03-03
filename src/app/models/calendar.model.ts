@@ -20,13 +20,13 @@ export interface ICalendarEvent {
   eventEnd: string | null;
   eventEndShort: string | null;
   hangoutLink: string | null;
-  attendees?: Array<{
+  attendees?: {
     email: string | null;
     responseStatus?: GoogleCalendarResponseStatus;
     displayName?: string | null;
     optional?: boolean | null;
     response?: { class: string; icon: string };
-  }> | null;
+  }[] | null;
 }
 
 export interface ICalendar {
@@ -35,7 +35,7 @@ export interface ICalendar {
   dayName: string;
   monthName: string;
   status: CalendarEventStatus;
-  events: Array<CalendarItemType>;
+  events: CalendarItemType[];
 }
 
 export type CalendarRegisterType = {

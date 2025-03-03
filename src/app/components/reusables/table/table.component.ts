@@ -20,9 +20,9 @@ type ActiveSorType = { index: number; lowToHigh: boolean };
   styleUrl: './table.component.scss',
 })
 export class TableComponent {
-  public titles = input<Array<ITableTitle>>([]);
+  public titles = input<ITableTitle[]>([]);
 
-  public rows = input<Array<ITableRow>>([]);
+  public rows = input<ITableRow[]>([]);
 
   public minWidth = input<string>();
 
@@ -61,11 +61,11 @@ export class TableComponent {
           return compareFn(currentRow, nextRow, activeSort.lowToHigh);
         }
 
-        let currentItem =
+        const currentItem =
           currentRow.cells[orderBy ?? '']?.value ??
           this.makeIterable(currentRow.cells)[activeSort.index]?.value ??
           '';
-        let nextItem =
+        const nextItem =
           nextRow.cells[orderBy ?? '']?.value ??
           this.makeIterable(nextRow.cells)[activeSort.index]?.value ??
           '';

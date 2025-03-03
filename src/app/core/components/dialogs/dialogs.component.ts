@@ -63,7 +63,7 @@ export class DialogsComponent implements OnInit, OnDestroy {
 
   private fetchLastOpenedDialog(): void {
     this.dialogsService.dialogs$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (dialogs: Array<DialogModel>) => {
+      next: (dialogs: DialogModel[]) => {
         const dialog = dialogs[dialogs.length - 1] || null;
 
         if (dialog) {

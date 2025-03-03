@@ -14,6 +14,7 @@ export class FadeDirective implements AfterViewInit {
   }
 
   @HostBinding('class.transition')
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   public get transition(): boolean {
     return true;
   }

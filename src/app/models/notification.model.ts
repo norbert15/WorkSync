@@ -10,7 +10,7 @@ export interface INotification {
   text: string;
   type: NotificationEnum;
   seen: boolean;
-  targetUserIds: Array<string> | 'all';
+  targetUserIds: string[] | 'all';
 }
 
 export type SeenNotificationsType = Record<string, boolean>;

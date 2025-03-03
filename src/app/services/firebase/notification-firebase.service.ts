@@ -29,23 +29,23 @@ export class NotificationFirebaseService {
   private readonly userFirebaseService = inject(UserFirebaseService);
   private readonly authFirebaseServive = inject(AuthFirebaseService);
 
-  private _userNotifications = signal<Array<INotification>>([]);
+  private _userNotifications = signal<INotification[]>([]);
 
-  get userNotifications(): Signal<Array<INotification>> {
+  get userNotifications(): Signal<INotification[]> {
     return this._userNotifications.asReadonly();
   }
 
-  public setUserNotifications(notifications: Array<INotification>): void {
+  public setUserNotifications(notifications: INotification[]): void {
     this._userNotifications.set(notifications);
   }
 
-  public getUserNotifications(): Observable<Array<INotification>> {
+  public getUserNotifications(): Observable<INotification[]> {
     const { userId } = this.authFirebaseServive.userPayload()!;
 
     const notiCollection = collection(this.fireStore, this.NOTIFICATIONS_COLLECTION);
 
     const notiResultData = collectionData(notiCollection, { idField: 'id' }) as Observable<
-      Array<INotification>
+      INotification[]
     >;
 
     const notificationsOBservable = notiResultData.pipe(
@@ -66,7 +66,7 @@ export class NotificationFirebaseService {
     );
   }
 
-  public getSeenNotifications(): Observable<Array<SeenNotificationsType>> {
+  public getSeenNotifications(): Observable<SeenNotificationsType[]> {
     const { userId } = this.authFirebaseServive.userPayload()!;
     const seenCollection = collection(this.fireStore, this.SEEN_NOTIFICATIONS_COLLECTION);
 
@@ -98,7 +98,7 @@ export class NotificationFirebaseService {
     subject: string,
     text: string,
     type: NotificationEnum,
-    targetUserIds: Array<string> | 'all' = 'all',
+    targetUserIds: string[] | 'all' = 'all',
   ): Observable<string> {
     const user = this.userFirebaseService.user$.getValue();
 

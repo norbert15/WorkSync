@@ -5,7 +5,7 @@ import { UserFirebaseService } from '../../services/firebase/user-firebase.servi
 import { APP_PATHS } from '../constans/paths';
 import { UserEnum } from '../constans/enums';
 
-export const adminGuard: CanActivateFn = (route, state) => {
+export const adminGuard: CanActivateFn = () => {
   const userFirebaseService = inject(UserFirebaseService);
 
   const user = userFirebaseService.user$.getValue();

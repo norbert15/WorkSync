@@ -44,14 +44,14 @@ export class ChatRoomDialogFormComponent {
     }
   }
 
-  public users = input<Array<IUser>>([]);
+  public users = input<IUser[]>([]);
 
   public roomCreate = output<string>();
   public closed = output<void>();
 
   public readonly CHAT_DOTS_ICON = IconIds.CHAT_DOTS;
 
-  public selectableUsers = computed<Array<{ checked: boolean } & IUser>>(() => {
+  public selectableUsers = computed<({ checked: boolean } & IUser)[]>(() => {
     const chatRoom = this.chatRoomForEdit();
     const users = this.users();
 
@@ -61,7 +61,7 @@ export class ChatRoomDialogFormComponent {
     }));
   });
 
-  public selecableUserOptions = computed<Array<IOption<IUser>>>(() => {
+  public selecableUserOptions = computed<IOption<IUser>[]>(() => {
     return this.users().map((u) => ({ label: `${u.lastName} ${u.firstName}`, value: u }));
   });
 
@@ -200,7 +200,7 @@ export class ChatRoomDialogFormComponent {
       });
   }
 
-  private getChatRoomParticipants(): Array<ChatParticipantType> {
+  private getChatRoomParticipants(): ChatParticipantType[] {
     return this.selectableUsers()
       .filter((u) => u.checked)
       .map((u) => ({

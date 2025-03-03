@@ -20,5 +20,5 @@ export interface IChatRoom {
   id: string;
   name: string;
   ownedUserId: string;
-  participants: Array<ChatParticipantType>;
+  participants: ChatParticipantType[];
 }

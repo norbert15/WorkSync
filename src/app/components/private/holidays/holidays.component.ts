@@ -55,7 +55,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
     'rejectHolidayRequestDialogTemplate',
   );
 
-  public tableTitles: Array<ITableTitle> = [
+  public tableTitles: ITableTitle[] = [
     { text: 'Igénylő' },
     { text: 'Mettől', order: true },
     { text: 'Meddig', order: true },
@@ -64,8 +64,8 @@ export class HolidaysComponent implements OnInit, OnDestroy {
     { text: 'Műveletek', class: 'text-end' },
   ];
 
-  public ownHolidaytableRows = signal<Array<ITableRow<IRequestedHoliday>>>([]);
-  public requestedHolidayTableRows = signal<Array<ITableRow<IRequestedHoliday>>>([]);
+  public ownHolidaytableRows = signal<ITableRow<IRequestedHoliday>[]>([]);
+  public requestedHolidayTableRows = signal<ITableRow<IRequestedHoliday>[]>([]);
 
   public holidayRequest = signal<IRequestedHoliday | null>(null);
 
@@ -173,18 +173,18 @@ export class HolidaysComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private getUserHolidaysObservable(userId: string): Observable<Array<IRequestedHoliday>> {
+  private getUserHolidaysObservable(userId: string): Observable<IRequestedHoliday[]> {
     return this.holidayFirebaseService.getUserHolidays(userId).pipe(
-      tap((holidays: Array<IRequestedHoliday>) => {
+      tap((holidays: IRequestedHoliday[]) => {
         this.ownHolidaytableRows.set(this.buildTableRows(holidays, userId));
       }),
       catchError(() => of([])),
     );
   }
 
-  private getAllDeveloperHolidaysObservable(userId: string): Observable<Array<IRequestedHoliday>> {
+  private getAllDeveloperHolidaysObservable(userId: string): Observable<IRequestedHoliday[]> {
     return this.holidayFirebaseService.getAllDeveloperHolidays().pipe(
-      tap((holidays: Array<IRequestedHoliday>) => {
+      tap((holidays: IRequestedHoliday[]) => {
         this.requestedHolidayTableRows.set(this.buildTableRows(holidays, userId));
       }),
       catchError(() => of([])),
@@ -192,9 +192,9 @@ export class HolidaysComponent implements OnInit, OnDestroy {
   }
 
   private buildTableRows(
-    holidays: Array<IRequestedHoliday>,
+    holidays: IRequestedHoliday[],
     userId: string,
-  ): Array<ITableRow<IRequestedHoliday>> {
+  ): ITableRow<IRequestedHoliday>[] {
     return holidays.map((holiday) => {
       const operations = [];
 
@@ -245,7 +245,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
   private acceptOrRejectHolidayRequestObservable(
     holidayRequest: IRequestedHoliday,
     accept: boolean,
-  ): Observable<string | null | Array<string>> {
+  ): Observable<string | null | string[]> {
     const label = accept ? 'elfogadása' : 'elutasítása';
     this.popupService.add({
       details: `A szabadság kérelem ${label} folyamatban...`,
@@ -264,7 +264,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
       status: accept ? HolidayRequestStatus.ACCEPTED : HolidayRequestStatus.REJECTED,
     };
 
-    const observables: Array<Observable<any>> = [
+    const observables: Observable<any>[] = [
       this.holidayFirebaseService.updateHolidayRequest(holidayRequest.id, data).pipe(
         finalize(() => {
           this.reasonForReject.set('');

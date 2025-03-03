@@ -34,7 +34,7 @@ export class NotificationsComponent {
   public bellNotificationTemplate = viewChild<TemplateRef<any>>('bellNotificationTemplate');
   public readonly BELL_FILL_ICON = IconIds.BELL_FILL;
 
-  public tableTitles: Array<ITableTitle> = [
+  public tableTitles: ITableTitle[] = [
     { text: '#' },
     { text: 'Értesítés' },
     { text: 'Feladó' },
@@ -42,7 +42,7 @@ export class NotificationsComponent {
     { text: 'Műveletek', class: 'text-end' },
   ];
 
-  public tableRows = computed<Array<ITableRow<INotification>>>(() => this.getTableRows());
+  public tableRows = computed<ITableRow<INotification>[]>(() => this.getTableRows());
 
   public notificationForEdit = signal<INotification | null>(null);
 
@@ -57,14 +57,14 @@ export class NotificationsComponent {
     }
   }
 
-  private getTableRows(): Array<ITableRow<INotification>> {
+  private getTableRows(): ITableRow<INotification>[] {
     const notifications = this.notiFirebaseService
       .userNotifications()
       .sort((a, b) => b.updatedDatetime.localeCompare(a.updatedDatetime));
     const { userId } = this.authFirebaseService.userPayload()!;
 
     return notifications.map((n) => {
-      const operations: Array<TableCellOperationType> = [
+      const operations: TableCellOperationType[] = [
         {
           name: TableOperationEnum.SEE,
           triggerFn: this.onOpenNotificationViewDialogClick.bind(this),
@@ -152,6 +152,7 @@ export class NotificationsComponent {
   }
 
   @HostBinding('class.stretch')
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   public get stretchClass(): boolean {
     return true;
   }

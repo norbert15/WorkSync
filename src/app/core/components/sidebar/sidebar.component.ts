@@ -53,7 +53,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.opened.set(!this.opened());
   }
 
-  public logout(): void {
+  public onLogoutClick(): void {
     this.authFirebaseService.logout();
   }
 

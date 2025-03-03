@@ -1,6 +1,7 @@
 <div class="submenu-strip">
   @for (menu of menus(); track $index) {
     <div
+      aria-hidden="true"
       (click)="onMenuChange(menu.route)"
       class="submenu"
       [ngClass]="{ 'submenu--active': activeMenu() && activeMenu() === menu.route }"

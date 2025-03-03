@@ -7,7 +7,6 @@ import {
   Firestore,
   getDocs,
   query,
-  updateDoc,
   where,
   writeBatch,
 } from '@angular/fire/firestore';
@@ -32,9 +31,9 @@ export class ChatFirebaseService {
   private readonly userFirebaseService = inject(UserFirebaseService);
   private readonly authFirebaseService = inject(AuthFirebaseService);
 
-  public getUserChatRooms(userId: string): Observable<Array<IChatRoom>> {
+  public getUserChatRooms(userId: string): Observable<IChatRoom[]> {
     const chatRoomsRef = collection(this.firestore, this.CHAT_ROOMS_COLLECTION);
-    const result = collectionData(chatRoomsRef, { idField: 'id' }) as Observable<Array<IChatRoom>>;
+    const result = collectionData(chatRoomsRef, { idField: 'id' }) as Observable<IChatRoom[]>;
     return result.pipe(
       map((chatRooms) =>
         chatRooms
@@ -46,19 +45,19 @@ export class ChatFirebaseService {
     );
   }
 
-  public getChatRoomMessages(chatRoomId: string): Observable<Array<IMessage>> {
+  public getChatRoomMessages(chatRoomId: string): Observable<IMessage[]> {
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
     const q = query(chatMessagesRef, where('chatRoomId', '==', chatRoomId));
 
-    return collectionData(q, { idField: 'id' }) as Observable<Array<IMessage>>;
+    return collectionData(q, { idField: 'id' }) as Observable<IMessage[]>;
   }
 
-  public getAddressAndSendedMessages(addressUserId: string): Observable<Array<IMessage>> {
+  public getAddressAndSendedMessages(addressUserId: string): Observable<IMessage[]> {
     const { userId } = this.authFirebaseService.userPayload()!;
 
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
     const q = query(chatMessagesRef, where('chatRoomId', '==', null));
-    const result = collectionData(q, { idField: 'id' }) as Observable<Array<IMessage>>;
+    const result = collectionData(q, { idField: 'id' }) as Observable<IMessage[]>;
     return result.pipe(
       map((messages) =>
         messages.filter(
@@ -72,7 +71,7 @@ export class ChatFirebaseService {
 
   public createChatRoom(
     chatRoomName: string,
-    participants: Array<ChatParticipantType>,
+    participants: ChatParticipantType[],
   ): Observable<string> {
     const chatRoomsRef = collection(this.firestore, this.CHAT_ROOMS_COLLECTION);
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
@@ -115,7 +114,7 @@ export class ChatFirebaseService {
   public updateChatRoom(
     chatRoomId: string,
     chatRoomName: string,
-    participants: Array<ChatParticipantType>,
+    participants: ChatParticipantType[],
     lastState: IChatRoom,
     transferedUser: IUser | null,
   ): Observable<string> {
@@ -169,10 +168,10 @@ export class ChatFirebaseService {
       batch.set(doc(chatMessagesRef), newChatMessage);
     }
 
-    const newParticipants: Array<ChatParticipantType> = participants.filter(
+    const newParticipants: ChatParticipantType[] = participants.filter(
       (p) => !lastState.participants.find((oldP) => oldP.userId === p.userId),
     );
-    const removedParticipants: Array<ChatParticipantType> = lastState.participants.filter(
+    const removedParticipants: ChatParticipantType[] = lastState.participants.filter(
       (oldP) => !participants.find((p) => p.userId === oldP.userId),
     );
 

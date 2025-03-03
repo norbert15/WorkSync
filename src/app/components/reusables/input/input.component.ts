@@ -96,7 +96,7 @@ export class InputComponent implements ControlValueAccessor {
     this.onChange = fn;
   }
 
-  public registerOnTouched(_: any): void {}
+  public registerOnTouched(): void {}
 
   public setDisabledState(isDisabled: boolean): void {
     this.disabled.set(isDisabled);

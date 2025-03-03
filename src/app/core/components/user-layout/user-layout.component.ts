@@ -91,9 +91,9 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
       .getBranches(RepositroyEnum.PUBLISH)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: (branches: Array<IBranch>) => {
+        next: (branches: IBranch[]) => {
           const today = moment();
-          const data: Array<IBranch> = branches
+          const data: IBranch[] = branches
             .map((branch) => {
               const createdMoment = moment(branch.created, ['YYYY. MM. DD. HH:mm:ss']);
               const daysDiff = today.diff(createdMoment, 'days');

@@ -2,6 +2,7 @@
   <div class="d-flex flex-wrap gap-2 mb-3">
     @for (chatRoom of chatRooms(); track $index) {
       <div
+        aria-hidden="true"
         (click)="onChatRoomSelect(chatRoom.id)"
         class="chat-room"
         [ngClass]="{ 'chat-room--active': chatRoom.id === activeChatRoomId() }"

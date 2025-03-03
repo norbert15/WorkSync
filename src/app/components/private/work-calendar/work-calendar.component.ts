@@ -82,16 +82,12 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
     'googleCalendarTaskViewTemplate',
   );
 
-  public calendarInfoGroupsComponent = viewChild<CalendarInfoGroupsComponent>(
-    CalendarInfoGroupsComponent,
-  );
-
   public readonly ICON_IDS = IconIds;
 
   public readonly SORTED_HUN_DAYS = HUN_DAYS.sort((a, b) => a.order - b.order);
   public readonly CALENDAR_EVENTS = CalendarEventEnum;
 
-  public calendarItems = computed<Array<ICalendar>>(() => {
+  public calendarItems = computed<ICalendar[]>(() => {
     const events = [...this.googleCalendarEvents(), ...this.calendarEvents()];
     const tasks = this.googleCalendarTasks();
     const year = this.year();
@@ -109,7 +105,7 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
 
   public deviceType = signal<DeviceType>('desktop');
 
-  public googleCalendarTodayEventsAndTasks = computed<Array<CalendarTodayEventTaskType>>(() => {
+  public googleCalendarTodayEventsAndTasks = computed<CalendarTodayEventTaskType[]>(() => {
     const tasks = this.googleCalendarTodayTasks();
     const events = this.googleCalendarTodayEvents();
     return [...events, ...tasks].sort((a, b) => {
@@ -121,12 +117,12 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
     });
   });
 
-  private googleCalendarEvents = signal<Array<ICalendarEvent>>([]);
-  private googleCalendarTodayEvents = signal<Array<CalendarTodayEventTaskType>>([]);
+  private googleCalendarEvents = signal<ICalendarEvent[]>([]);
+  private googleCalendarTodayEvents = signal<CalendarTodayEventTaskType[]>([]);
 
-  private googleCalendarTasks = signal<Array<ICalendarTask>>([]);
-  private googleCalendarTodayTasks = signal<Array<CalendarTodayEventTaskType>>([]);
-  private calendarEvents = signal<Array<ICalendarEvent>>([]);
+  private googleCalendarTasks = signal<ICalendarTask[]>([]);
+  private googleCalendarTodayTasks = signal<CalendarTodayEventTaskType[]>([]);
+  private calendarEvents = signal<ICalendarEvent[]>([]);
 
   public selectedCalendarEvent = signal<ICalendarEvent | null>(null);
   public selectedGoogleCalendarEvent = signal<ICalendarEvent | null>(null);
@@ -172,11 +168,6 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
       );
       return;
     }
-
-    /* if (event.type === CalendarEventEnum.DAY_START || event.type === CalendarEventEnum.DAY_END) {
-      this.calendarInfoGroupsComponent()?.onOpenEndOfDayDialog(event);
-      return;
-    } */
 
     this.selectedCalendarEvent.set({ ...event });
   }
@@ -231,12 +222,12 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
     );
   }
 
-  private handleResultObservable(result: ResultType | null): Observable<Array<any> | null> {
+  private handleResultObservable(result: ResultType | null): Observable<any[] | null> {
     if (!result) {
       return of(null);
     }
 
-    const combinedObservable: Array<Observable<any>> = [
+    const combinedObservable: Observable<any>[] = [
       this.getCalendarEventsObservable(result.year, result.month),
     ];
 
@@ -263,7 +254,7 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
   private getCalendarEventsObservable(
     year: number,
     month: number,
-  ): Observable<Array<ICalendarEvent> | null> {
+  ): Observable<ICalendarEvent[] | null> {
     return this.calendarFirebaseService
       .getCalendarEvents(year, month, this.user()!.id, this.user()!.role)
       .pipe(
@@ -278,7 +269,7 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
     year: number,
     month: number,
     today: boolean,
-  ): Observable<Array<ICalendarEvent> | null> {
+  ): Observable<ICalendarEvent[] | null> {
     return this.googleCalendarService.getEvents(year, month, this.user()!.id).pipe(
       tap((events) => {
         this.googleCalendarEvents.set(events);
@@ -324,7 +315,7 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
     year: number,
     month: number,
     today: boolean,
-  ): Observable<Array<ICalendarTask> | null> {
+  ): Observable<ICalendarTask[] | null> {
     return this.googleCalendarService.getTasks(year, month).pipe(
       tap((tasks) => {
         this.googleCalendarTasks.set(tasks);

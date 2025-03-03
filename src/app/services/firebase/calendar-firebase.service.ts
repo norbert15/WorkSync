@@ -11,7 +11,7 @@ import {
   writeBatch,
 } from '@angular/fire/firestore';
 import { inject, Injectable } from '@angular/core';
-import { catchError, filter, forkJoin, from, map, Observable, of } from 'rxjs';
+import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
 import moment from 'moment';
 
 import { CalendarRegisterType, ICalendarEvent } from '../../models/calendar.model';
@@ -29,7 +29,7 @@ export class CalendarFirebaseService {
     month: number,
     userId: string,
     role: UserEnum,
-  ): Observable<Array<ICalendarEvent>> {
+  ): Observable<ICalendarEvent[]> {
     const calendarCollection = collection(this.firestore, this.CALENDAR_COLLECTION);
 
     const fromDate = moment()
@@ -51,7 +51,7 @@ export class CalendarFirebaseService {
 
     const results = from(getDocs(cquery)).pipe(
       map((snapshot) => snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))),
-    ) as Observable<Array<ICalendarEvent>>;
+    ) as Observable<ICalendarEvent[]>;
 
     if (role === UserEnum.ADMINISTRATOR) {
       return results;
@@ -153,7 +153,7 @@ export class CalendarFirebaseService {
     }
 
     const eventDocRef = doc(this.firestore, this.CALENDAR_COLLECTION, eventId);
-    const observables: Array<Observable<string>> = [
+    const observables: Observable<string>[] = [
       from(updateDoc(eventDocRef, data)).pipe(map(() => eventId)),
     ];
 

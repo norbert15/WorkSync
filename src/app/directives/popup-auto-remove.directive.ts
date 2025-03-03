@@ -52,7 +52,7 @@ export class PopupAutoRemoveDirective implements OnInit, OnDestroy {
     }
   }
 
-  private removeElement(close: boolean = false): void {
+  private removeElement(close = false): void {
     (this.elementRef.nativeElement as HTMLElement).classList.add('slide-out');
     // Kis késleltetés az animáció lefutására
     setTimeout(() => {

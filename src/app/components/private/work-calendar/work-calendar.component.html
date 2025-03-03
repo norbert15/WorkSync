@@ -1,5 +1,4 @@
 <app-calendar-info-groups
-  #calendarInfoGroupsComponent
   [googleCalendarEventsAndTasks]="googleCalendarTodayEventsAndTasks()"
   (calendarSave)="fetchCalendarEvents()"
 ></app-calendar-info-groups>
@@ -68,7 +67,7 @@
         <mat-icon class="vertical-align-text-top" [svgIcon]="ICON_IDS.CLOCK_HISTORY"></mat-icon>
       } @else if (
         calendarEvent.type === CALENDAR_EVENTS.HOLIDAY ||
-        calendarEvent.type == CALENDAR_EVENTS.DAY_END
+        calendarEvent.type === CALENDAR_EVENTS.DAY_END
       ) {
         <mat-icon class="vertical-align-text-top" [svgIcon]="ICON_IDS.CALENDAR_X"></mat-icon>
       } @else if (calendarEvent.type === CALENDAR_EVENTS.DAY_START) {

@@ -15,9 +15,11 @@ module.exports = tseslint.config(
       eslintConfigPrettier,
     ],
     processor: angular.processInlineTemplates,
+
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/consistent-type-definitions": "off",
       "@angular-eslint/directive-selector": [
         "error",
         {

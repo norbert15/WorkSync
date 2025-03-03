@@ -18,7 +18,7 @@ import { IconIds } from '../../../core/constans/enums';
 
 type UserGroupType = {
   name: string;
-  users: Array<IUser>;
+  users: IUser[];
 };
 
 @Component({
@@ -39,11 +39,11 @@ type UserGroupType = {
 export class ChatComponent implements OnInit, OnDestroy {
   public readonly CHAT_DOTS_ICON = IconIds.CHAT_DOTS;
 
-  public chatRooms = signal<Array<IChatRoom>>([]);
+  public chatRooms = signal<IChatRoom[]>([]);
 
-  public userGroups = signal<Array<UserGroupType>>([]);
+  public userGroups = signal<UserGroupType[]>([]);
 
-  public usersWithMonogram = signal<Array<IUser>>([]);
+  public usersWithMonogram = signal<IUser[]>([]);
 
   public activeChatRoomId = signal('');
   public activeChatRoom = computed<IChatRoom | undefined>(() => {
@@ -89,7 +89,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       .getUserChatRooms(this.userId)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: (chatRooms: Array<IChatRoom>) => {
+        next: (chatRooms: IChatRoom[]) => {
           this.chatRooms.set(chatRooms);
 
           if (!this.activeChatRoomId() && chatRooms.length) {
@@ -104,7 +104,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       .getAllUsers()
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: (users: Array<IUser>) => {
+        next: (users: IUser[]) => {
           const userGroups: Record<string, UserGroupType> = {};
           const filteredUsers = users.filter((u) => u.id !== this.userId);
 
@@ -127,8 +127,9 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
   }
 
-  @HostBinding('class')
-  public get componentClass(): string {
-    return 'stretch';
+  @HostBinding('class.stretch')
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+  public get componentClass(): boolean {
+    return true;
   }
 }

@@ -15,7 +15,7 @@ import { GOOGLE_CALENDAR_RESPONES_CLASSES } from '../../core/constans/variables'
 export class GoogleCalendarService {
   private httpClient = inject(HttpClient);
 
-  public getEvents(year: number, month: number, userId: string): Observable<Array<ICalendarEvent>> {
+  public getEvents(year: number, month: number, userId: string): Observable<ICalendarEvent[]> {
     const lastMonth = moment()
       .year(year)
       .month(month - 2)
@@ -33,7 +33,7 @@ export class GoogleCalendarService {
       })
       .pipe(
         map((event) => {
-          const items: Array<any> = event?.items ?? [];
+          const items: any[] = event?.items ?? [];
           return items
             .map((item: any) => {
               const calendarItem: ICalendarEvent = {
@@ -85,7 +85,7 @@ export class GoogleCalendarService {
       );
   }
 
-  public getTasks(year: number, month: number): Observable<Array<ICalendarTask>> {
+  public getTasks(year: number, month: number): Observable<ICalendarTask[]> {
     const lastMonth = moment()
       .year(year)
       .month(month - 2)
@@ -106,7 +106,7 @@ export class GoogleCalendarService {
       .get<any>(`${environment.googleConfig.apiUrl}/tasks/v1/lists/@default/tasks`, { params })
       .pipe(
         map((task) =>
-          (task.items as Array<ICalendarTask>).map((task) => {
+          (task.items as ICalendarTask[]).map((task) => {
             task.due = formatDateWithMoment(task.due, {
               formats: ['YYYY-MM-DDTHH:mm:ss[Z]'],
               useFormat: task.due.includes('00:00:00') ? 'YYYY. MM. DD.' : 'YYYY. MM. DD. HH:mm:ss',

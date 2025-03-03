@@ -14,7 +14,7 @@ export class IconsRegisterService {
   private readonly sanitizer = inject(DomSanitizer);
 
   public registerCustomIcons(): void {
-    const iconsForRegister: Array<{ iconId: IconIds; svgPath: string }> = [
+    const iconsForRegister: { iconId: IconIds; svgPath: string }[] = [
       { iconId: IconIds.CHAT_DOTS, svgPath: `${this.DEFAULT_PATH}/chat-dots.svg` },
       { iconId: IconIds.PENCIL_SQUARE, svgPath: `${this.DEFAULT_PATH}/pencil-square.svg` },
       { iconId: IconIds.SEND, svgPath: `${this.DEFAULT_PATH}/send.svg` },

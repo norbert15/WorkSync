@@ -31,7 +31,6 @@ import {
   CalendarRegisterType,
   CalendarTodayEventTaskType,
   ICalendar,
-  ICalendarEvent,
 } from '../../../../models/calendar.model';
 import { UserFirebaseService } from '../../../../services/firebase/user-firebase.service';
 import { IUser, IUserWorkStatus } from '../../../../models/user.model';
@@ -52,14 +51,14 @@ type EventType = {
 };
 
 type EventKey = {
-  notificationEvents: Array<EventType>;
+  notificationEvents: EventType[];
 };
 
 type InfoCardType = {
   title: string;
   icon: IconIds;
   iconColor: string;
-  events: Array<EventType>;
+  events: EventType[];
   fallbackLabel?: string;
   showCounter?: boolean;
   footer?: { label?: string; link?: string; templateRef?: TemplateRef<any> };
@@ -77,7 +76,7 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
   public endOfDayDialogTemplate = viewChild<TemplateRef<any>>('endOfDayDialogTemplate');
   public endOfDayButtonDialogTemplate = viewChild<TemplateRef<any>>('endOfDayButtonDialogTemplate');
 
-  public googleCalendarEventsAndTasks = input<Array<CalendarTodayEventTaskType>>([]);
+  public googleCalendarEventsAndTasks = input<CalendarTodayEventTaskType[]>([]);
 
   public userWorkStatusCalendarEvent = input<ICalendar | null>(null);
 
@@ -87,14 +86,14 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
 
   public ownWorkStatus = signal<IUserWorkStatus | null>(null);
 
-  public infoCards = computed<Array<InfoCardType>>(() => {
+  public infoCards = computed<InfoCardType[]>(() => {
     const calendarEventsAndTasks = this.googleCalendarEventsAndTasks();
     const userWorkStatus = this.ownWorkStatus();
     const todayTemplate = this.todayTemplate();
     const events = this.events();
     const branches = this.publicationFirebaseService.branchesForPublications();
 
-    const todayEvents: Array<EventType> = [
+    const todayEvents: EventType[] = [
       {
         name: userWorkStatus?.workStart ?? 'Kedzje meg a napját,',
         subLabel: userWorkStatus?.workStart ? 'Nap kezdete:' : '',
@@ -194,17 +193,14 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     this.dialogService.removeLastOpenedDialog();
   }
 
-  public onOpenEndOfDayDialog(calendarEvent: ICalendarEvent | null = null): void {
-    let { workEnd, workStart } = this.ownWorkStatus()!;
+  public onOpenEndOfDayDialog(): void {
+    if (!this.ownWorkStatus()) {
+      return;
+    }
+
+    const { workEnd, workStart } = this.ownWorkStatus()!;
     this.onlyView.set(!!workEnd);
     this.userReport.set(this.ownWorkStatus()?.report ?? '');
-
-    if (calendarEvent) {
-      workStart = calendarEvent.eventStart;
-      workEnd = calendarEvent.eventEnd;
-      this.onlyView.set(true);
-      this.userReport.set(calendarEvent.description ?? '');
-    }
 
     this.endOfDayDatetime.set(workEnd ?? moment().format('YYYY. MM. DD. HH:mm'));
     this.startOfDatetime.set(workStart);

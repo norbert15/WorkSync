@@ -1,6 +1,6 @@
 import { GoogleCalendarResponseStatus, IconIds, NotificationEnum, UserEnum } from './enums';
 
-export const HUN_MONTHS: Array<{ monthName: string; shortName: string; monthNumber: string }> = [
+export const HUN_MONTHS: { monthName: string; shortName: string; monthNumber: string }[] = [
   { monthName: 'Január', shortName: 'Jan', monthNumber: '01' },
   { monthName: 'Február', shortName: 'Feb', monthNumber: '02' },
   { monthName: 'Március', shortName: 'Márc', monthNumber: '03' },
@@ -15,7 +15,7 @@ export const HUN_MONTHS: Array<{ monthName: string; shortName: string; monthNumb
   { monthName: 'December', shortName: 'Dec', monthNumber: '12' },
 ];
 
-export const HUN_DAYS: Array<{ dayName: string; shortName: string; order: number }> = [
+export const HUN_DAYS: { dayName: string; shortName: string; order: number }[] = [
   { dayName: 'Vasárnap', shortName: 'V', order: 7 },
   { dayName: 'Hétfő', shortName: 'H', order: 1 },
   { dayName: 'Kedd', shortName: 'K', order: 2 },

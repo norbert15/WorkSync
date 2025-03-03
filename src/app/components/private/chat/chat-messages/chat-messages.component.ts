@@ -37,13 +37,13 @@ type ChatTimeGroupType = {
   userId: string;
   userName: string;
   userMonogram: string;
-  messages: Array<ChatMessageType>;
+  messages: ChatMessageType[];
 };
 
 type ChatDayGroupType = {
   date: string;
   datetime: string;
-  timeGroups: Array<ChatTimeGroupType>;
+  timeGroups: ChatTimeGroupType[];
 };
 
 @Component({
@@ -61,7 +61,7 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
 
   public roomOwnerUserId = input<string>('');
 
-  public roomParticipants = input<Array<ChatParticipantType>>([]);
+  public roomParticipants = input<ChatParticipantType[]>([]);
 
   public openRoomEditor = output<void>();
 
@@ -69,7 +69,7 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
   public readonly SEND_ICON = IconIds.SEND;
   public readonly SYSTEM_ID = SYSTEM.id;
 
-  public chatGroupMessages = signal<Array<ChatDayGroupType>>([]);
+  public chatGroupMessages = signal<ChatDayGroupType[]>([]);
 
   public message = model('');
 
@@ -95,7 +95,6 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
   }
 
   public onSendMessageClick(): void {
-    const message = this.message();
     if (this.chatParticipant()) {
       this.sendMessageToParticipant();
     } else {
@@ -167,11 +166,9 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private fetchChatUserAndParticipantMessages(
-    participantUserId: string,
-  ): Observable<Array<IMessage>> {
+  private fetchChatUserAndParticipantMessages(participantUserId: string): Observable<IMessage[]> {
     return this.chatFirebaseSevice.getAddressAndSendedMessages(participantUserId).pipe(
-      tap((messages: Array<IMessage>) => {
+      tap((messages: IMessage[]) => {
         this.chatGroupMessages.set(this.buildChatGroups(messages));
 
         if (this.chatContainerRef()) {
@@ -203,9 +200,9 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private fetchChatRoomMessagesObservable(roomId: string): Observable<Array<IMessage>> {
+  private fetchChatRoomMessagesObservable(roomId: string): Observable<IMessage[]> {
     return this.chatFirebaseSevice.getChatRoomMessages(roomId).pipe(
-      tap((messages: Array<IMessage>) => {
+      tap((messages: IMessage[]) => {
         this.chatGroupMessages.set(this.buildChatGroups(messages));
 
         if (this.chatContainerRef()) {
@@ -219,7 +216,7 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
     );
   }
 
-  private buildChatGroups(messages: Array<IMessage>): Array<ChatDayGroupType> {
+  private buildChatGroups(messages: IMessage[]): ChatDayGroupType[] {
     const dayGroups: Record<
       string,
       {
@@ -289,10 +286,10 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
       lastUserId = sender.userId;
     }
 
-    const data: Array<ChatDayGroupType> = [];
+    const data: ChatDayGroupType[] = [];
 
     Object.values(dayGroups).forEach((dayGroup) => {
-      const timeGroups: Array<ChatTimeGroupType> = Object.values(dayGroup.timeGroups).sort((a, b) =>
+      const timeGroups: ChatTimeGroupType[] = Object.values(dayGroup.timeGroups).sort((a, b) =>
         a.datetime.localeCompare(b.datetime),
       );
       data.push({

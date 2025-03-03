@@ -37,10 +37,14 @@
   </div>
   <div class="sidebar-footer">
     @if (opened()) {
-      <div class="sidebar-footer-logout" (click)="logout()">Kijelentkezés</div>
-      <div class="sidebar-footer-logout" (click)="toggleSidebar()">Összecsukás</div>
+      <div class="sidebar-footer-logout" (click)="onLogoutClick()" aria-hidden="true">
+        Kijelentkezés
+      </div>
+      <div class="sidebar-footer-logout" (click)="toggleSidebar()" aria-hidden="true">
+        Összecsukás
+      </div>
     } @else {
-      <mat-icon [svgIcon]="ICON_IDS.BOX_ARROW_LEFT" (click)="logout()"></mat-icon>
+      <mat-icon [svgIcon]="ICON_IDS.BOX_ARROW_LEFT" (click)="onLogoutClick()"></mat-icon>
       <br />
       <mat-icon [svgIcon]="ICON_IDS.ARROWS_EXPAND_VERTICAL" (click)="toggleSidebar()"></mat-icon>
     }

@@ -27,7 +27,7 @@ import { IUser } from '../../../models/user.model';
   styleUrl: './profile-details.component.scss',
 })
 export class ProfileDetailsComponent implements OnInit {
-  public readonly subMenus: Array<ISubmenuItem> = [
+  public readonly subMenus: ISubmenuItem[] = [
     { label: 'Felhasználói adatok', route: 'profile' },
     { label: 'Jelszó módosítás', route: 'password' },
   ];

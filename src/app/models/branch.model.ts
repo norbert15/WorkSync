@@ -17,7 +17,7 @@ export interface IRepositoryComment {
 export interface IRepository {
   id: string;
   name: string;
-  branches: Array<IBranch>;
-  comments: Array<IRepositoryComment>;
+  branches: IBranch[];
+  comments: IRepositoryComment[];
   lastUpdated?: string;
 }

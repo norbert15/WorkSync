@@ -21,18 +21,18 @@ export class HolidayFirebaseService {
   private readonly HOLIDAY_COLLECTION = 'holidays';
   private readonly fireStore = inject(Firestore);
 
-  public getUserHolidays(userId: string): Observable<Array<IRequestedHoliday>> {
+  public getUserHolidays(userId: string): Observable<IRequestedHoliday[]> {
     const holidayCollection = collection(this.fireStore, this.HOLIDAY_COLLECTION);
     const q = query(holidayCollection, where('userId', '==', userId));
 
-    return collectionData(q, { idField: 'id' }) as Observable<Array<IRequestedHoliday>>;
+    return collectionData(q, { idField: 'id' }) as Observable<IRequestedHoliday[]>;
   }
 
-  public getAllDeveloperHolidays(): Observable<Array<IRequestedHoliday>> {
+  public getAllDeveloperHolidays(): Observable<IRequestedHoliday[]> {
     const holidayCollection = collection(this.fireStore, this.HOLIDAY_COLLECTION);
     const q = query(holidayCollection, where('role', '==', UserEnum.DEVELOPER));
 
-    return collectionData(q, { idField: 'id' }) as Observable<Array<IRequestedHoliday>>;
+    return collectionData(q, { idField: 'id' }) as Observable<IRequestedHoliday[]>;
   }
 
   public addHolidayRequest(holidayRequest: Partial<IRequestedHoliday>): Observable<string> {

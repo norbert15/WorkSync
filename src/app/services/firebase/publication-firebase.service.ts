@@ -25,12 +25,12 @@ export class PublicationFirebaseService {
   private readonly AFP_COLLECTION = 'awaiting-for-publications';
   private readonly AP_COLLECTION = 'active-publications';
 
-  private _branchesForPublications = signal<Array<IBranch>>([]);
+  private _branchesForPublications = signal<IBranch[]>([]);
 
   private readonly firestore = inject(Firestore);
   private readonly userFirebaseService = inject(UserFirebaseService);
 
-  public get branchesForPublications(): Signal<Array<IBranch>> {
+  public get branchesForPublications(): Signal<IBranch[]> {
     return this._branchesForPublications.asReadonly();
   }
 
@@ -38,11 +38,11 @@ export class PublicationFirebaseService {
    *
    * @returns
    */
-  public getRepositories(): Observable<Array<IRepository>> {
+  public getRepositories(): Observable<IRepository[]> {
     const repositoriesCollection = collection(this.firestore, this.REPOSITORIES_COLLECTION);
 
     return collectionData(repositoriesCollection, { idField: 'id' }) as Observable<
-      Array<IRepository>
+      IRepository[]
     >;
   }
 
@@ -50,12 +50,12 @@ export class PublicationFirebaseService {
    *
    * @returns
    */
-  public getBranches(type: RepositroyEnum): Observable<Array<IBranch>> {
+  public getBranches(type: RepositroyEnum): Observable<IBranch[]> {
     const collectionName =
       type === RepositroyEnum.ACTIVE ? this.AP_COLLECTION : this.AFP_COLLECTION;
     const branchCol = collection(this.firestore, collectionName);
 
-    return collectionData(branchCol, { idField: 'id' }) as Observable<Array<IBranch>>;
+    return collectionData(branchCol, { idField: 'id' }) as Observable<IBranch[]>;
   }
 
   /**
@@ -140,12 +140,12 @@ export class PublicationFirebaseService {
    * @returns
    */
   public updateActiveAndPublicationBranches(
-    branches: Array<IBranch>,
-    activeBranches: Array<IBranch>,
+    branches: IBranch[],
+    activeBranches: IBranch[],
   ): Observable<void> {
     const branchDocRefs = branches.map((b) => doc(this.firestore, this.AFP_COLLECTION, b.id));
-    const branchNames: Array<string> = branches.map((b) => b.name);
-    const activeBranchNames: Array<string> = activeBranches.map((b) => b.name);
+    const branchNames: string[] = branches.map((b) => b.name);
+    const activeBranchNames: string[] = activeBranches.map((b) => b.name);
 
     const batch = writeBatch(this.firestore);
     branchDocRefs.forEach((docRef) => batch.delete(docRef));
@@ -176,7 +176,7 @@ export class PublicationFirebaseService {
    *
    * @param branches
    */
-  public setBranchesForPublish(branches: Array<IBranch>): void {
+  public setBranchesForPublish(branches: IBranch[]): void {
     this._branchesForPublications.set([...branches]);
   }
 }

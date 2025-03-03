@@ -120,6 +120,7 @@
         <li class="label-strong mb-1">
           <div class="flex-between items-center">
             <div
+              aria-hidden="true"
               class="d-flex items-center cursor-pointer overflow-hidden"
               [ngClass]="[branch.status ?? 'label-primary']"
               (click)="onCopyBranchNameClick(branch.name)"

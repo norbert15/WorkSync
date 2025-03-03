@@ -1,5 +1,10 @@
 <div class="select-wrapper">
-  <div (click)="toggleOpened()" [ngClass]="{ 'select--disabled': disabled() }" class="select">
+  <div
+    (click)="toggleOpened()"
+    aria-hidden="true"
+    [ngClass]="{ 'select--disabled': disabled() }"
+    class="select"
+  >
     <div class="select-value">
       @if (multi()) {
         @for (item of selectedOptions(); track $index) {
@@ -30,6 +35,7 @@
   <div class="select-dropdown" [ngClass]="{ 'select-dropdown--opened': opened() && !disabled() }">
     @for (option of options(); track $index) {
       <div
+        aria-hidden="true"
         (click)="onOptionSelect(option)"
         class="select-dropdown-item"
         [ngClass]="{

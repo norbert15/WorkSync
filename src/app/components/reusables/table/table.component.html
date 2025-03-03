@@ -15,6 +15,7 @@
                         activeSort()?.index === $index && !activeSort()?.lowToHigh,
                     }"
                     class="order-icon"
+                    aria-hidden="true"
                     (click)="onSetActiveSortingClick($index, false)"
                   >
                     ▲
@@ -25,6 +26,7 @@
                         activeSort()?.index === $index && activeSort()?.lowToHigh,
                     }"
                     class="order-icon"
+                    aria-hidden="true"
                     (click)="onSetActiveSortingClick($index, true)"
                   >
                     ▼
@@ -69,6 +71,7 @@
                 </div>
               } @else {
                 <div
+                  aria-hidden="true"
                   [ngClass]="{ ellipsis: cell.truncate }"
                   [class]="cell.class ?? ''"
                   [innerHTML]="cell.value"
