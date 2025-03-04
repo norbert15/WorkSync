@@ -91,6 +91,7 @@ export function generateMonthlyCalendar(
       }));
 
     days.push({
+      id: `${activeDate.getFullYear()}${(activeDate.getMonth() + 1).toString().padStart(2, '0')}${activeDate.getDate()}`,
       date: loacleDateStr,
       events: [...dayEvents, ...dayTaks].sort((a, b) => {
         if (a.date.length === 13) {

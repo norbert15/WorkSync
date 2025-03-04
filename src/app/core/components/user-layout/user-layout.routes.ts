@@ -45,6 +45,13 @@ export const USER_LAYOUT_ROUTES: Routes = [
       ),
   },
   {
+    path: APP_PATHS.apiProjects,
+    loadComponent: () =>
+      import('../../../components/private/api-projects/api-projects.component').then(
+        (component) => component.ApiProjectsComponent,
+      ),
+  },
+  {
     path: '**',
     redirectTo: APP_PATHS.calendar,
   },

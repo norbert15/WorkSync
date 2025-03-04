@@ -86,6 +86,7 @@ export class UserFirebaseService {
 
   public startUserEndOfDay(docId: string, workEnd: string, report: string): Observable<string> {
     const userDocRef = doc(this.firestore, this.USER_WORK_STATUS_COLLECTION, docId);
+
     const data: Partial<IUserWorkStatus> = {
       report,
       workEnd: moment(workEnd).format('YYYY. MM. DD. HH:mm'),

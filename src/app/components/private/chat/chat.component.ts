@@ -127,9 +127,9 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
   }
 
-  @HostBinding('class.stretch')
+  @HostBinding('class')
   // eslint-disable-next-line @typescript-eslint/class-literal-property-style
-  public get componentClass(): boolean {
-    return true;
+  public get componentClass(): string {
+    return 'stretch h-100';
   }
 }

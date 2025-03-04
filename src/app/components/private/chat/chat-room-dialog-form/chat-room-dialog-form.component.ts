@@ -11,6 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { catchError, Observable, of, switchMap, take, tap } from 'rxjs';
 
 import { ButtonComponent } from '../../../reusables/button/button.component';
@@ -20,7 +21,6 @@ import { DialogModel } from '../../../../models/dialog.model';
 import { InputComponent } from '../../../reusables/input/input.component';
 import { PopupService } from '../../../../services/popup.service';
 import { ChatFirebaseService } from '../../../../services/firebase/chat-firebase.service';
-import { UserFirebaseService } from '../../../../services/firebase/user-firebase.service';
 import { ChatParticipantType, IChatRoom } from '../../../../models/chat.model';
 import { IOption, SelectComponent } from '../../../reusables/select/select.component';
 import { IconIds } from '../../../../core/constans/enums';
@@ -28,7 +28,7 @@ import { IconIds } from '../../../../core/constans/enums';
 @Component({
   selector: 'app-chat-room-dialog-form',
   standalone: true,
-  imports: [ButtonComponent, InputComponent, FormsModule, SelectComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent, InputComponent, SelectComponent],
   templateUrl: './chat-room-dialog-form.component.html',
 })
 export class ChatRoomDialogFormComponent {
@@ -74,13 +74,17 @@ export class ChatRoomDialogFormComponent {
   private readonly dialogService = inject(DialogsService);
   private readonly popupService = inject(PopupService);
   private readonly chatFirebaseService = inject(ChatFirebaseService);
-  private readonly userFirebaseService = inject(UserFirebaseService);
 
   public onOpenChatRoomFormDialogClick(): void {
-    const newDialog: DialogModel = new DialogModel('Új csevegő szoba létrehozása', {
+    console.log('2x');
+
+    const title = this.chatRoomForEdit()
+      ? 'Csevegő szoba szerkesztése'
+      : 'Új csevegő szoba létrehozása';
+    const newDialog: DialogModel = new DialogModel(title, {
       content: this.chatRoomFormTemplate(),
       footer: this.chatRoomDialogFooterTemplate(),
-      size: 'normal',
+      size: 'medium',
     });
     newDialog.dialogClosed$.pipe(take(1)).subscribe({
       next: () => {
@@ -214,7 +218,6 @@ export class ChatRoomDialogFormComponent {
     let missing = false;
 
     const addedUsers = this.selectableUsers().filter((u) => u.checked);
-    console.log(addedUsers);
 
     if (!addedUsers.length) {
       this.popupService.add({
@@ -242,7 +245,7 @@ export class ChatRoomDialogFormComponent {
       details: 'A csevegő szoba eltávolítása folyamatban...',
       severity: 'info',
     });
-    return this.chatFirebaseService.deleteChatRoom(this.chatRoomForEdit()!.id).pipe(
+    return this.chatFirebaseService.deleteChatRoom(this.chatRoomForEdit()!).pipe(
       tap(() => {
         this.roomCreate.emit('');
         this.popupService.add({

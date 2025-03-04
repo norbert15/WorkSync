@@ -76,17 +76,21 @@ export class HolidayRequestComponent implements OnInit {
     const dialogTitle = this.holidayRequest()
       ? 'Szabadság kérelem módosítása'
       : 'Új szabadság kérelem';
+
     const newDialog: DialogModel = new DialogModel(dialogTitle, {
       content: this.dialogContentTemplate(),
       footer: this.dialogFooterTemplate(),
+      size: 'normal',
     });
-    this.dialogsService.addNewDialog(newDialog);
+
     newDialog.dialogClosed$.pipe(take(1)).subscribe({
       next: () => {
         this.holidayRequest.set(null);
         this.holidayForm.reset();
       },
     });
+
+    this.dialogsService.addNewDialog(newDialog);
   }
 
   public onCloseDialogClick(): void {

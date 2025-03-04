@@ -22,7 +22,7 @@ a {
   //min-width: 1400px;
 
   &-item {
-    width: 240px;
+    width: 255px;
     background-color: white;
     outline: 1px solid rgb(164 149 173 / 41%);
 
@@ -68,40 +68,24 @@ a {
         top: 10px;
       }
 
-      &--google-task {
+      &--day-start,
+      &--day-end {
         border: unset;
-        background-color: colors.$primary-dark;
+        background-color: rgb(227, 154, 20);
         color: white;
-
-        &:hover {
-          background-color: colors.$primary;
-        }
-      }
-
-      &--day-start {
-        border: unset;
-        background-color: colors.$orange;
-        color: white;
+        text-shadow: 1px 1px 1px black;
 
         &:hover {
           background-color: colors.$orange-dark;
         }
       }
 
-      &--day-end {
-        border: unset;
-        background-color: colors.$orange-dark;
-        color: white;
-
-        &:hover {
-          background-color: rgb(133, 92, 15);
-        }
-      }
-
-      &--google-event {
+      &--google-event,
+      &--google-task {
         border: unset;
         background-color: colors.$primary;
         color: white;
+        text-shadow: 1px 1px 1px black;
 
         &:hover {
           background-color: colors.$primary-dark;
@@ -112,6 +96,7 @@ a {
         border: unset;
         background-color: colors.$gray;
         color: white;
+        text-shadow: 1px 1px 1px black;
 
         &:hover {
           background-color: colors.$secondary-dark;
@@ -122,6 +107,7 @@ a {
         border: unset;
         background-color: colors.$success;
         color: white;
+        text-shadow: 1px 1px 1px black;
 
         &:hover {
           background-color: colors.$success-dark;
@@ -133,6 +119,11 @@ a {
       display: flex;
       gap: 5px;
       flex-direction: column;
+
+      /* height: 300px;
+      overflow-y: auto; */
+      min-height: 200px;
+
       &--previous,
       &--next {
         opacity: 0.5;

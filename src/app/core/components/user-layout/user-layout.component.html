@@ -4,7 +4,6 @@
   }
 
   <main
-    class="stretch"
     [ngClass]="deviceType() === 'mobile' ? '' : sidebarIsOpened() ? 'max-distance' : 'min-distance'"
   >
     <router-outlet></router-outlet>

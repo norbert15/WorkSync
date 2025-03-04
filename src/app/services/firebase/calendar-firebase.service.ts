@@ -34,14 +34,10 @@ export class CalendarFirebaseService {
 
     const fromDate = moment()
       .year(year)
-      .month(month - 1)
+      .month(month - 2)
       .startOf('month')
       .format('YYYY. MM. DD. HH:mm:ss');
-    const toDate = moment()
-      .year(year)
-      .month(month + 1)
-      .endOf('month')
-      .format('YYYY. MM. DD. HH:mm:ss');
+    const toDate = moment().year(year).month(month).endOf('month').format('YYYY. MM. DD. HH:mm:ss');
 
     const cquery = query(
       calendarCollection,

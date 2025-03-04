@@ -68,7 +68,7 @@
     flex-grow: 1;
     overflow-y: auto;
 
-    &--delete-message {
+    &--default-message {
       font-weight: 700;
       text-align: center;
       display: flex;
@@ -103,11 +103,10 @@
 
 .config-btn-group {
   display: flex;
-  flex-direction: column;
   gap: 10px;
 
   button {
-    width: 100%;
+    width: calc(50% - 10px);
   }
 }
 

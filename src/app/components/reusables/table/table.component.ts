@@ -1,5 +1,16 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  HostListener,
+  input,
+  OnInit,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
 
 import {
   ITableRow,
@@ -8,7 +19,6 @@ import {
   TableCellOperationType,
 } from '../../../models/table.model';
 import { IconIds, TableOperationEnum } from '../../../core/constans/enums';
-import { MatIcon } from '@angular/material/icon';
 
 type ActiveSorType = { index: number; lowToHigh: boolean };
 
@@ -19,12 +29,16 @@ type ActiveSorType = { index: number; lowToHigh: boolean };
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
 })
-export class TableComponent {
+export class TableComponent implements OnInit {
+  public tableContainer = viewChild<ElementRef<HTMLDivElement>>('tableContainer');
+
   public titles = input<ITableTitle[]>([]);
 
   public rows = input<ITableRow[]>([]);
 
   public minWidth = input<string>();
+
+  public autoHeight = input<boolean>(false);
 
   /**
    * Ha nincs megjelenítedő sor
@@ -89,6 +103,10 @@ export class TableComponent {
 
   public activeSort = signal<ActiveSorType | null>(null);
 
+  public ngOnInit(): void {
+    this.onResize();
+  }
+
   public makeIterable = (object: object) => Object.values(object ?? {});
 
   public onCellClick(row: ITableRow, cell: TableCellConfigType): void {
@@ -110,5 +128,13 @@ export class TableComponent {
 
   public onSetActiveSortingClick(index: number, lowToHigh: boolean): void {
     this.activeSort.set({ index, lowToHigh });
+  }
+
+  @HostListener('window:resize')
+  public onResize(): void {
+    const container = this.tableContainer()?.nativeElement;
+    if (this.autoHeight() && container) {
+      container.style.maxHeight = `${window.innerHeight - container.offsetTop - 20}px`;
+    }
   }
 }

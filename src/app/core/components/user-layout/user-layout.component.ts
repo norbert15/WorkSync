@@ -121,7 +121,6 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
 
     return this.googleAuthService.renewAccessToken(user.googleRefreshToken).pipe(
       tap((result) => {
-        console.log('Token?', result);
         this.googleAuthService.setGoogleApiPayload(
           result.access_token ?? '',
           user.googleRefreshToken,

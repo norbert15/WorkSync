@@ -99,7 +99,7 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
     this.userFirebaseService.user$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (user: IUser | null) => {
         this.user = user;
-        this.initForm();
+        this.pattchFormValues();
       },
     });
   }
@@ -113,6 +113,18 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
       jobTitle: [this.user?.jobTitle, Validators.required],
       hasGoogleSyns: [this.user?.googleRefreshToken !== ''],
       role: this.formBudiler.control({ value: this.user?.role, disabled: true }),
+    });
+  }
+
+  private pattchFormValues(): void {
+    this.profileForm.patchValue({
+      firstName: this.user?.firstName,
+      lastName: this.user?.lastName,
+      phone: this.user?.phone,
+      email: this.user?.email,
+      jobTitle: this.user?.jobTitle,
+      hasGoogleSyns: this.user?.googleRefreshToken !== '',
+      role: this.user?.role,
     });
   }
 

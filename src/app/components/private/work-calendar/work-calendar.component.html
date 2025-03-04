@@ -1,6 +1,7 @@
 <app-calendar-info-groups
   [googleCalendarEventsAndTasks]="googleCalendarTodayEventsAndTasks()"
   (calendarSave)="fetchCalendarEvents()"
+  (calendarTodayClick)="setYearAndMonthToTday()"
 ></app-calendar-info-groups>
 
 <div class="flex-between mb-4 gap-3">
@@ -22,6 +23,8 @@
     @for (calendarItem of calendarItems(); track $index) {
       <div class="calendar-grid-item calendar-grid-item-aspect" appFade>
         <div
+          [id]="calendarItem.id"
+          #calendarEventHeaders
           [ngClass]="[
             'calendar-grid-item-header',
             'calendar-grid-item-header--' + calendarItem.status,

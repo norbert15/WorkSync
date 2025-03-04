@@ -10,7 +10,7 @@ import {
   where,
   writeBatch,
 } from '@angular/fire/firestore';
-import { catchError, from, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { from, map, Observable, switchMap, throwError } from 'rxjs';
 
 import { ChatParticipantType, IChatRoom, IMessage } from '../../models/chat.model';
 import { UserFirebaseService } from './user-firebase.service';
@@ -19,6 +19,8 @@ import { getMonogram } from '../../core/helpers';
 import { IUser } from '../../models/user.model';
 import { SYSTEM } from '../../core/constans/variables';
 import { AuthFirebaseService } from './auth-firebase.service';
+import { INotification } from '../../models/notification.model';
+import { NotificationEnum } from '../../core/constans/enums';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +28,7 @@ import { AuthFirebaseService } from './auth-firebase.service';
 export class ChatFirebaseService {
   private readonly CHAT_ROOMS_COLLECTION = 'chat-rooms';
   private readonly CHAT_MESSAGES_COLLECTION = 'chat-messages';
+  private readonly NOTIFICATIONS_COLLECTION = 'notifications';
 
   private readonly firestore = inject(Firestore);
   private readonly userFirebaseService = inject(UserFirebaseService);
@@ -75,6 +78,7 @@ export class ChatFirebaseService {
   ): Observable<string> {
     const chatRoomsRef = collection(this.firestore, this.CHAT_ROOMS_COLLECTION);
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
+    const notiRef = collection(this.firestore, this.NOTIFICATIONS_COLLECTION);
 
     const user = this.userFirebaseService.user$.getValue();
 
@@ -94,21 +98,35 @@ export class ChatFirebaseService {
       createdDatetime: now,
     };
 
-    return from(addDoc(chatRoomsRef, newChatRoom)).pipe(
-      switchMap((data) => {
-        const newChatMessage: Partial<IMessage> = {
-          chatRoomId: data.id,
-          sendedDatetime: now,
-          sender: { userId: SYSTEM.id, userName: SYSTEM.name },
-          text: `<strong>${userName}</strong> létrehozta a csevegő szobát.`,
-        };
+    const batch = writeBatch(this.firestore);
 
-        return from(addDoc(chatMessagesRef, newChatMessage)).pipe(
-          map(() => data.id),
-          catchError(() => of(data.id)),
-        );
-      }),
-    );
+    const chatRoomDoc = doc(chatRoomsRef);
+    batch.set(chatRoomDoc, newChatRoom);
+
+    const newChatMessage: Partial<IMessage> = {
+      chatRoomId: chatRoomDoc.id,
+      sendedDatetime: now,
+      sender: { userId: SYSTEM.id, userName: SYSTEM.name },
+      text: `<strong>${userName}</strong> létrehozta a csevegő szobát.`,
+    };
+
+    batch.set(doc(chatMessagesRef), newChatMessage);
+
+    const notification: Partial<INotification> = {
+      createdDatetime: now,
+      updatedDatetime: now,
+      createdUserId: SYSTEM.id,
+      createdUserName: 'Rendszer',
+      seen: false,
+      subject: 'Új csevegő szoba - ' + chatRoomName,
+      text: `${userName} létrehozta a(z) ${chatRoomName} nevű csevegő szobát.`,
+      targetUserIds: participants.map((p) => p.userId),
+      type: NotificationEnum.INFO,
+    };
+
+    batch.set(doc(notiRef), notification);
+
+    return from(batch.commit()).pipe(map(() => chatRoomDoc.id));
   }
 
   public updateChatRoom(
@@ -120,6 +138,7 @@ export class ChatFirebaseService {
   ): Observable<string> {
     const chatRoomsRef = doc(this.firestore, this.CHAT_ROOMS_COLLECTION, chatRoomId);
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
+    const notiRef = collection(this.firestore, this.NOTIFICATIONS_COLLECTION);
 
     const user = this.userFirebaseService.user$.getValue();
 
@@ -184,6 +203,20 @@ export class ChatFirebaseService {
         sender: { userId: SYSTEM.id, userName: SYSTEM.name },
       };
       batch.set(doc(chatMessagesRef), newChatMessage);
+
+      const newNotification: Partial<INotification> = {
+        seen: false,
+        createdDatetime: now,
+        updatedDatetime: now,
+        createdUserId: SYSTEM.id,
+        createdUserName: 'Rendszer',
+        subject: 'Hozzáadásra került egy csevegő szobához!',
+        targetUserIds: newParticipants.map((p) => p.userId),
+        text: `${userName} hozzáadott a(z) ${lastState.name} nevű csevegő szobához.`,
+        type: NotificationEnum.GOOD,
+      };
+
+      batch.set(doc(notiRef), newNotification);
     }
 
     if (removedParticipants.length) {
@@ -195,6 +228,20 @@ export class ChatFirebaseService {
         sender: { userId: SYSTEM.id, userName: SYSTEM.name },
       };
       batch.set(doc(chatMessagesRef), newChatMessage);
+
+      const newNotification: Partial<INotification> = {
+        seen: false,
+        createdDatetime: now,
+        updatedDatetime: now,
+        createdUserId: SYSTEM.id,
+        createdUserName: 'Rendszer',
+        subject: 'Eltávolításra került a csevegő szobából!',
+        targetUserIds: removedParticipants.map((p) => p.userId),
+        text: `${userName} eltávolított a(z) ${lastState.name} nevű csevegő szobából.`,
+        type: NotificationEnum.BAD,
+      };
+
+      batch.set(doc(notiRef), newNotification);
     }
 
     batch.update(chatRoomsRef, chatRoom);
@@ -243,14 +290,40 @@ export class ChatFirebaseService {
     return from(addDoc(chatMessagesRef, newChatMessage)).pipe(map((doc) => doc.id));
   }
 
-  public deleteChatRoom(chatRoomId: string): Observable<string> {
-    const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
-    const messageQuery = query(chatMessagesRef, where('chatRoomId', '==', chatRoomId));
+  public deleteChatRoom(chatRoom: IChatRoom): Observable<string> {
+    const user = this.userFirebaseService.user$.getValue();
 
-    const chatRoomRef = doc(this.firestore, this.CHAT_ROOMS_COLLECTION, chatRoomId);
+    if (!user) {
+      return throwError(() => new Error('User not found'));
+    }
+
+    // Csevegő szoba azonosítója
+    const { id } = chatRoom;
+
+    const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
+    const notiRef = collection(this.firestore, this.NOTIFICATIONS_COLLECTION);
+
+    const messageQuery = query(chatMessagesRef, where('chatRoomId', '==', id));
+
+    const chatRoomRef = doc(this.firestore, this.CHAT_ROOMS_COLLECTION, id);
 
     const batch = writeBatch(this.firestore);
     batch.delete(chatRoomRef);
+
+    const now = moment().format('YYYY. MM. DD. HH:mm:ss');
+    const newNotification: Partial<INotification> = {
+      createdDatetime: now,
+      updatedDatetime: now,
+      createdUserId: SYSTEM.id,
+      createdUserName: 'Rendszer',
+      seen: false,
+      subject: 'Csevegő szoba megszűnt!',
+      text: `${user.lastName} ${user.firstName} megszűntette a(z) ${chatRoom.name} nevű csevegő szobát.`,
+      targetUserIds: chatRoom.participants.map((p) => p.userId),
+      type: NotificationEnum.BAD,
+    };
+
+    batch.set(doc(notiRef), newNotification);
 
     return from(getDocs(messageQuery)).pipe(
       switchMap((snapshot) => {
@@ -258,7 +331,7 @@ export class ChatFirebaseService {
           batch.delete(doc(this.firestore, this.CHAT_MESSAGES_COLLECTION, data.id));
         });
 
-        return from(batch.commit()).pipe(map(() => chatRoomId));
+        return from(batch.commit()).pipe(map(() => id));
       }),
     );
   }

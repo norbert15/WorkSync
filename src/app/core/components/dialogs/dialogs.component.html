@@ -12,7 +12,7 @@
         <ng-container [ngTemplateOutlet]="dialog()!.footer!"></ng-container>
       } @else {
         <div class="dialog-footer-cancel">
-          <button app-button color="primary" (click)="onCloseClick()">Bezár</button>
+          <app-button color="primary" (onClick)="onCloseClick()">Bezár</app-button>
         </div>
       }
     </div>
@@ -23,24 +23,28 @@
 
 <ng-template #defaultContentTemplate>
   <div
-    class="dialog-content--delete-message"
-    [ngClass]="dialog()?.templateConfig?.contentClass"
+    [ngClass]="dialog()?.templateConfig?.contentClass ?? 'dialog-content--default-message'"
     [innerHTML]="dialog()?.templateConfig?.contentText"
   ></div>
 </ng-template>
 <ng-template #defaultFooterTemplate>
   <div class="config-btn-group">
-    <button app-button color="transparent" (click)="onCloseClick()">Bezár</button>
+    <app-button
+      color="transparent"
+      [ngClass]="{ 'w-100': !dialog()?.templateConfig?.triggerBtnLabel }"
+      (onClick)="onCloseClick()"
+    >
+      Bezár
+    </app-button>
 
     @if (dialog()?.templateConfig?.triggerBtnLabel) {
-      <button
-        app-button
+      <app-button
         [color]="dialog()?.templateConfig?.triggerBtnColor ?? 'primary'"
         [isLoading]="dialog()!.triggerIsLoading()"
-        (click)="onTriggerClick()"
+        (onClick)="onTriggerClick()"
       >
         {{ dialog()?.templateConfig?.triggerBtnLabel }}
-      </button>
+      </app-button>
     }
   </div>
 </ng-template>

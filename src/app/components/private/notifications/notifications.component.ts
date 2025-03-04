@@ -1,12 +1,13 @@
 import {
   Component,
-  computed,
+  effect,
   HostBinding,
   inject,
   signal,
   TemplateRef,
   viewChild,
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { catchError, Observable, of, switchMap, take, tap } from 'rxjs';
 
@@ -32,6 +33,9 @@ import { PopupService } from '../../../services/popup.service';
 })
 export class NotificationsComponent {
   public bellNotificationTemplate = viewChild<TemplateRef<any>>('bellNotificationTemplate');
+  public notificationDescriptionTemplate = viewChild<TemplateRef<any>>(
+    'notificationDescriptionTemplate',
+  );
   public readonly BELL_FILL_ICON = IconIds.BELL_FILL;
 
   public tableTitles: ITableTitle[] = [
@@ -42,19 +46,47 @@ export class NotificationsComponent {
     { text: 'Műveletek', class: 'text-end' },
   ];
 
-  public tableRows = computed<ITableRow<INotification>[]>(() => this.getTableRows());
+  public tableRows = signal<ITableRow<INotification>[]>([]);
 
   public notificationForEdit = signal<INotification | null>(null);
+
+  private fetched = false;
+
+  private doomParser = new DOMParser();
 
   private readonly notiFirebaseService = inject(NotificationFirebaseService);
   private readonly dialogsService = inject(DialogsService);
   private readonly popupService = inject(PopupService);
   private readonly authFirebaseService = inject(AuthFirebaseService);
+  private readonly route = inject(ActivatedRoute);
+
+  constructor() {
+    effect(
+      () => {
+        this.tableRows.set(this.getTableRows());
+      },
+      { allowSignalWrites: true },
+    );
+  }
 
   public markNotificationAsSeen(notification: INotification): void {
     if (!notification.seen) {
       this.notiFirebaseService.markNotificationAsSeen(notification.id).pipe(take(1)).subscribe();
     }
+  }
+
+  public onOpenNotificationViewDialogClick(row: ITableRow<INotification>): void {
+    const { subject, text } = row.model!;
+    const newDialog: DialogModel = new DialogModel(subject, {
+      type: 'default',
+      size: 'normal',
+      templateConfig: {
+        contentText: `<div class="pre-wrap label-medium">${convertToLink(text)}</div>`,
+        contentClass: 'd-block text-start',
+      },
+    });
+    this.markNotificationAsSeen(row.model!);
+    this.dialogsService.addNewDialog(newDialog);
   }
 
   private getTableRows(): ITableRow<INotification>[] {
@@ -63,7 +95,7 @@ export class NotificationsComponent {
       .sort((a, b) => b.updatedDatetime.localeCompare(a.updatedDatetime));
     const { userId } = this.authFirebaseService.userPayload()!;
 
-    return notifications.map((n) => {
+    const rows: ITableRow<INotification>[] = notifications.map((n) => {
       const operations: TableCellOperationType[] = [
         {
           name: TableOperationEnum.SEE,
@@ -81,14 +113,14 @@ export class NotificationsComponent {
         );
       }
 
-      return {
+      const row: ITableRow<INotification> = {
         model: n,
         cells: {
           seenTemplate: {
             templateRef: this.bellNotificationTemplate(),
           },
           not: {
-            value: `<div class="fw-bold ${NOTIFICATION_COLORS[n.type]}">${n.subject}</div><div class="ellipsis">${n.text}</div>`,
+            value: `<div class="fw-bold ${NOTIFICATION_COLORS[n.type]}">${n.subject}</div><div class="ellipsis">${this.stripHtml(n.text)}</div>`,
           },
           createdUser: { value: n.createdUserName, class: 'fw-bold' },
           createdDatetime: {
@@ -102,7 +134,19 @@ export class NotificationsComponent {
           },
         },
       };
+
+      const notiIdFromQueryParam = this.route.snapshot.queryParamMap.get('notificationId');
+
+      if (notiIdFromQueryParam === n.id && !this.fetched) {
+        this.onOpenNotificationViewDialogClick(row);
+      }
+
+      return row;
     });
+
+    this.fetched = rows.length > 0;
+
+    return rows;
   }
 
   private onOpenWarningDialogClick(row: ITableRow<INotification>): void {
@@ -113,20 +157,6 @@ export class NotificationsComponent {
       },
     });
     newDialog.trigger$.pipe(switchMap(() => this.deleteNotification(row.model!.id))).subscribe();
-    this.dialogsService.addNewDialog(newDialog);
-  }
-
-  private onOpenNotificationViewDialogClick(row: ITableRow<INotification>): void {
-    const { subject, text } = row.model!;
-    const newDialog: DialogModel = new DialogModel(subject, {
-      type: 'default',
-      size: 'normal',
-      templateConfig: {
-        contentText: `<div class="pre-wrap label-medium">${convertToLink(text)}</div>`,
-        contentClass: 'd-block text-start',
-      },
-    });
-    this.markNotificationAsSeen(row.model!);
     this.dialogsService.addNewDialog(newDialog);
   }
 
@@ -149,6 +179,11 @@ export class NotificationsComponent {
         return of(null);
       }),
     );
+  }
+
+  private stripHtml(html: string): string {
+    const doc = this.doomParser.parseFromString(html, 'text/html');
+    return doc.body.textContent || '';
   }
 
   @HostBinding('class.stretch')

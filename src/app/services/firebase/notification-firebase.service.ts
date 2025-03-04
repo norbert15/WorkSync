@@ -17,6 +17,7 @@ import { UserFirebaseService } from './user-firebase.service';
 import { INotification, SeenNotificationsType } from '../../models/notification.model';
 import { AuthFirebaseService } from './auth-firebase.service';
 import { NotificationEnum } from '../../core/constans/enums';
+import { SYSTEM } from '../../core/constans/variables';
 
 @Injectable({
   providedIn: 'root',
@@ -114,6 +115,30 @@ export class NotificationFirebaseService {
       createdDatetime: now,
       createdUserId: user.id,
       createdUserName: `${user.lastName} ${user.firstName}`,
+      seen: false,
+      subject: subject,
+      targetUserIds: targetUserIds,
+      text: text,
+      type: type,
+    };
+
+    return from(addDoc(notiRef, newNotification)).pipe(map((doc) => doc.id));
+  }
+
+  public createSystemNotification(
+    subject: string,
+    text: string,
+    type: NotificationEnum,
+    targetUserIds: string[],
+  ): Observable<string> {
+    const notiRef = collection(this.fireStore, this.NOTIFICATIONS_COLLECTION);
+    const now = moment().format('YYYY. MM. DD. HH:mm:ss');
+
+    const newNotification: Partial<INotification> = {
+      updatedDatetime: now,
+      createdDatetime: now,
+      createdUserId: SYSTEM.id,
+      createdUserName: 'Rendszer',
       seen: false,
       subject: subject,
       targetUserIds: targetUserIds,

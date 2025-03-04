@@ -10,7 +10,8 @@
 <app-table
   [titles]="tableTitles"
   [rows]="tableRows()"
-  (rowClick)="markNotificationAsSeen($event.model)"
+  [autoHeight]="true"
+  (rowClick)="onOpenNotificationViewDialogClick($event)"
   minWidth="900px"
 ></app-table>
 
@@ -18,4 +19,9 @@
   @if (!row.model.seen) {
     <mat-icon class="label-accent" [svgIcon]="BELL_FILL_ICON"></mat-icon>
   }
+</ng-template>
+
+<ng-template #notificationDescriptionTemplate let-row>
+  <div [class]="['fw-bold', row.cells.not.value]">{{ row.model.subject }}</div>
+  <div class="ellipsis" [innerText]="row.model.text"></div>
 </ng-template>

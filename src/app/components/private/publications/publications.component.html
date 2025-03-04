@@ -23,13 +23,12 @@
                 {{ repository.name }}
               </div>
               @if (repository.branches.length) {
-                <button
-                  app-button
+                <app-button
                   class="label-normal"
-                  (click)="onOpenMarkBranchesDialogClick(repository)"
+                  (onClick)="onOpenMarkBranchesDialogClick(repository)"
                 >
                   Publikálva
-                </button>
+                </app-button>
               }
             </div>
 
@@ -176,16 +175,15 @@
 </ng-template>
 
 <ng-template #publicationsButtonsDialogTemplate>
-  <button class="w-100 mb-2" app-button color="transparent" (click)="onCloseDialogClick()">
+  <app-button class="w-100 mb-2" color="transparent" (onClick)="onCloseDialogClick()">
     Bezár
-  </button>
-  <button
+  </app-button>
+  <app-button
     class="w-100"
-    app-button
     color="success"
-    (click)="onMarkAsPublishedClick()"
+    (onClick)="onMarkAsPublishedClick()"
     [isLoading]="publishMarkBtnIsLoading()"
   >
     Megjelölés publikáltként
-  </button>
+  </app-button>
 </ng-template>
