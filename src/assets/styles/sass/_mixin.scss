@@ -25,6 +25,30 @@
       margin-inline: $rem !important;
     }
 
+    .pt-#{$i} {
+      padding-top: $rem !important;
+    }
+
+    .pb-#{$i} {
+      padding-bottom: $rem !important;
+    }
+
+    .ps-#{$i} {
+      padding-left: $rem !important;
+    }
+
+    .px-#{$i} {
+      padding-inline: $rem !important;
+    }
+
+    .py-#{$i} {
+      padding-block: $rem !important;
+    }
+
+    .pe-#{$i} {
+      padding-right: $rem !important;
+    }
+
     .gap-#{$i} {
       gap: $rem !important;
     }

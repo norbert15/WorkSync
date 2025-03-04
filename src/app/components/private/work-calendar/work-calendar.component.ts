@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  ElementRef,
   inject,
   model,
   OnDestroy,
@@ -8,9 +9,11 @@ import {
   signal,
   TemplateRef,
   viewChild,
+  viewChildren,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { MatIcon } from '@angular/material/icon';
 import {
   catchError,
   combineLatest,
@@ -49,7 +52,6 @@ import { CalendarEventEnum, IconIds } from '../../../core/constans/enums';
 import { PopupService } from '../../../services/popup.service';
 import { DialogsService } from '../../../services/dialogs.service';
 import { DialogModel } from '../../../models/dialog.model';
-import { MatIcon } from '@angular/material/icon';
 
 type ResultType = {
   year: number;
@@ -74,6 +76,8 @@ type ResultType = {
   styleUrl: './work-calendar.component.scss',
 })
 export class WorkCalendarComponent implements OnInit, OnDestroy {
+  public calendarEventHeaders = viewChildren<ElementRef<HTMLDivElement>>('calendarEventHeaders');
+
   public googleCalendarEventViewTemplate = viewChild<TemplateRef<any>>(
     'googleCalendarEventViewTemplate',
   );
@@ -128,6 +132,8 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
   public selectedGoogleCalendarEvent = signal<ICalendarEvent | null>(null);
   public selectedGoogleCalendarTask = signal<ICalendarTask | null>(null);
 
+  private scrollToCalendarHeader = false;
+
   private readonly INTERVAL_TIME = 600000;
   private readonly destroyed$ = new ReplaySubject<void>(1);
   private readonly interval$ = interval(this.INTERVAL_TIME);
@@ -150,9 +156,30 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
+  public setYearAndMonthToTday(): void {
+    this.scrollToCalendarHeader = true;
+
+    const now = moment();
+    this.year.set(now.year());
+    this.month.set(now.month() + 1);
+    this.onScrollToCalendarDayClick();
+  }
+
   public fetchCalendarEvents(): void {
     if (this.user()) {
       this.getCalendarEventsObservable(this.year(), this.month()).pipe(take(1)).subscribe();
+    }
+  }
+
+  public onScrollToCalendarDayClick(): void {
+    const today = moment();
+    const todayCalendarHeaderId = `${today.year()}${(today.month() + 1).toString().padStart(2, '0')}${today.date()}`;
+    const calendarEventHeader = this.calendarEventHeaders().find(
+      (header: ElementRef<HTMLDivElement>) => header.nativeElement.id === todayCalendarHeaderId,
+    );
+
+    if (calendarEventHeader) {
+      calendarEventHeader.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
@@ -190,7 +217,14 @@ export class WorkCalendarComponent implements OnInit, OnDestroy {
         switchMap((user: IUser | null) => this.handleDataChangeObservable(user)),
         switchMap((result) => this.handleResultObservable(result)),
       )
-      .subscribe();
+      .subscribe({
+        next: () => {
+          if (this.scrollToCalendarHeader) {
+            this.scrollToCalendarHeader = false;
+            this.onScrollToCalendarDayClick();
+          }
+        },
+      });
   }
 
   private handleDataChangeObservable(user: IUser | null): Observable<ResultType | null> {

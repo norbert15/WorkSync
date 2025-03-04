@@ -1,7 +1,12 @@
-<button app-button color="success" class="text-nowrap" (click)="onOpenNewEventDialogClick()">
+<app-button
+  color="success"
+  class="text-nowrap"
+  [classes]="['d-flex', 'items-center', 'gap-2']"
+  (onClick)="onOpenNewEventDialogClick()"
+>
   <mat-icon [svgIcon]="ICON_IDS.CALENDAR_PLUS"></mat-icon>
   Esemény létrehozása
-</button>
+</app-button>
 
 <ng-template #newEventDialogContentTemplate>
   @if (!viewOnly()) {
@@ -74,30 +79,34 @@
 </ng-template>
 
 <ng-template #footerDialogTemplate>
-  <button
-    class="w-100 mb-2"
-    [ngClass]="{ 'mb-2': !viewOnly() }"
-    app-button
-    color="transparent"
-    (click)="onCloseDialogClick()"
-  >
-    Bezár
-  </button>
-
-  @if (!viewOnly()) {
-    @if (calendarEvent()) {
-      <button class="w-100 mb-2" app-button color="danger" (click)="onWarningDeleteClick()">
-        Eltávolítás
-      </button>
-    }
-    <button
-      class="w-100"
-      app-button
-      (click)="onSaveClick()"
-      [disabled]="eventForm.invalid"
-      [isLoading]="isSaveBtnLoading()"
+  <div class="d-flex gap-2">
+    <app-button
+      [ngClass]="{
+        'mb-2': !viewOnly(),
+        'w-33': !viewOnly() && calendarEvent(),
+        'w-50': !viewOnly() && !calendarEvent(),
+        'w-100': viewOnly(),
+      }"
+      color="transparent"
+      (onClick)="onCloseDialogClick()"
     >
-      {{ calendarEvent() ? "Módosítás" : "Létrehozás" }}
-    </button>
-  }
+      Bezár
+    </app-button>
+
+    @if (!viewOnly()) {
+      @if (calendarEvent()) {
+        <app-button class="w-33" color="danger" (onClick)="onWarningDeleteClick()">
+          Eltávolítás
+        </app-button>
+      }
+      <app-button
+        [ngClass]="calendarEvent() ? 'w-33' : 'w-50'"
+        (onClick)="onSaveClick()"
+        [disabled]="eventForm.invalid"
+        [isLoading]="isSaveBtnLoading()"
+      >
+        {{ calendarEvent() ? "Módosítás" : "Létrehozás" }}
+      </app-button>
+    }
+  </div>
 </ng-template>

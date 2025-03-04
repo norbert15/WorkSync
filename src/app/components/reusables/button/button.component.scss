@@ -1,17 +1,19 @@
+:host {
+  display: inline-block;
+}
+
 .app-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: inline-block;
   height: max-content;
   text-align: center;
   padding: 12px;
   border-radius: 4px;
   color: white;
   font-weight: 700;
-  gap: 5px;
   cursor: pointer;
+  width: 100%;
 
-  &-disabled {
+  &--disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }

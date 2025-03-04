@@ -13,6 +13,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
 import {
   catchError,
   finalize,
@@ -40,7 +41,11 @@ import { DialogsService } from '../../../../services/dialogs.service';
 import { CalendarFirebaseService } from '../../../../services/firebase/calendar-firebase.service';
 import { CalendarEventEnum, IconIds } from '../../../../core/constans/enums';
 import { PublicationFirebaseService } from '../../../../services/firebase/publication-firebase.service';
-import { MatIcon } from '@angular/material/icon';
+import { NotificationFirebaseService } from '../../../../services/firebase/notification-firebase.service';
+import { NOTIFICATION_COLORS } from '../../../../core/constans/variables';
+import { INotification } from '../../../../models/notification.model';
+import { Router } from '@angular/router';
+import { APP_PATHS } from '../../../../core/constans/paths';
 
 type EventType = {
   name: string;
@@ -50,10 +55,6 @@ type EventType = {
   callback?: (item: any) => void;
 };
 
-type EventKey = {
-  notificationEvents: EventType[];
-};
-
 type InfoCardType = {
   title: string;
   icon: IconIds;
@@ -61,7 +62,7 @@ type InfoCardType = {
   events: EventType[];
   fallbackLabel?: string;
   showCounter?: boolean;
-  footer?: { label?: string; link?: string; templateRef?: TemplateRef<any> };
+  footer?: { label?: string; link?: string; templateRef?: TemplateRef<any>; callback?: () => void };
 };
 
 @Component({
@@ -82,82 +83,16 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
 
   public calendarSave = output<void>();
 
-  public onlyView = signal(false);
+  public calendarTodayClick = output<void>();
 
   public ownWorkStatus = signal<IUserWorkStatus | null>(null);
 
   public infoCards = computed<InfoCardType[]>(() => {
-    const calendarEventsAndTasks = this.googleCalendarEventsAndTasks();
-    const userWorkStatus = this.ownWorkStatus();
-    const todayTemplate = this.todayTemplate();
-    const events = this.events();
-    const branches = this.publicationFirebaseService.branchesForPublications();
-
-    const todayEvents: EventType[] = [
-      {
-        name: userWorkStatus?.workStart ?? 'Kedzje meg a napját,',
-        subLabel: userWorkStatus?.workStart ? 'Nap kezdete:' : '',
-      },
-      {
-        name:
-          userWorkStatus?.workEnd ??
-          (userWorkStatus?.workStart ? '-' : 'és jelentsen a nap végén!'),
-        subLabel: userWorkStatus?.workStart ? 'Nap vége:' : '',
-      },
-    ];
-
     return [
-      {
-        title: 'Közelgő esemény(ek)',
-        icon: IconIds.CALENDAR_CHECK,
-        fallbackLabel: 'Nincs előre ütemezett esemény.',
-        showCounter: true,
-        iconColor: 'label-success',
-        footer: { label: 'További részletek' }, // TODO: navigációs link vagy callback ki találni...
-        events: calendarEventsAndTasks.map((et) => {
-          return {
-            subLabel: et.label,
-            class: 'label-primary',
-            name: et.time,
-            item: et.event ?? et.task,
-            callback: et.callback,
-          };
-        }),
-      },
-      {
-        title: 'Értesítések',
-        icon: IconIds.BELL_FILL,
-        iconColor: 'label-accent',
-        showCounter: true,
-        events: events.notificationEvents,
-        fallbackLabel: 'Nincs elérhető értesítés.',
-        footer: {
-          label: events.notificationEvents.length
-            ? 'Továbbiak megtekintése'
-            : 'Értesítés megtekintése',
-        },
-      },
-      {
-        title: 'Mai napom',
-        icon: IconIds.CARD_TEXT,
-        iconColor: 'label-secondary',
-        events: todayEvents,
-        footer: { templateRef: todayTemplate },
-      },
-      {
-        title: 'Publikálásra vár',
-        icon: IconIds.GITHUB,
-        iconColor: 'label-primary',
-        events: branches.map((branch) => ({
-          name: branch.name,
-          class: branch.status,
-        })),
-        showCounter: true,
-        fallbackLabel: 'Nincs publikálásra váró branch',
-        footer: {
-          label: branches.length > 3 ? 'Továbbiak megtekintése' : 'Branch(es) megtekintése',
-        },
-      },
+      this.getCalendarEventsAndTasksInfoCard(),
+      this.getNotificationsInfoCard(),
+      this.getWorkStatusInfoCard(),
+      this.getBranchesInfoCard(),
     ];
   });
 
@@ -168,20 +103,18 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
 
   private user: IUser | null = null;
 
-  private events = signal<EventKey>({
-    notificationEvents: [],
-  });
-
   private readonly destroyed$ = new ReplaySubject<void>(1);
+
+  private readonly router = inject(Router);
   private readonly userFirebaseService = inject(UserFirebaseService);
   private readonly popupService = inject(PopupService);
   private readonly dialogService = inject(DialogsService);
   private readonly calendarFirebaseSevice = inject(CalendarFirebaseService);
   private readonly publicationFirebaseService = inject(PublicationFirebaseService);
+  private readonly notiFirebaseService = inject(NotificationFirebaseService);
 
   public ngOnInit(): void {
     this.fetchUserWorkStatus();
-    this.fetchInfoCards();
   }
 
   public ngOnDestroy(): void {
@@ -199,7 +132,6 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     }
 
     const { workEnd, workStart } = this.ownWorkStatus()!;
-    this.onlyView.set(!!workEnd);
     this.userReport.set(this.ownWorkStatus()?.report ?? '');
 
     this.endOfDayDatetime.set(workEnd ?? moment().format('YYYY. MM. DD. HH:mm'));
@@ -216,7 +148,6 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     this.dialogService.addNewDialog(newDialog);
     newDialog.dialogClosed$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: () => {
-        this.onlyView.set(false);
         this.userReport.set('');
         this.endOfDayDatetime.set('');
       },
@@ -298,6 +229,14 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     }
   }
 
+  public onFooterClick(infoCard: InfoCardType): void {
+    if (infoCard.footer?.callback) {
+      infoCard.footer.callback();
+    } else if (infoCard.footer?.link) {
+      this.router.navigate([infoCard.footer.link]);
+    }
+  }
+
   private addCalendarEventByWorkStatusChange(
     startDatetime: string,
     endDateTime: string,
@@ -336,18 +275,6 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private fetchInfoCards(): void {
-    // TODO: lekérdezés
-    this.events.set({
-      // TODO: status alapján sorba rendezés pl due old new
-      notificationEvents: [
-        { class: 'label-primary', name: 'Új branch került publikálásra' },
-        { class: 'label-gray', name: 'Horváth Lajos nem elérhető' },
-        { class: 'label-success', name: 'Szabadságkérelmét elfogadták' },
-      ],
-    });
-  }
-
   private fetchUserWorkStatus(): void {
     this.userFirebaseService.user$
       .pipe(
@@ -366,5 +293,100 @@ export class CalendarInfoGroupsComponent implements OnInit, OnDestroy {
           this.ownWorkStatus.set(result);
         },
       });
+  }
+
+  private getCalendarEventsAndTasksInfoCard(): InfoCardType {
+    const calendarEventsAndTasks = this.googleCalendarEventsAndTasks();
+
+    return {
+      title: 'Közelgő esemény(ek)',
+      icon: IconIds.CALENDAR_CHECK,
+      fallbackLabel: 'Nincs előre ütemezett esemény.',
+      showCounter: true,
+      iconColor: 'label-success',
+      footer: { label: 'Naptárhoz', callback: () => this.calendarTodayClick.emit() },
+      events: calendarEventsAndTasks.map((et) => {
+        return {
+          subLabel: et.label,
+          class: 'label-primary',
+          name: et.time,
+          item: et.event ?? et.task,
+          callback: et.callback,
+        };
+      }),
+    };
+  }
+
+  /**
+   * Értesítések infókártya adatainak összeállítása
+   *
+   * @returns {InfoCardType}
+   */
+  private getNotificationsInfoCard(): InfoCardType {
+    const notifications = this.notiFirebaseService.userNotifications().filter((n) => !n.seen);
+    return {
+      title: 'Értesítések',
+      icon: IconIds.BELL_FILL,
+      iconColor: 'label-accent',
+      showCounter: true,
+      events: notifications.map((n) => ({
+        name: n.subject,
+        class: NOTIFICATION_COLORS[n.type],
+        item: n,
+        callback: (item: INotification) => {
+          this.router.navigate([APP_PATHS.root, APP_PATHS.notifications], {
+            queryParams: { notificationId: item.id },
+          });
+        },
+      })),
+      fallbackLabel: 'Nincs elérhető értesítés.',
+      footer: {
+        label: notifications.length ? 'Továbbiak megtekintése' : 'Értesítés megtekintése',
+        link: `${APP_PATHS.root}/${APP_PATHS.notifications}`,
+      },
+    };
+  }
+
+  private getWorkStatusInfoCard(): InfoCardType {
+    const todayTemplate = this.todayTemplate();
+    const userWorkStatus = this.ownWorkStatus();
+
+    return {
+      title: 'Mai napom',
+      icon: IconIds.CARD_TEXT,
+      iconColor: 'label-secondary',
+      footer: { templateRef: todayTemplate },
+      events: [
+        {
+          name: userWorkStatus?.workStart ?? 'Kedzje meg a napját,',
+          subLabel: userWorkStatus?.workStart ? 'Nap kezdete:' : '',
+        },
+        {
+          name:
+            userWorkStatus?.workEnd ??
+            (userWorkStatus?.workStart ? '-' : 'és jelentsen a nap végén!'),
+          subLabel: userWorkStatus?.workStart ? 'Nap vége:' : '',
+        },
+      ],
+    };
+  }
+
+  private getBranchesInfoCard(): InfoCardType {
+    const branches = this.publicationFirebaseService.branchesForPublications();
+    return {
+      title: 'Publikálásra vár',
+      icon: IconIds.GITHUB,
+      iconColor: 'label-primary',
+      events: branches.map((branch) => ({
+        name: branch.name,
+        class: `${branch.status} label-small`,
+      })),
+      showCounter: true,
+      fallbackLabel: 'Nincs publikálásra váró branch',
+      footer: {
+        label: branches.length > 3 ? 'Továbbiak megtekintése' : 'Branch(es) megtekintése',
+        link: `${APP_PATHS.root}/${APP_PATHS.publications}`,
+      },
+    };
   }
 }

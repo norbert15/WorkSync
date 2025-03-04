@@ -13,6 +13,7 @@
             [id]="popup.key"
             class="close-icon small-icon"
             [svgIcon]="ICONS['close']"
+            (click)="onClosePopupClick(popup.key)"
           ></mat-icon>
           @if (popup.length > 1) {
             <div class="counter">{{ popup.length }}</div>

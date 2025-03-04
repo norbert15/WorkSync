@@ -71,7 +71,12 @@
   @if (chatRoomId() || chatParticipant()) {
     <div class="position-relative">
       <label for="chat-box" class="label-gray label-normal chat-box-label">Üzenet:</label>
-      <textarea id="chat-box" class="chat-area" [(ngModel)]="message"></textarea>
+      <textarea
+        id="chat-box"
+        class="chat-area"
+        (keyup.enter)="onSendMessageClick()"
+        [(ngModel)]="message"
+      ></textarea>
       <mat-icon
         class="chat-send-btn"
         [svgIcon]="SEND_ICON"

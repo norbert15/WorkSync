@@ -1,4 +1,8 @@
-<div class="app-table-container" [ngStyle]="{ 'min-width': minWidth() }">
+<div
+  #tableContainer
+  class="app-table-container"
+  [ngStyle]="{ 'min-width': minWidth(), 'min-height': autoHeight() ? '300px' : '' }"
+>
   <table class="app-table">
     <thead class="app-table-head">
       <tr>

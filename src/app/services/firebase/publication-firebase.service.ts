@@ -14,8 +14,10 @@ import { from, map, Observable, throwError } from 'rxjs';
 import moment from 'moment';
 
 import { IBranch, IRepository, IRepositoryComment } from '../../models/branch.model';
-import { RepositroyEnum } from '../../core/constans/enums';
+import { NotificationEnum, RepositroyEnum } from '../../core/constans/enums';
 import { UserFirebaseService } from './user-firebase.service';
+import { INotification } from '../../models/notification.model';
+import { SYSTEM } from '../../core/constans/variables';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +26,7 @@ export class PublicationFirebaseService {
   private readonly REPOSITORIES_COLLECTION = 'repositories';
   private readonly AFP_COLLECTION = 'awaiting-for-publications';
   private readonly AP_COLLECTION = 'active-publications';
+  private readonly NOTIFICATIONS_COLLECTION = 'notifications';
 
   private _branchesForPublications = signal<IBranch[]>([]);
 
@@ -41,9 +44,7 @@ export class PublicationFirebaseService {
   public getRepositories(): Observable<IRepository[]> {
     const repositoriesCollection = collection(this.firestore, this.REPOSITORIES_COLLECTION);
 
-    return collectionData(repositoriesCollection, { idField: 'id' }) as Observable<
-      IRepository[]
-    >;
+    return collectionData(repositoriesCollection, { idField: 'id' }) as Observable<IRepository[]>;
   }
 
   /**
@@ -101,7 +102,6 @@ export class PublicationFirebaseService {
   public updateBranch(branch: IBranch, type: RepositroyEnum): Observable<string> {
     const collectionName =
       type === RepositroyEnum.ACTIVE ? this.AP_COLLECTION : this.AFP_COLLECTION;
-    console.log(branch);
 
     const branchRef = doc(this.firestore, collectionName, branch.id);
     return from(updateDoc(branchRef, { created: moment().format('YYYY. MM. DD. HH:mm:ss') })).pipe(
@@ -143,7 +143,15 @@ export class PublicationFirebaseService {
     branches: IBranch[],
     activeBranches: IBranch[],
   ): Observable<void> {
+    const user = this.userFirebaseService.user$.getValue();
+
+    if (!user) {
+      return throwError(() => new Error('User not exist'));
+    }
+
+    const notiRef = collection(this.firestore, this.NOTIFICATIONS_COLLECTION);
     const branchDocRefs = branches.map((b) => doc(this.firestore, this.AFP_COLLECTION, b.id));
+
     const branchNames: string[] = branches.map((b) => b.name);
     const activeBranchNames: string[] = activeBranches.map((b) => b.name);
 
@@ -168,6 +176,22 @@ export class PublicationFirebaseService {
         };
         batch.set(doc(collection(this.firestore, this.AP_COLLECTION)), newBranch);
       });
+
+    const liItems = branches.map((b) => `<li>${b.name}</li>`).join('');
+
+    const newNotification: Partial<INotification> = {
+      createdDatetime: now,
+      updatedDatetime: now,
+      createdUserId: SYSTEM.id,
+      createdUserName: 'Rendszer',
+      seen: false,
+      subject: 'Új branch-ek kerültek publikálásra',
+      text: `${user.lastName} ${user.firstName} új branch-eket tett közzé.<br />Repository: ${branches[0].repositoryId}<br />\t<ul style="margin-left:10px">${liItems}</ul>`,
+      targetUserIds: 'all',
+      type: NotificationEnum.INFO,
+    };
+
+    batch.set(doc(notiRef), newNotification);
 
     return from(batch.commit());
   }

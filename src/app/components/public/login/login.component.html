@@ -29,15 +29,14 @@
             Elfelejtettem a jelszavam
           </div>
 
-          <button
+          <app-button
             type="submit"
-            app-button
             class="w-100"
             [isLoading]="isLoginLoading()"
             [disabled]="loginForm.invalid"
           >
             Bejelentkezés
-          </button>
+          </app-button>
         </form>
       </div>
     } @else {
@@ -59,23 +58,21 @@
             [icon]="ICON_IDS.PERSON_CIRCLE"
             label="E-mail cím"
           ></app-input>
-          <button
-            app-button
+          <app-button
             class="mb-2 w-100"
             type="submit"
             [disabled]="loginForm.get('email')?.invalid ?? true"
           >
             Küldés
-          </button>
-          <button
-            app-button
+          </app-button>
+          <app-button
             type="button"
             class="w-100"
             color="transparent"
-            (click)="toggleForgottenPasswordCard()"
+            (onClick)="toggleForgottenPasswordCard()"
           >
             Vissza
-          </button>
+          </app-button>
         </form>
       </div>
     }

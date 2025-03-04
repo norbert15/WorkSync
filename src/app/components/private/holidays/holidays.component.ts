@@ -26,6 +26,7 @@ import {
 import {
   CalendarEventEnum,
   HolidayRequestStatus,
+  NotificationEnum,
   TableOperationEnum,
   UserEnum,
 } from '../../../core/constans/enums';
@@ -43,6 +44,7 @@ import { IUser } from '../../../models/user.model';
 import { CalendarFirebaseService } from '../../../services/firebase/calendar-firebase.service';
 import { CalendarRegisterType } from '../../../models/calendar.model';
 import { formatDateWithMoment } from '../../../core/helpers';
+import { NotificationFirebaseService } from '../../../services/firebase/notification-firebase.service';
 
 @Component({
   selector: 'app-holidays',
@@ -80,6 +82,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
   private readonly popupService = inject(PopupService);
   private readonly dialogsService = inject(DialogsService);
   private readonly calendarFirebaseService = inject(CalendarFirebaseService);
+  private readonly notiFirebaseService = inject(NotificationFirebaseService);
 
   public get isAdministrator(): Signal<boolean> {
     return this._isAdministrator.asReadonly();
@@ -112,11 +115,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
         take(1),
         switchMap(() => this.acceptOrRejectHolidayRequestObservable(row.model!, true)),
       )
-      .subscribe({
-        next: (result) => {
-          console.log('Result: ', result);
-        },
-      });
+      .subscribe();
   }
 
   public onWarningRejectDialogClick(row: ITableRow<IRequestedHoliday>): void {
@@ -285,6 +284,13 @@ export class HolidaysComponent implements OnInit, OnDestroy {
           });
           return of(null);
         }),
+        switchMap((result: string | null) => {
+          if (!result) {
+            return of(null);
+          }
+
+          return this.createSystemNotification(holidayRequest, accept);
+        }),
       ),
     ];
 
@@ -333,6 +339,31 @@ export class HolidaysComponent implements OnInit, OnDestroy {
         return of(null);
       }),
     );
+  }
+
+  private createSystemNotification(
+    holidayRequest: IRequestedHoliday,
+    accept: boolean,
+  ): Observable<string | null> {
+    const user = this.userFirebaseService.user$.getValue();
+
+    if (!user) {
+      return of(null);
+    }
+
+    const label = accept ? 'elfogadva' : 'elutasítva';
+    const notificationType = accept ? NotificationEnum.GOOD : NotificationEnum.BAD;
+    const subject = `Szabadság kérelem ${label}`;
+    const userName = `${user.lastName} ${user.firstName}`;
+    const datePeriod = `(${holidayRequest.startDate}-tól ${holidayRequest.endDate}-ig).`;
+
+    const text = accept
+      ? `${userName} elfogadta a szabadság kérelmét ${datePeriod}`
+      : `${userName} elutasította a szabadság kérelmét ${datePeriod} az alábbi indokkal:<br />${this.reasonForReject()}`;
+
+    return this.notiFirebaseService.createSystemNotification(subject, text, notificationType, [
+      holidayRequest.userId,
+    ]);
   }
 
   private getRequestStatusConfig(holidayRequest: IRequestedHoliday): string {

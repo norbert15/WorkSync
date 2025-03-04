@@ -103,9 +103,11 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
   }
 
   private sendMessageToChatRoom(): void {
-    if (this.chatRoomId() && this.message()) {
+    const message = this.message().trim();
+
+    if (this.chatRoomId() && message) {
       this.chatFirebaseSevice
-        .createChatMessage(this.message(), this.chatRoomId()!)
+        .createChatMessage(message, this.chatRoomId()!)
         .pipe(take(1))
         .subscribe({
           next: () => {
@@ -122,13 +124,16 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
             });
           },
         });
+    } else {
+      this.message.update((prev) => prev.trim());
     }
   }
 
   private sendMessageToParticipant(): void {
-    if (this.chatParticipant() && this.message()) {
+    const message = this.message().trim();
+    if (this.chatParticipant() && message) {
       this.chatFirebaseSevice
-        .createChatMessageWithParticipant(this.message(), this.chatParticipant()!)
+        .createChatMessageWithParticipant(message, this.chatParticipant()!)
         .pipe(take(1))
         .subscribe({
           next: () => {
@@ -145,6 +150,8 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
             });
           },
         });
+    } else {
+      this.message.update((prev) => prev.trim());
     }
   }
 
@@ -241,7 +248,7 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
 
       const dateMoment = moment(sendedDatetime, dateFormat);
 
-      const groupKey = `${dateMoment.format('YYYY. MM.')} ${HUN_DAYS[dateMoment.day()].dayName.toLowerCase()}`;
+      const groupKey = `${dateMoment.format('YYYY. MM. DD.')} ${HUN_DAYS[dateMoment.day()].dayName.toLowerCase()}`;
 
       if (!dayGroups[groupKey]) {
         dayGroups[groupKey] = {

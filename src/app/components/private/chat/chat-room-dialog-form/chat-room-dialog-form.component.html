@@ -1,4 +1,4 @@
-<button app-button (click)="onOpenChatRoomFormDialogClick()">Új csevegő szóba</button>
+<app-button (onClick)="onOpenChatRoomFormDialogClick()">Új csevegő szóba</app-button>
 
 <ng-template #chatRoomFormTemplate>
   <app-input
@@ -38,20 +38,24 @@
 </ng-template>
 
 <ng-template #roomDialogFooterTemplate>
-  <button class="w-100 mb-2" app-button color="transparent" (click)="onCloseDialog()">
-    Mégsem
-  </button>
-  @if (chatRoomForEdit()) {
-    <button
-      class="w-100 mb-2"
-      app-button
-      color="danger"
-      (click)="onOpenWarningDeleteDialogTemplate()"
+  <div class="d-flex gap-2">
+    <app-button
+      [ngClass]="chatRoomForEdit() ? 'w-33' : 'w-50'"
+      color="transparent"
+      (onClick)="onCloseDialog()"
     >
-      Eltávolítás
-    </button>
-  }
-  <button class="w-100" app-button (click)="handleCreateOrUpdateChatRoom()">
-    {{ chatRoomForEdit() ? "Módosítás" : "Létrehozás" }}
-  </button>
+      Mégsem
+    </app-button>
+    @if (chatRoomForEdit()) {
+      <app-button class="w-33" color="danger" (onClick)="onOpenWarningDeleteDialogTemplate()">
+        Csevegő szoba törlése
+      </app-button>
+    }
+    <app-button
+      [ngClass]="chatRoomForEdit() ? 'w-33' : 'w-50'"
+      (onClick)="handleCreateOrUpdateChatRoom()"
+    >
+      {{ chatRoomForEdit() ? "Módosítás" : "Létrehozás" }}
+    </app-button>
+  </div>
 </ng-template>

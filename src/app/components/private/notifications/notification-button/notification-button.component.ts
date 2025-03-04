@@ -68,12 +68,15 @@ export class NotificationButtonComponent implements OnInit {
       type: 'default',
       templateConfig: { triggerBtnLabel: 'Közzététel' },
     });
+
     newDialog.dialogClosed$.pipe(take(1)).subscribe({
       next: () => {
         this.reset();
       },
     });
+
     newDialog.trigger$.pipe(switchMap(() => this.handleTrigger())).subscribe();
+
     this.dialogsService.addNewDialog(newDialog);
   }
 
@@ -158,16 +161,16 @@ export class NotificationButtonComponent implements OnInit {
     });
   }
 
-  private reset(): void {
-    this.dialogClose.emit();
-    this._notification.set(null);
-    this.notificationForm.reset();
-  }
-
   private patchFormValues(notification: INotification): void {
     this.notificationForm.patchValue({
       subject: notification.subject,
       text: notification.text,
     });
+  }
+
+  private reset(): void {
+    this.dialogClose.emit();
+    this._notification.set(null);
+    this.notificationForm.reset();
   }
 }

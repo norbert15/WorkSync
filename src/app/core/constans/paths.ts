@@ -8,6 +8,7 @@ export const APP_PATHS = {
   users: {
     root: 'users',
   },
+  apiProjects: 'projects',
   notifications: 'notifications',
   profileDetails: 'profile',
 };

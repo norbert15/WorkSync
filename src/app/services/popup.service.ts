@@ -23,7 +23,12 @@ export class PopupService {
   }
 
   public add(popup: PopupType): void {
-    const key = `${popup.title}_${popup.severity}_${popup.details}`;
+    let key = `${popup.severity}_${popup.details}`;
+
+    if (popup.title) {
+      key = `${popup.title}_${key}`;
+    }
+
     const popups = { ...this.popupGroups() };
     if (!(key in popups)) {
       popups[key] = [];
@@ -41,12 +46,14 @@ export class PopupService {
   }
 
   public close(key: string): void {
-    const popupGroups = this.popupGroups();
+    const popupGroups = { ...this.popupGroups() };
+
     for (const popup of popupGroups[key]) {
       popup?.callback?.();
     }
+
     delete popupGroups[key];
-    this._popupGroups.set(popupGroups);
+    this._popupGroups.set({ ...popupGroups });
   }
 
   public clearAll(): void {

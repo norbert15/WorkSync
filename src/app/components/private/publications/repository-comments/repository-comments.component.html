@@ -39,17 +39,16 @@
 <ng-template #commentsDialogFooterTemplate>
   <textarea [(ngModel)]="comment" rows="3" placeholder="Megjegyzés hozzáadása..."></textarea>
   <div class="d-flex gap-2 mt-2">
-    <button class="w-100" app-button color="transparent" (click)="onCloseCommentsDialogClick()">
+    <app-button class="w-100" color="transparent" (onClick)="onCloseCommentsDialogClick()">
       Bezár
-    </button>
-    <button
+    </app-button>
+    <app-button
       class="w-100"
-      app-button
       [disabled]="!comment()"
       [isLoading]="commentSendIsLoading()"
-      (click)="onSendClick()"
+      (onClick)="onSendClick()"
     >
       Hozzáadás
-    </button>
+    </app-button>
   </div>
 </ng-template>

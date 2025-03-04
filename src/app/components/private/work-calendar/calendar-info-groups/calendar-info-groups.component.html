@@ -1,21 +1,21 @@
 @for (infoCard of infoCards(); track $index) {
   <div class="info-card">
     <!-- Info header -->
-    <div class="flex-between mb-3" [ngClass]="{ 'flex-grow-1': !infoCard.events.length }">
+    <div class="flex-between mb-3">
       <!-- Title -->
-      <div class="d-flex items-center gap-2">
+      <div class="d-flex items-center gap-2 headline-text-small">
         <mat-icon [class]="infoCard.iconColor" [svgIcon]="infoCard.icon"></mat-icon>
         {{ infoCard.title }}:
       </div>
 
       <!-- Counter -->
       @if (infoCard.events.length && infoCard.showCounter) {
-        <div class="counter">{{ infoCard.events.length }}</div>
+        <div class="counter">{{ infoCard.events.length > 9 ? "9+" : infoCard.events.length }}</div>
       }
     </div>
 
     <!-- Info body -->
-    <div [ngClass]="{ 'flex-grow-1': infoCard.events.length }">
+    <div class="flex-grow-1">
       @for (event of infoCard.events.slice(0, 3); track $index) {
         <div [ngClass]="[event.subLabel ? 'flex-between gap-2' : 'text-end', event.class ?? '']">
           @if (event.subLabel) {
@@ -44,8 +44,11 @@
     @if (infoCard.footer?.templateRef) {
       <ng-container [ngTemplateOutlet]="infoCard.footer?.templateRef!"></ng-container>
     } @else if (infoCard.events.length && infoCard.footer) {
-      <!-- TODO: footerLink -->
-      <div class="text-end mt-2 text-decoration-underline cursor-pointer">
+      <div
+        (click)="onFooterClick(infoCard)"
+        aria-hidden="true"
+        class="text-end mt-2 text-decoration-underline cursor-pointer"
+      >
         {{ infoCard.footer.label }}
       </div>
     }
@@ -55,9 +58,9 @@
 <ng-template #todayTemplate>
   <div class="text-end mt-3">
     @if (!ownWorkStatus()) {
-      <button app-button (click)="onStartTheDayClick()">Munka kezdés</button>
+      <app-button class="today-btn" (onClick)="onStartTheDayClick()"> Munka kezdés </app-button>
     } @else if (!ownWorkStatus()!.workEnd) {
-      <button app-button (click)="onOpenEndOfDayDialog()">Munka befejezése</button>
+      <app-button class="today-btn" (onClick)="onOpenEndOfDayDialog()">Munka befejezése</app-button>
     } @else if (ownWorkStatus()?.report) {
       <span
         aria-hidden="true"
@@ -82,30 +85,32 @@
     </div>
   </div>
 
-  <div>
-    <div class="label-strong">Nap végi jelentés</div>
-    @if (onlyView()) {
-      <div class="end-of-day-container">
-        {{ userReport() }}
-      </div>
-    } @else {
-      <textarea rows="6" placeholder="Összegzés..." [(ngModel)]="userReport"></textarea>
-    }
-  </div>
+  <div class="label-strong">Nap végi jelentés</div>
+
+  @if (ownWorkStatus() && ownWorkStatus()?.workEnd) {
+    <div class="end-of-day-container">{{ userReport() }}</div>
+  } @else {
+    <textarea rows="6" placeholder="Összegzés..." [(ngModel)]="userReport"></textarea>
+  }
 </ng-template>
 <ng-template #endOfDayButtonDialogTemplate>
-  <button app-button color="transparent" class="mb-2 w-100" (click)="onCloseDialogClick()">
-    Bezár
-  </button>
-  @if (ownWorkStatus() && !ownWorkStatus()?.workEnd && !onlyView()) {
-    <button
-      app-button
-      class="mb-2 w-100"
-      [isLoading]="endOfDayBtnIsLoading()"
-      [disabled]="!userReport()"
-      (click)="onEndOfDayClick()"
+  <div class="d-flex gap-2">
+    <app-button
+      color="transparent"
+      [ngClass]="ownWorkStatus() && !ownWorkStatus()?.workEnd ? 'w-50' : 'w-100'"
+      (onClick)="onCloseDialogClick()"
     >
-      Jelentés leadása
-    </button>
-  }
+      Bezár
+    </app-button>
+    @if (ownWorkStatus() && !ownWorkStatus()?.workEnd) {
+      <app-button
+        class="w-50"
+        [isLoading]="endOfDayBtnIsLoading()"
+        [disabled]="!userReport()"
+        (onClick)="onEndOfDayClick()"
+      >
+        Jelentés leadása
+      </app-button>
+    }
+  </div>
 </ng-template>

@@ -47,4 +47,8 @@ export class PopupComponent {
   });
 
   private readonly popupService = inject(PopupService);
+
+  public onClosePopupClick(key: string): void {
+    this.popupService.close(key);
+  }
 }

@@ -2,8 +2,12 @@
   margin-bottom: 24px;
 }
 
+.ms-auto {
+  margin-left: auto;
+}
+
 .text-end {
-  text-align: end;
+  text-align: right;
 }
 
 .text-center {
@@ -11,7 +15,7 @@
 }
 
 .text-start {
-  text-align: start;
+  text-align: left;
 }
 
 .text-line-through {
@@ -53,7 +57,7 @@
 }
 
 .d-flex {
-  display: flex;
+  display: flex !important;
 }
 
 .flex-grow-1 {
@@ -82,11 +86,19 @@
 }
 
 .w-100 {
-  width: 100%;
+  width: 100% !important;
 }
 
 .w-50 {
   width: 50%;
+}
+
+.w-33 {
+  width: calc(100% / 3);
+}
+
+.w-25 {
+  width: 25%;
 }
 
 .h-100 {
