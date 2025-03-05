@@ -1,23 +1,24 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+
 import { catchError, Observable, of, ReplaySubject, switchMap, take, takeUntil, tap } from 'rxjs';
 import moment from 'moment';
 
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { DialogsComponent } from '../dialogs/dialogs.component';
+import { AuthFirebaseService } from '../../../services/firebase/auth-firebase.service';
 import { GoogleAuthService } from '../../../services/google/google-auth.service';
 import { UserFirebaseService } from '../../../services/firebase/user-firebase.service';
 import { PublicationFirebaseService } from '../../../services/firebase/publication-firebase.service';
 import { DeviceType, DeviceTypeService } from '../../../services/device-type.service';
+import { NotificationFirebaseService } from '../../../services/firebase/notification-firebase.service';
 import { PopupService } from '../../../services/popup.service';
 import { RepositroyEnum } from '../../constans/enums';
-import { IUser } from '../../../models/user.model';
 import { IBranch } from '../../../models/branch.model';
-import { AuthFirebaseService } from '../../../services/firebase/auth-firebase.service';
 import { APP_PATHS } from '../../constans/paths';
-import { NotificationFirebaseService } from '../../../services/firebase/notification-firebase.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { IUser } from '../../../models/user.model';
 
 @Component({
   selector: 'app-user-layout',
@@ -73,6 +74,9 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
         take(1),
         switchMap((user: IUser) => {
           this.userFirebaseService.setUser(user);
+          this.googleAuthService.setClientId(user.clientId);
+          this.googleAuthService.setClientSecret(user.clientSecret);
+
           return this.fetchGoogleApiTokens(user);
         }),
       )

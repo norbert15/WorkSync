@@ -21,7 +21,7 @@ Az alkalmazásban két jogosultsági szint érhető el:
 
 - **Fejlesztő (Developer):** Átlagfelhasználói jogosultságokkal rendelkezik.
 - **Adminisztrátor (Administrator):** Kiterjesztett jogosultságokkal rendelkezik, beleértve az alábbiakat:
-  - Az összes fejlesztő szabadságkérelmének megtekintése, elfogadása vagy elutasítása.
+  - Az összes fejlesztő szabadság kérelmének megtekintése, elfogadása vagy elutasítása.
   - A felhasználók kezelése: új felhasználók hozzáadása, meglévők jogosultságainak módosítása vagy visszavonása.
   - A fejlesztők napi munkamenetének követése: láthatja, hogy egy felhasználó mikor kezdte el és fejezte be a munkát, valamint a nap végi jelentéseit.
 
@@ -31,21 +31,21 @@ Az alkalmazásban két jogosultsági szint érhető el:
 
   - Google naptár és Google feladatok szinkronizáció
   - Megbeszélések, elérhetőségek, szabadságok megtekintése
-  - Azonnali információk mely felhasználók nem elérhetőek egy adott idő intervallumban, vagy kik vannak szabadságon éppen
+  - Azonnali információk arról akik nem elérhetőek egy adott intervallumban, vagy kik vannak szabadságon éppen
   - **Esemény létrehozása**:
-    - Házon kívűl: a felhasználó jelezheti, hogy egy adott időintervallumon belül nincs gépnél, nem elérhető
+    - Házon kívül: a felhasználó jelezheti, hogy egy adott intervallumon belül nincs gépnél, nem elérhető
     - Szabadság kérelem: Új szabadság kérelem indítása megadott időszakra
-    - Google esemény: át navigálja a felhasználót a google naptárába, ahol gond mentesen a megszokott módon tud új eseményt indítani
+    - Google esemény: átnavigálja a felhasználót a google naptárába, ahol gondmentesen a megszokott módon tud új eseményt indítani
   - **Gyors információs kártyák**
-    - Közelgő esemény(ek): a közelgő google naptár eseményekre való figyelem felhívás (maximum 3 látható), a "Naptárhoz" feliratra kattintva az oldal leteker a naptár aktuális napjához.
-    - Értesítések: új branch-ek kerültek publikálásra, egyébb cégen belüli információ átadás, szabadság kérelmek státuszai (elfogadták, elutasították), csevegő szoba történések (hozzáadak, eltávolitottak)
+    - Közelgő esemény(ek): a közelgő google naptár eseményekre való figyelemfelhívás (maximum 3 látható), a "Naptárhoz" feliratra kattintva az oldal leteker a naptár aktuális napjához.
+    - Értesítések: új branch-ek kerültek publikálásra, egyéb cégen belüli információ átadás, szabadság kérelmek státuszai (elfogadták, elutasították), csevegő szoba történések (hozzáadak, eltávolitottak)
     - Mai napon: a felhasználó jelzi, hogy elkezdte munkáját, majd pedig nap végén jelzi annak befejezését a nap végi jelentés leadásával, melyet az Adminisztrátor láthat és nyomon követhet.
-    - Publikálásra vár: azok a branch-ek amelyket a felhasználók szeretnének, hogy publikálásra kerüljenek
+    - Publikálásra vár: azok a branch-ek amelyeket a felhasználók szeretnének, hogy publikálásra kerüljenek
 
 - **Publikációkezelés**
 
   - A felhasználók jelezhetik, hogy mely githubon lévő repository-ból, mely branch-eket szükséges azt a teszt rendszerbe publikálni.
-  - A publikálásra váró repository kártyához komment is fűzzhető, melyben plusz információkat adhatunk át a többi felhasználó számára (vagy aki felel a publikálásért), adatbázis frissités stb...
+  - A publikálásra váró repository kártyához komment fűzhető, melyben plusz információkat adhatnak át a többi felhasználó számára (vagy aki felel a publikálásért), adatbázis frissités stb...
   - A publikálva gombra kattintva egy felugró ablakban lehetősége van a felhasználónak megjelölni, mely hozzáadott branch-eket szeretné ő publikáltra állítani, amik ez után átkerülnek az Aktív publikálások kártyába
   - Emellet lehetőség van a felhasználónak még a hozzáadott branch-ek eltávolítására
 
@@ -58,7 +58,7 @@ Az alkalmazásban két jogosultsági szint érhető el:
 - **Szabadságkezelés**
 
   - Szabadságkérelmek jelzése, szerkesztése, törlése.
-  - Adminisztrátor az átlag felhasználók szabadségkérelmét elfogadhatja vagy elutasíthatja
+  - Adminisztrátor az átlag felhasználók szabadség kérelmét elfogadhatja vagy elutasíthatja
 
 - **Értesítések**
 
