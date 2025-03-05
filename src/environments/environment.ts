@@ -8,11 +8,8 @@ export const environment = {
     appId: '1:379045447630:web:82fbd739179529153b0d9f',
     measurementId: 'G-XYZS6HYGDD',
   },
-  // Firebase-be átültetni
   googleConfig: {
     apiUrl: 'https://www.googleapis.com',
-    clientId: '1098573225357-enm62hvibb30atj1vrjfmi39cv4phimv.apps.googleusercontent.com',
-    clientSecret: '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',
     redirectUrl: 'http://localhost:4200',
     scope: [
       'https://www.googleapis.com/auth/calendar',

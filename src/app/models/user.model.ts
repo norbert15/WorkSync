@@ -12,6 +12,8 @@ export interface IUser extends IUserBase {
   id: string;
   googleRefreshToken: string;
   role: UserEnum;
+  clientId: string;
+  clientSecret: string;
   monogram?: string;
 }
 

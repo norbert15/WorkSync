@@ -10,12 +10,16 @@ import {
   where,
   addDoc,
 } from '@angular/fire/firestore';
-import { BehaviorSubject, from, map, Observable, switchMap } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, forkJoin, from, map, Observable, switchMap } from 'rxjs';
 import moment from 'moment';
 
 import { IUser, IUserBase, IUserWorkStatus } from '../../models/user.model';
 import { AuthFirebaseService } from './auth-firebase.service';
+
+type GoogleConfigType = {
+  clientId: string;
+  clientSecret: string;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +27,8 @@ import { AuthFirebaseService } from './auth-firebase.service';
 export class UserFirebaseService {
   private readonly USERS_COLLECTION = 'users';
   private readonly USER_WORK_STATUS_COLLECTION = 'user-work-statuses';
+  private readonly GOOGLE_CONFIG = 'google-config';
+  private readonly GOOGLE_CONFIG_ID = 'YOrBVdEmAvXRC0NEFOR5';
 
   private readonly firestore = inject(Firestore);
   private readonly authFirebaseService = inject(AuthFirebaseService);
@@ -33,13 +39,37 @@ export class UserFirebaseService {
 
   public getUserDetails(userId: string): Observable<IUser> {
     const userDocRef = doc(this.firestore, this.USERS_COLLECTION, userId);
-    return from(getDoc(userDocRef)).pipe(
+    const googleConfigRef = doc(this.firestore, this.GOOGLE_CONFIG, this.GOOGLE_CONFIG_ID);
+
+    const userObservable: Observable<IUser> = from(getDoc(userDocRef)).pipe(
       map((docSnapShot) => {
         if (docSnapShot.exists()) {
           return { id: docSnapShot.id, ...docSnapShot.data() } as IUser;
         }
 
-        throw new HttpErrorResponse({ error: 'Not found', status: 400 });
+        throw new Error('Not found');
+      }),
+    );
+
+    const googleConfigObservable: Observable<GoogleConfigType> = from(getDoc(googleConfigRef)).pipe(
+      map((docSnapShot) => {
+        if (docSnapShot.exists()) {
+          return { ...docSnapShot.data() } as GoogleConfigType;
+        }
+
+        throw new Error('Google config not found');
+      }),
+    );
+
+    return forkJoin({
+      user: userObservable,
+      googleConfigRef: googleConfigObservable,
+    }).pipe(
+      map(({ user, googleConfigRef }) => {
+        return {
+          ...user,
+          ...googleConfigRef,
+        };
       }),
     );
   }
