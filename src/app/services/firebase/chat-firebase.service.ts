@@ -80,7 +80,7 @@ export class ChatFirebaseService {
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
     const notiRef = collection(this.firestore, this.NOTIFICATIONS_COLLECTION);
 
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return throwError(() => new Error('User not found'));
@@ -140,7 +140,7 @@ export class ChatFirebaseService {
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
     const notiRef = collection(this.firestore, this.NOTIFICATIONS_COLLECTION);
 
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return throwError(() => new Error('User not found'));
@@ -251,7 +251,7 @@ export class ChatFirebaseService {
 
   public createChatMessage(message: string, chatRoomId: string): Observable<string> {
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return throwError(() => new Error('User not found'));
@@ -270,7 +270,7 @@ export class ChatFirebaseService {
 
   public createChatMessageWithParticipant(message: string, participant: IUser): Observable<string> {
     const chatMessagesRef = collection(this.firestore, this.CHAT_MESSAGES_COLLECTION);
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return throwError(() => new Error('User not found'));
@@ -291,7 +291,7 @@ export class ChatFirebaseService {
   }
 
   public deleteChatRoom(chatRoom: IChatRoom): Observable<string> {
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return throwError(() => new Error('User not found'));

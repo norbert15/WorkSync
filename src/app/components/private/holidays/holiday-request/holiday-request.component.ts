@@ -99,7 +99,7 @@ export class HolidayRequestComponent implements OnInit {
   }
 
   private addHolidayRequest(): void {
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (user) {
       this.isLoading.set(true);

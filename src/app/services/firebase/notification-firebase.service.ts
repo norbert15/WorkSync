@@ -101,7 +101,7 @@ export class NotificationFirebaseService {
     type: NotificationEnum,
     targetUserIds: string[] | 'all' = 'all',
   ): Observable<string> {
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return throwError(() => new Error('User not found'));

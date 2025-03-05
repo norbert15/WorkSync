@@ -131,7 +131,7 @@ export class CalendarEventCreatorComponent implements OnInit {
   }
 
   public onSaveClick(): void {
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
     if (this.eventForm.valid && user) {
       this.isSaveBtnLoading.set(true);
       const form = this.eventForm.getRawValue();
@@ -230,7 +230,7 @@ export class CalendarEventCreatorComponent implements OnInit {
       severity: 'info',
     });
 
-    const user = this.userFirebaseService.user$.getValue()!;
+    const user = this.userFirebaseService.userValue!;
 
     const form = this.eventForm.getRawValue();
 

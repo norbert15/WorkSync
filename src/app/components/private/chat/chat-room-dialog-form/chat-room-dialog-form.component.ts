@@ -76,8 +76,6 @@ export class ChatRoomDialogFormComponent {
   private readonly chatFirebaseService = inject(ChatFirebaseService);
 
   public onOpenChatRoomFormDialogClick(): void {
-    console.log('2x');
-
     const title = this.chatRoomForEdit()
       ? 'Csevegő szoba szerkesztése'
       : 'Új csevegő szoba létrehozása';

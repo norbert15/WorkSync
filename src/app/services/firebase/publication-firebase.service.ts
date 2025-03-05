@@ -118,7 +118,7 @@ export class PublicationFirebaseService {
   public addCommentToRepository(repositoryId: string, comment: string): Observable<void> {
     const repositoryRef = doc(this.firestore, this.REPOSITORIES_COLLECTION, repositoryId);
 
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return throwError(() => new Error('User not exist'));
@@ -143,7 +143,7 @@ export class PublicationFirebaseService {
     branches: IBranch[],
     activeBranches: IBranch[],
   ): Observable<void> {
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return throwError(() => new Error('User not exist'));

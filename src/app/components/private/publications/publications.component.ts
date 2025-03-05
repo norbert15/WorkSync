@@ -113,7 +113,7 @@ export class PublicationsComponent implements OnInit, OnDestroy {
   private readonly userFirebaseService = inject(UserFirebaseService);
 
   public ngOnInit(): void {
-    this.user$ = this.userFirebaseService.user$.asObservable();
+    this.user$ = this.userFirebaseService.user$;
     this.fethcActivePublications();
     this.fetchRepositories();
   }

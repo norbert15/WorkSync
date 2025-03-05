@@ -251,7 +251,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
       severity: 'info',
     });
 
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return of(null);
@@ -345,7 +345,7 @@ export class HolidaysComponent implements OnInit, OnDestroy {
     holidayRequest: IRequestedHoliday,
     accept: boolean,
   ): Observable<string | null> {
-    const user = this.userFirebaseService.user$.getValue();
+    const user = this.userFirebaseService.userValue;
 
     if (!user) {
       return of(null);

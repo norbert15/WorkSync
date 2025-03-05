@@ -8,7 +8,7 @@ import { UserEnum } from '../constans/enums';
 export const adminGuard: CanActivateFn = () => {
   const userFirebaseService = inject(UserFirebaseService);
 
-  const user = userFirebaseService.user$.getValue();
+  const user = userFirebaseService.userValue;
 
   if (!user || user.role !== UserEnum.ADMINISTRATOR) {
     const router = inject(Router);

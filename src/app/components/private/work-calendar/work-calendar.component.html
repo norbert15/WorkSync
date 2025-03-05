@@ -97,7 +97,9 @@
     <div class="label-normal">
       <div>
         @if (calendarEvent.hangoutLink) {
-          <a [href]="calendarEvent.hangoutLink" target="_blank">{{ calendarEvent.hangoutLink }}</a>
+          <a class="word-break-all" [href]="calendarEvent.hangoutLink" target="_blank">{{
+            calendarEvent.hangoutLink
+          }}</a>
         } @else if (calendarEvent.location) {
           {{ calendarEvent.location }}
         }
@@ -144,13 +146,17 @@
   <div class="d-flex gap-3 mb-4">
     <div class="google-event-view-box">
       <div class="label-strong">Link</div>
-      <a class="cursor-pointer" [href]="selectedGoogleCalendarEvent()?.hangoutLink" target="_blank">
+      <a
+        class="cursor-pointer word-break-all"
+        [href]="selectedGoogleCalendarEvent()?.hangoutLink"
+        target="_blank"
+      >
         {{ selectedGoogleCalendarEvent()?.hangoutLink ?? "-" }}
       </a>
     </div>
     <div class="google-event-view-box">
       <div class="label-strong">Helyszín</div>
-      <div>{{ selectedGoogleCalendarEvent()?.location ?? "-" }}</div>
+      <div class="word-break-all">{{ selectedGoogleCalendarEvent()?.location ?? "-" }}</div>
     </div>
   </div>
 
