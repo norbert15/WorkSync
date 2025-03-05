@@ -100,6 +100,7 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
       next: (user: IUser | null) => {
         this.user = user;
         this.pattchFormValues();
+        console.log('User: ', user);
       },
     });
   }
