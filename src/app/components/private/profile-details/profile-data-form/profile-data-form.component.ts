@@ -156,7 +156,7 @@ export class ProfileDataFormComponent implements OnInit, OnDestroy {
         next: (result) => {
           if (result !== 'failed') {
             this.user!.googleRefreshToken = '';
-            this.userFirebaseService.user$.next(this.user);
+            this.userFirebaseService.setUser(this.user);
           }
         },
         error: () => {

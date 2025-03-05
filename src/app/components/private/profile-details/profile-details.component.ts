@@ -1,6 +1,6 @@
-import { Component, inject, model, OnInit } from '@angular/core';
+import { Component, inject, model, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { take, switchMap, of, catchError, Observable, tap } from 'rxjs';
+import { switchMap, of, catchError, Observable, tap, Subscription } from 'rxjs';
 
 import {
   ISubmenuItem,
@@ -26,13 +26,15 @@ import { IUser } from '../../../models/user.model';
   templateUrl: './profile-details.component.html',
   styleUrl: './profile-details.component.scss',
 })
-export class ProfileDetailsComponent implements OnInit {
+export class ProfileDetailsComponent implements OnInit, OnDestroy {
   public readonly subMenus: ISubmenuItem[] = [
     { label: 'Felhasználói adatok', route: 'profile' },
     { label: 'Jelszó módosítás', route: 'password' },
   ];
 
   public activeMenu = model(this.subMenus[0].route);
+
+  private subscription: Subscription | null = null;
 
   private readonly googleAuthService = inject(GoogleAuthService);
   private readonly userFirebaseSevice = inject(UserFirebaseService);
@@ -44,6 +46,12 @@ export class ProfileDetailsComponent implements OnInit {
     this.getGoogleTokens();
   }
 
+  public ngOnDestroy(): void {
+    if (this.subscription && !this.subscription.closed) {
+      this.subscription?.unsubscribe();
+    }
+  }
+
   private getGoogleTokens(): void {
     const googleCode = this.route.snapshot.queryParamMap.get('code');
     if (!googleCode) {
@@ -52,33 +60,49 @@ export class ProfileDetailsComponent implements OnInit {
 
     this.router.navigate([]); // Felesleges paraméterek eltávolítása amit a google állít be
 
-    this.googleAuthService
-      .getGoogleTokens(googleCode)
+    this.subscription = this.userFirebaseSevice.user$
       .pipe(
-        take(1),
-        switchMap((result) => {
-          const { access_token = '', refresh_token = '' } = result;
+        switchMap((user: IUser | null) => {
+          if (user) {
+            this.googleAuthService.setClientId(user.clientId);
+            this.googleAuthService.setClientSecret(user.clientSecret);
 
-          if (refresh_token) {
-            this.googleAuthService.setGoogleApiPayload(access_token, refresh_token);
-            return this.updateUserDeails(refresh_token);
+            return this.googleAuthService.getGoogleTokens(googleCode).pipe(
+              switchMap((result) => {
+                const { access_token = '', refresh_token = '' } = result;
+
+                if (refresh_token) {
+                  this.googleAuthService.setGoogleApiPayload(access_token, refresh_token);
+
+                  return this.updateUserDeails(refresh_token);
+                }
+
+                this.popupService.add({
+                  details: 'Hiba történt a google refresh token lekérése során.',
+                  severity: 'warning',
+                });
+
+                return of(null);
+              }),
+            );
           }
 
-          this.popupService.add({
-            details: 'Hiba történt a google refresh token lekérése során.',
-            severity: 'warning',
-          });
-
-          return of(null);
+          return of('no-user');
         }),
       )
       .subscribe({
+        next: (result) => {
+          if (result && result !== 'no-user') {
+            this.subscription?.unsubscribe();
+          }
+        },
         error: () => {
           this.popupService.add({
             details: 'Hiba történt a google hitelesítése adatok lekérdezése során.',
             severity: 'error',
             title: 'Google naptár szinkon',
           });
+          this.subscription?.unsubscribe();
         },
       });
   }
@@ -86,6 +110,7 @@ export class ProfileDetailsComponent implements OnInit {
   private updateUserDeails(refreshToken: string): Observable<IUser | null> {
     return this.userFirebaseSevice.updateUserGoogleRefreshToken(refreshToken).pipe(
       tap((user: IUser) => {
+        this.subscription?.unsubscribe();
         this.userFirebaseSevice.setUser(user);
       }),
       catchError(() => {

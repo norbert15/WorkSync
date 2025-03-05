@@ -35,7 +35,15 @@ export class UserFirebaseService {
 
   private readonly _user = new BehaviorSubject<IUser | null>(null);
 
-  public user$ = this._user;
+  public user$ = this._user.asObservable();
+
+  public get userValue(): IUser | null {
+    return this._user.getValue();
+  }
+
+  public setUser(user: IUser | null): void {
+    this._user.next(user);
+  }
 
   public getUserDetails(userId: string): Observable<IUser> {
     const userDocRef = doc(this.firestore, this.USERS_COLLECTION, userId);
@@ -127,9 +135,5 @@ export class UserFirebaseService {
   public getAllUsers(): Observable<IUser[]> {
     const usersRef = collection(this.firestore, this.USERS_COLLECTION);
     return collectionData(usersRef, { idField: 'id' }) as Observable<IUser[]>;
-  }
-
-  public setUser(user: IUser): void {
-    this._user.next(user);
   }
 }

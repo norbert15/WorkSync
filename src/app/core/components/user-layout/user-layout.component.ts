@@ -53,6 +53,8 @@ export class UserLayoutComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
+    this.userFirebaseService.setUser(null);
+    this.googleAuthService.googleApiPayload$.next(null);
   }
 
   private fetchUserNotifications(): void {
